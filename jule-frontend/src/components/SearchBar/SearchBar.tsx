@@ -14,10 +14,10 @@ const SearchBar = () => {
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={6}>
-                {filters.map((filter) => {
+            <Grid item xs={5}>
+                {filters.map((filter, i) => {
                     return (
-                        <Filter name={filter.name} options={filter.options}/>
+                        <Filter key={i} name={filter.name} options={filter.options}/>
                     )
                 })}
             </Grid>
