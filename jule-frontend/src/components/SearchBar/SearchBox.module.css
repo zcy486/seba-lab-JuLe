@@ -1,0 +1,15 @@
+.paper {
+    padding: 2px 4px;
+    display: flex;
+    align-items: center;
+    width: 250px;
+}
+
+.inputBase {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.iconButton {
+    padding: 10px;
+}

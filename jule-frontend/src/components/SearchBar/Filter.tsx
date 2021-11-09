@@ -31,6 +31,7 @@ const Filter = ({name, options}: Props) => {
             <InputLabel id="label-id">{name}</InputLabel>
             <Select
                 className={classes.select}
+                variant={"filled"}
                 labelId="label-id"
                 label={name}
                 value={value}
