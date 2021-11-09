@@ -27,7 +27,7 @@ let NavigationBar = (props: NavigationBarProps) => {
                 <img
                 src={JuLe}
                 style={{ left: 0}}
-                alt="Initiate logo"
+                alt="JuLe logo"
                 height="30"
                 onClick={() => {}}
             />
