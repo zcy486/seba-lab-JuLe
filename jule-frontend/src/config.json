@@ -2,5 +2,8 @@
   "hotStreak": {
     "minDays": 1,
     "minExercises": 2
+  },
+  "landingVideo": {
+    "videoId": "fj8lAfaKy-c"
   }
 }
