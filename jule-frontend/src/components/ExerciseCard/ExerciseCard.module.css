@@ -1,0 +1,22 @@
+.exerciseCard {
+    display: flex;
+    flex-direction: row;
+    margin: 1rem 0 1rem 0;
+    padding: 1rem;
+}
+
+.actionsArea {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+}
+
+.additional {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button {
+    text-transform: none;
+}
