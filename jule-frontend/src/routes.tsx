@@ -5,15 +5,15 @@ import OverviewPage from "./pages/OverviewPage";
 const routes = [
     {
         path: "/*",
-        element: <ErrorPage />,
+        element: <ErrorPage/>,
     },
     {
         path: "/profile",
-        element: <ProfilePage />,
+        element: <ProfilePage/>,
     },
     {
         path: "/overview",
-        element: <OverviewPage />,
+        element: <OverviewPage/>,
     },
     /*TODO: add routes for other pages, paths are matched exactly by default
     {
