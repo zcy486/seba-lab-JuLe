@@ -1,6 +1,8 @@
 import React from "react"
 import {Button} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
+// @ts-ignore
+import ReCAPTCHA from "react-google-recaptcha";
 
 var name: string, email: string, password1: string, password2: string, type: string, university:string;
 
@@ -25,8 +27,17 @@ const RegistrationPage = () => {
         <option value="tum">TUM</option>
     </select>
     <h3>Captcha:</h3>
+    <ReCAPTCHA
+        sitekey="6LfJGDgdAAAAAIaTVAMpnPVFubgbdIE_z_wNkv73"
+        onChange={onCaptcha}
+    />
+    <br />
     <Button variant="primary" onClick={registerButtonClick}>Register</Button>{' '}
   </div>)
+}
+
+function onCaptcha(value: string) {
+    console.log('Captcha value:', value);
 }
 
 function registerButtonClick() {
