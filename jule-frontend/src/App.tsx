@@ -6,15 +6,7 @@ import {Button} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-<<<<<<< HEAD
-    return (
-        <div>
-            <Container maxWidth="lg">
-                <Outlet/>
-            </Container>
-        </div>
-    );
-=======
+
   return (
     <div>
       <Container maxWidth="lg">
@@ -25,7 +17,6 @@ function App() {
       </Container>
     </div>
   );
->>>>>>> create-authentication
 }
 
 

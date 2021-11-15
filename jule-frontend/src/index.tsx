@@ -6,41 +6,27 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
 import ErrorPage from "./pages/ErrorPage";
-<<<<<<< HEAD
 import OverviewPage from "./pages/OverviewPage";
-
-ReactDOM.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <Routes>
-                <Route path={"/"} element={<App/>}>
-                    <Route path={"overview"} element={<OverviewPage/>}/>
-                    <Route path={"profile"} element={<ProfilePage/>}/>
-                    <Route path={"*"} element={<ErrorPage/>}/>
-                </Route>
-            </Routes>
-        </BrowserRouter>
-    </React.StrictMode>,
-    document.getElementById('root')
-=======
 import RegistrationPage from "./pages/RegistrationPage";
 import LoginPage from "./pages/LoginPage";
+import ContactPage from "./pages/ContactPage";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path={"/"} element={<App />}>
+          <Route path={"overview"} element={<OverviewPage/>}/>
           <Route path={"profile"} element={<ProfilePage />}/>
           <Route path={"register"} element={<RegistrationPage />}/>
           <Route path={"login"} element={<LoginPage />}/>
+          <Route path={"contact"} element={<ContactPage />}/>
           <Route path={"*"} element={<ErrorPage />}/>
         </Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
->>>>>>> create-authentication
 );
 
 // If you want to start measuring performance in your app, pass a function

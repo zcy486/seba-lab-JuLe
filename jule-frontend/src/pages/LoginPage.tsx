@@ -4,8 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
 
-var email = "";
-var password = "";
+var email: string, password: string;
 
 const LoginPage = () => {
   return (<div>
