@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./ExerciseCard.module.css";
-import {Avatar, Button, Card, CardActions, CardContent, CardHeader, Typography} from "@mui/material";
+import {Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Typography} from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
 
 const MockUni = "/images/university.svg";
@@ -33,8 +33,11 @@ const ExerciseCard = (props: Props) => {
                         {props.title}
                     </Typography>
                 }
-                subheader={JSON.stringify(props.exerciseTags)}
-            />
+                subheader={props.exerciseTags.map((val) => (<Chip label={val}/>))}
+            >
+
+            </CardHeader>
+
             {props.finished && <CardContent className={styles.additional}>
                 <DoneIcon color={"success"} fontSize={"large"}/>
             </CardContent>}
