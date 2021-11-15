@@ -3,6 +3,7 @@ import ActivityChart from "../components/ActivityChart/ActivityChart";
 import UserService from "../services/UserService";
 import StreakDisplay from "../components/StreakDisplay/StreakDisplay";
 import config from "../config.json"
+import ScoreGraph from "../components/ScoreGraph/ScoreGraph";
 
 const ProfilePage = () => {
 
@@ -65,6 +66,9 @@ const ProfilePage = () => {
             <div className={"verticalSpacer"}/>
             <HotStreak/>
             <h2>Scores</h2>
+            <div className={"centerDiv"}>
+                <ScoreGraph />
+            </div>
             <h2>Latest Exercises</h2>
         </div>
     )
