@@ -6,19 +6,21 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
 import ErrorPage from "./pages/ErrorPage";
+import OverviewPage from "./pages/OverviewPage";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path={"/"} element={<App />}>
-          <Route path={"profile"} element={<ProfilePage />}/>
-          <Route path={"*"} element={<ErrorPage />}/>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <BrowserRouter>
+            <Routes>
+                <Route path={"/"} element={<App/>}>
+                    <Route path={"overview"} element={<OverviewPage/>}/>
+                    <Route path={"profile"} element={<ProfilePage/>}/>
+                    <Route path={"*"} element={<ErrorPage/>}/>
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
