@@ -2,7 +2,8 @@ import React from "react";
 import styles from "./ExerciseCard.module.css";
 import {Avatar, Button, Card, CardActions, CardContent, CardHeader, Typography} from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
-import MockUni from "../../university.svg";
+
+const MockUni = "/images/university.svg";
 
 interface Props {
     title: string;
