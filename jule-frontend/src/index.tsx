@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
 import ErrorPage from "./pages/ErrorPage";
+import RegistrationPage from "./pages/RegistrationPage";
+import LoginPage from "./pages/LoginPage";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -13,6 +15,8 @@ ReactDOM.render(
       <Routes>
         <Route path={"/"} element={<App />}>
           <Route path={"profile"} element={<ProfilePage />}/>
+          <Route path={"register"} element={<RegistrationPage />}/>
+          <Route path={"login"} element={<LoginPage />}/>
           <Route path={"*"} element={<ErrorPage />}/>
         </Route>
       </Routes>
