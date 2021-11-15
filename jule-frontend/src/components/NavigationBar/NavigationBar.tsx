@@ -5,7 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import JuLe from "../../JuLe.svg";
+import {Link} from "react-router-dom";
 
 type NavigationBarProps = {
     loggedIn: Boolean;
@@ -13,8 +13,8 @@ type NavigationBarProps = {
 
 let NavigationBar = (props: NavigationBarProps) => {
     return (
-        <Box sx={{flexGrow: 1}}>
-            <AppBar>
+        <Box sx={{flexGrow: 1}} style={{position: "sticky"}}>
+            <AppBar style={{position: "sticky"}}>
                 <Toolbar>
                     <IconButton
                         size="large"
@@ -24,7 +24,7 @@ let NavigationBar = (props: NavigationBarProps) => {
                         sx={{mr: 2}}
                     >
                         <img
-                            src={JuLe}
+                            src={"/JuLe.svg"}
                             style={{left: 0}}
                             alt="JuLe logo"
                             height="30"
@@ -36,8 +36,8 @@ let NavigationBar = (props: NavigationBarProps) => {
                     </Typography>
                     {props.loggedIn ? (
                         <div className="nav-options">
-                            <Button color="inherit">Exercises</Button>
-                            <Button color="inherit">Profile</Button>
+                            <Button color="inherit" component={Link} to={"/exercises"}>Exercises</Button>
+                            <Button color="inherit" component={Link} to={"/profile"}>Profile</Button>
                             <Button color="inherit">Logout</Button>
                         </div>
                     ) : (
