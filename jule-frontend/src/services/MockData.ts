@@ -40,3 +40,32 @@ export async function fetchUserName() {
         console.error(error)
     }
 }
+
+// mocked exercise data
+export const mockExercises = [
+    {
+        title: "Exercise 1",
+        exerciseTags: ["indirekte Rede"],
+        finished: false
+    },
+    {
+        title: "Exercise 2",
+        exerciseTags: ["Schachtelsatz"],
+        finished: true
+    },
+    {
+        title: "Exercise 3",
+        exerciseTags: ["Grammatik", "Gutachtenstil"],
+        finished: false
+    },
+    {
+        title: "Exercise 4",
+        exerciseTags: [],
+        finished: false
+    },
+    {
+        title: "Exercise 5",
+        exerciseTags: ["Verständlichkeit"],
+        finished: true
+    }
+];

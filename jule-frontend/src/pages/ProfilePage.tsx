@@ -4,6 +4,8 @@ import UserService from "../services/UserService";
 import StreakDisplay from "../components/StreakDisplay/StreakDisplay";
 import config from "../config.json"
 import ScoreGraph from "../components/ScoreGraph/ScoreGraph";
+import ExerciseCard from "../components/ExerciseCard/ExerciseCard";
+import {mockExercises} from "../services/MockData";
 
 const ProfilePage = () => {
 
@@ -70,6 +72,14 @@ const ProfilePage = () => {
                 <ScoreGraph />
             </div>
             <h2>Latest Exercises</h2>
+            {mockExercises.map((mockdata, i) => {
+                return (
+                    <ExerciseCard key={i}
+                                  title={mockdata.title!}
+                                  exerciseTags={mockdata.exerciseTags!}
+                    />
+                );
+            })}
         </div>
     )
 }
