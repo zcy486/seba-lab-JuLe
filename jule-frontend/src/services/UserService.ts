@@ -9,7 +9,7 @@ const UserService = {
     getHotStreak: async () => {
         try {
             const exerciseData = (await UserService.getExerciseDateData()).reverse()
-            const streakDays = exerciseData.splice(0, exerciseData.findIndex(elem => elem.count == 0))
+            const streakDays = exerciseData.splice(0, exerciseData.findIndex(elem => elem.count === 0))
             const streakLength = streakDays.length
             const exerciseCount = streakDays.reduce<number>((total, current) => total + current.count, 0)
             return {dayCount: streakLength, exerciseCount: exerciseCount}
