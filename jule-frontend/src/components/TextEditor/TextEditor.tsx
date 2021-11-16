@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState, ContentState } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import Button from "@mui/material/Button";
-
 
 type TextEditorProps = {
     text: string;
-    onChange: (currentText: string) => void;
+    setText: (currentText: string) => void;
   };
-  
 
 let TextEditor = (props: TextEditorProps) => {
 
@@ -20,14 +17,10 @@ let TextEditor = (props: TextEditorProps) => {
 
     useEffect(() => {
         console.log(editorState);
+        let currentText = editorState.getCurrentContent().getPlainText();
+        props.setText(currentText);
     }, [editorState]);
 
-    let saveText = () => {
-        let currentText = editorState.getCurrentContent().getPlainText();
-        props.onChange(currentText);
-    }
-
-   
     return (
         <div>
             <div style={{ border: "1px solid black", padding: '2px', minHeight: '400px' }}>
@@ -36,8 +29,6 @@ let TextEditor = (props: TextEditorProps) => {
                 onEditorStateChange={setEditorState}
                 />
             </div>
-            <Button variant="outlined" onClick={() => {}} >Cancel</Button>
-            <Button variant="contained" onClick={saveText} >Save</Button>
         </div>
     )
 }
