@@ -8,9 +8,9 @@ import NavigationBar from "./components/NavigationBar/NavigationBar";
 function App() {
     return (
         <>
-            <Container maxWidth="lg" className={"content"}>
+            <NavigationBar loggedIn={true}/>
+            <Container maxWidth="lg">
                 <Outlet/>
-
             </Container>
             <Footer/>
         </>
