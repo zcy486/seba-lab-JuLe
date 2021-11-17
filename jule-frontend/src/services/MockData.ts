@@ -69,3 +69,18 @@ export const mockExercises = [
         finished: true
     }
 ];
+
+const numPerPage = 3; //set the number of exercises displayed per page
+
+export const mockExercisesPerPage = (page: number) => {
+    return new Promise<any>((resolve) => {
+        setTimeout(() => {
+            let upper = Math.min(page * numPerPage, mockExercises.length);
+            resolve(mockExercises.slice((page-1) * numPerPage, upper));
+        }, Math.random() * 100 + 50); //simulate network latency
+    });
+};
+
+export const pageCount = new Promise<number>((resolve)=> {
+        resolve(Math.ceil(mockExercises.length/numPerPage));
+});
