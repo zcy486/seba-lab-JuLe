@@ -1,0 +1,40 @@
+.score-list-legend{
+    display: flex;
+    justify-content: space-between;
+    margin: 2rem;
+    width: 75%;
+}
+
+.legend-item{
+    display: flex;
+    justify-content: space-between;
+}
+
+.legend-item-title{
+    top:50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+.legend-item-color-box-user{
+    margin-right: 2rem;
+    height: 2rem;
+    width: 2rem;
+    background-color: #F35917;
+    border-radius: 3px;
+}
+
+.legend-item-color-box-peers{
+    margin-right: 2rem;
+    height: 2rem;
+    width: 2rem;
+    background-color: #07D6D6;
+    border-radius: 3px;
+}
+
+.legend-item-color-box-solution{
+    margin-right: 2rem;
+    height: 2rem;
+    width: 2rem;
+    background-color: #7C01A7;
+    border-radius: 3px;
+}
