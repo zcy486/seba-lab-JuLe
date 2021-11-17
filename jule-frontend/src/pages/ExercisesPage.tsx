@@ -3,9 +3,7 @@ import SearchBar from "../components/SearchBar/SearchBar";
 import ExerciseCard from "../components/ExerciseCard/ExerciseCard";
 import {mockExercises} from "../services/MockData";
 
-//TODO: replace mock data
-
-const OverviewPage = () => {
+const ExercisesPage = () => {
     return (
         <>
             <h1>Available Exercises</h1>
@@ -25,4 +23,4 @@ const OverviewPage = () => {
     );
 };
 
-export default OverviewPage;
+export default ExercisesPage;
