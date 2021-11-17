@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
 import ErrorPage from "./pages/ErrorPage";
-import ExercisesPage from "./pages/ExercisesPage";
+import ExercisesPage from "./pages/ExercisesPage/ExercisesPage";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import ImpressumPage from "./pages/ImpressumPage/ImpressumPage";
 

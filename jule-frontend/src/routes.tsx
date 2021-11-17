@@ -1,6 +1,6 @@
 import ErrorPage from "./pages/ErrorPage";
 import ProfilePage from "./pages/ProfilePage";
-import ExercisesPage from "./pages/ExercisesPage";
+import ExercisesPage from "./pages/ExercisesPage/ExercisesPage";
 import LandingPage from "./pages/LandingPage/LandingPage";
 
 //TODO: this file can be removed if we are using nested routes in index.tsx
