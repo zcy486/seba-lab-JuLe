@@ -12,6 +12,7 @@ function App() {
             <Container maxWidth="lg">
                 <Outlet/>
             </Container>
+            <div className={"verticalSpacer"}/>
             <Footer/>
         </>
     );

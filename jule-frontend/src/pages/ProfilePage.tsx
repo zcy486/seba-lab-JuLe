@@ -69,7 +69,7 @@ const ProfilePage = () => {
             <HotStreak/>
             <h2>Scores</h2>
             <div className={"centerDiv"}>
-                <ScoreGraph />
+                <ScoreGraph/>
             </div>
             <h2>Latest Exercises</h2>
             {mockExercises.map((mockdata, i) => {
