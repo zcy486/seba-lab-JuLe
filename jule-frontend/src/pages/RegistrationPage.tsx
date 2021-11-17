@@ -1,6 +1,5 @@
 import React from "react"
-import {Button} from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Button from "@mui/material/Button";
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
 
@@ -32,7 +31,7 @@ const RegistrationPage = () => {
         onChange={onCaptcha}
     />
     <br />
-    <Button variant="primary" onClick={registerButtonClick}>Register</Button>{' '}
+    <Button onClick={registerButtonClick}>Register</Button>{' '}
   </div>)
 }
 
