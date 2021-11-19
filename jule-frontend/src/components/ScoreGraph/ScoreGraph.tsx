@@ -1,6 +1,5 @@
 import React from "react"
 import {Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import styles from "./ScoreGraph.module.css"
 import {Card, CardContent, Typography} from "@mui/material";
 
 type ScoreGraphProps = {}
