@@ -9,6 +9,8 @@ import ErrorPage from "./pages/ErrorPage";
 import ExercisesPage from "./pages/ExercisesPage/ExercisesPage";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import ImpressumPage from "./pages/ImpressumPage/ImpressumPage";
+import RegistrationPage from "./pages/RegistrationPage";
+import LoginPage from "./pages/LoginPage";
 
 ReactDOM.render(
     <React.StrictMode>
@@ -19,7 +21,10 @@ ReactDOM.render(
                     <Route path={"exercises"} element={<ExercisesPage/>}/>
                     <Route path={"profile"} element={<ProfilePage/>}/>
                     <Route path={"impressum"} element={<ImpressumPage/>}/>
+                    <Route path={"register"} element={<RegistrationPage />}/>
+                    <Route path={"login"} element={<LoginPage />}/>
                     <Route path={"*"} element={<ErrorPage/>}/>
+                    
                 </Route>
             </Routes>
         </BrowserRouter>
