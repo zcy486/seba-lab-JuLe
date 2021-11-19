@@ -1,0 +1,33 @@
+.score-title{
+    margin:3rem;
+}
+
+
+.score-box{
+    width:100%;
+    margin: 1rem;
+    justify-content: space-between;
+    display:flex;
+}
+
+.user-score{
+    margin: 2rem;
+    font-size: xxx-large;
+    font-weight: bold;
+    color: #F35917;
+}
+
+.peer-score{
+    margin: 2rem;
+    font-size: xxx-large;
+    text-align: center;
+    font-weight: bold;
+    color: #07D6D6;
+}
+
+.solution-score{
+    margin: 2rem;
+    font-size: xxx-large;
+    font-weight: bold;
+    color: #7C01A7;
+}

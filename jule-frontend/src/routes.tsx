@@ -1,19 +1,25 @@
 import ErrorPage from "./pages/ErrorPage";
 import ProfilePage from "./pages/ProfilePage";
-import OverviewPage from "./pages/OverviewPage";
+import ExercisesPage from "./pages/ExercisesPage/ExercisesPage";
+import LandingPage from "./pages/LandingPage/LandingPage";
 
+//TODO: this file can be removed if we are using nested routes in index.tsx
 const routes = [
     {
-        path: "/*",
-        element: <ErrorPage />,
+        path: "/",
+        element: <LandingPage/>,
     },
     {
         path: "/profile",
-        element: <ProfilePage />,
+        element: <ProfilePage/>,
     },
     {
-        path: "/overview",
-        element: <OverviewPage />,
+        path: "/exercises",
+        element: <ExercisesPage/>,
+    },
+    {
+        path: "/*",
+        element: <ErrorPage/>,
     },
     /*TODO: add routes for other pages, paths are matched exactly by default
     {
