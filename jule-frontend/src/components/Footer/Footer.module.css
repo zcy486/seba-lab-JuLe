@@ -1,0 +1,11 @@
+.footerBox {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    height: 2rem;
+}
+
+.footerBox a {
+    text-decoration: none;
+}
