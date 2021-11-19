@@ -2,5 +2,6 @@
   "hotStreak": {
     "minDays": 1,
     "minExercises": 2
-  }
+  },
+  "recaptcha_sitekey": "6LfJGDgdAAAAAIaTVAMpnPVFubgbdIE_z_wNkv73"
 }

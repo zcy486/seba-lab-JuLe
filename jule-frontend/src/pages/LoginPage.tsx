@@ -2,6 +2,7 @@ import React from "react"
 import Button from "@mui/material/Button";
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
+import config from "../config.json"
 
 var email = "";
 var password = "";
@@ -15,7 +16,7 @@ const LoginPage = () => {
     <input name="password" type="password" onChange={handleOnChange}/>
     <h3>Captcha:</h3>
     <ReCAPTCHA
-        sitekey="6LfJGDgdAAAAAIaTVAMpnPVFubgbdIE_z_wNkv73"
+        sitekey={config.recaptcha_sitekey}
         onChange={onCaptcha}
       />
     <br />
