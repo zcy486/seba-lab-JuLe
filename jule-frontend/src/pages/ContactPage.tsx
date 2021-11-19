@@ -3,6 +3,7 @@ import React from "react"
 import Button from "@mui/material/Button";
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
+import config from "../config.json"
 
 var name: string, email: string, message: string;
 
@@ -17,7 +18,7 @@ const ContactPage = () => {
     <textarea name="message" onChange={handleOnTextChange}/>
     <h3>Captcha:</h3>
     <ReCAPTCHA
-        sitekey="6LfJGDgdAAAAAIaTVAMpnPVFubgbdIE_z_wNkv73"
+        sitekey={config.recaptcha_sitekey}
         onChange={onCaptcha}
       />
     <br />
