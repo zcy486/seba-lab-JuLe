@@ -1,11 +1,18 @@
 import Statistic from "./Statistic";
 import Submission from "./Submission";
-import Score from "./Score";
+
+export enum Score {
+    Unsatisfactory = 1,
+    Satisfactory,
+    Good,
+    Excellent
+}
 
 type Grade = {
-    score: Score
-    statistics: Statistic[]
-    submission: Submission
+    id: number,
+    score: Score,
+    statistics: [userStatistic: Statistic, sampleSatatistic: Statistic, peerStatistic?: Statistic][],
+    submission: Submission,
 }
 
 export default Grade

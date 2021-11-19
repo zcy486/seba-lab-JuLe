@@ -1,12 +1,12 @@
 import University from "./University";
 
-enum Role {
+export enum Role {
     Student,
     Lecturer
 }
 
 type User = {
-    id: string,
+    id: number,
     name: string,
     role: Role,
     lastLogin: Date,

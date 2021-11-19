@@ -1,10 +1,25 @@
-import Scope from "./Scope";
+import Tag from "./Tag";
+
+export enum Difficulty {
+    easy = 0,
+    medium,
+    hard
+}
+
+export enum Scope {
+    Draft,
+    Internal,
+    Public
+}
 
 type Exercise = {
-    id: string,
+    id: number,
     title: string,
     text: string,
-    scope: Scope
+    difficulty: Difficulty,
+    scope: Scope,
+    sampleSolution: string
+    tags: Tag[]
 }
 
 export default Exercise
