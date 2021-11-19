@@ -11,6 +11,7 @@ import LandingPage from "./pages/LandingPage/LandingPage";
 import ImpressumPage from "./pages/ImpressumPage/ImpressumPage";
 import RegistrationPage from "./pages/RegistrationPage";
 import LoginPage from "./pages/LoginPage";
+import ContactPage from "./pages/ContactPage";
 
 ReactDOM.render(
     <React.StrictMode>
@@ -23,6 +24,7 @@ ReactDOM.render(
                     <Route path={"impressum"} element={<ImpressumPage/>}/>
                     <Route path={"register"} element={<RegistrationPage />}/>
                     <Route path={"login"} element={<LoginPage />}/>
+                    <Route path={"contact-us"} element={<ContactPage />}/>
                     <Route path={"*"} element={<ErrorPage/>}/>
                     
                 </Route>
