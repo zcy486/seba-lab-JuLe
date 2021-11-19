@@ -1,14 +1,6 @@
 import React from "react";
-import {makeStyles} from "@material-ui/styles";
+import styles from "./Tag.module.css";
 import {Chip} from "@mui/material";
-
-const useStyles = makeStyles({
-    chip: {
-        width: 80,
-        height: 40,
-        fontSize: 16
-    }
-});
 
 interface Props {
     name: string;
@@ -17,8 +9,6 @@ interface Props {
 }
 
 const Tag = ({name, handleAdd, handleRemove}: Props) => {
-
-    const classes = useStyles();
 
     const [selected, setSelected] = React.useState(false);
 
@@ -32,7 +22,7 @@ const Tag = ({name, handleAdd, handleRemove}: Props) => {
     }
 
     return (
-        <Chip className={classes.chip}
+        <Chip className={styles.chip}
               label={name}
               onClick={handleClick}
               color={selected ? "primary" : "default"}/>

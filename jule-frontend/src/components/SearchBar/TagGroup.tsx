@@ -15,14 +15,14 @@ const TagGroup = ({all_tags}: Props) => {
     }
 
     const handleRemove = (value: string) => {
-        setSelectedTags((tags) => tags.filter((tag) => tag!==value))
+        setSelectedTags((tags) => tags.filter((tag) => tag !== value))
     }
 
     return (
         <Stack direction={"row"} spacing={3}>
             {all_tags.map((tag, i) => {
                 return (
-                    <Tag key={i} name={tag} handleAdd={handleAdd} handleRemove={handleRemove} />
+                    <Tag key={i} name={tag} handleAdd={handleAdd} handleRemove={handleRemove}/>
                 )
             })}
         </Stack>

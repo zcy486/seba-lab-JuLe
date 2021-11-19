@@ -4,6 +4,8 @@ import {FormControl, InputLabel, MenuItem} from "@mui/material";
 import Select, {SelectChangeEvent} from "@mui/material/Select";
 
 const useStyles = makeStyles({
+    //this class overrides padding of the inputbase inside of the mui Select
+    //TODO: change this into a separate CSS file while keeping the same effect if feasible
     select: {
         "& .MuiInputBase-input": {
             padding: "16px 20px 10px 12px",
@@ -31,6 +33,7 @@ const Filter = ({name, options}: Props) => {
             <InputLabel id="label-id">{name}</InputLabel>
             <Select
                 className={classes.select}
+                variant={"filled"}
                 labelId="label-id"
                 label={name}
                 value={value}
