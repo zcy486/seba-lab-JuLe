@@ -42,8 +42,8 @@ let NavigationBar = (props: NavigationBarProps) => {
                         </div>
                     ) : (
                         <div className="nav-options">
-                            <Button color="inherit">Login</Button>
-                            <Button color="inherit">Register</Button>
+                            <Button color="inherit" component={Link} to={"/login"}>Login</Button>
+                            <Button color="inherit" component={Link} to={"/register"}>Register</Button>
                         </div>
                     )}
                 </Toolbar>
