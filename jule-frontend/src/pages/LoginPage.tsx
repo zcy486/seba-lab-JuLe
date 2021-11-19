@@ -4,8 +4,7 @@ import Button from "@mui/material/Button";
 import ReCAPTCHA from "react-google-recaptcha";
 import config from "../config.json"
 
-var email = "";
-var password = "";
+var email: string, password: string;
 
 const LoginPage = () => {
   return (<div>
