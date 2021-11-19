@@ -1,8 +1,8 @@
 import React from "react"
-import {Button} from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Button from "@mui/material/Button";
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
+import config from "../config.json"
 
 var email: string, password: string;
 
@@ -15,11 +15,11 @@ const LoginPage = () => {
     <input name="password" type="password" onChange={handleOnChange}/>
     <h3>Captcha:</h3>
     <ReCAPTCHA
-        sitekey="6LfJGDgdAAAAAIaTVAMpnPVFubgbdIE_z_wNkv73"
+        sitekey={config.recaptcha_sitekey}
         onChange={onCaptcha}
       />
     <br />
-    <Button variant="primary" onClick={loginButtonClick}>Login</Button>{' '}
+    <Button onClick={loginButtonClick}>Login</Button>{' '}
   </div>)
 }
 
