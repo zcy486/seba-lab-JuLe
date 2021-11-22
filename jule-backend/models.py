@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Enum, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -49,13 +49,12 @@ class Auth(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String(120), unique=True, nullable=False)
     password = Column(String(128), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship('User', uselist=False)
 
-    def __init__(self, email, password, user_id):
+    def __init__(self, email, password, user):
         self.email = email
         self.password = password
-        self.user_id = user_id
+        self.user = user
 
 
 class User(Base):
@@ -65,13 +64,12 @@ class User(Base):
     role = Column(Enum(Role))
     last_login = Column(DateTime(timezone=True))
     register_time = Column(DateTime(timezone=True), server_default=func.now())
-    university_id = Column(Integer, ForeignKey('universities.id'), nullable=False)
     university = relationship('University', uselist=False)
 
-    def __init__(self, name, role, university_id):
+    def __init__(self, name, role, university):
         self.name = name
         self.role = role
-        self.university_id = university_id
+        self.university = university
 
     def __repr__(self):
         return f'<User {self.name!r}>'
@@ -82,7 +80,7 @@ class University(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(80), unique=True, nullable=False)
     abbreviation = Column(String(20))
-    logo_src = Column(String(140))
+    logo_src = Column(String(140), nullable=True)
 
     def __init__(self, name, abbreviation, logo_src):
         self.name = name
@@ -97,9 +95,11 @@ class Tag(Base):
     __tablename__ = 'tags'
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True, nullable=False)
+    amount = Column(Integer, nullable=False)
 
     def __init__(self, name):
         self.name = name
+        self.amount = 1
 
     def __repr__(self):
         return f'<Tag {self.name!r}>'
@@ -113,9 +113,7 @@ class Exercise(Base):
     sample_solution = Column(String(1500))
     difficulty = Column(Enum(Difficulty))
     scope = Column(Enum(Scope))
-
-    # TODO: how to represent the tags?
-    # tags = ...
+    tags = relationship('Tag')
 
     def __init__(self, title, text, sample_solution, difficulty, scope, tags):
         self.title = title
@@ -132,29 +130,24 @@ class Exercise(Base):
 class Submission(Base):
     __tablename__ = 'submissions'
     id = Column(Integer, primary_key=True)
-    text = Column(String(1500))
-    exercise_id = Column(Integer, ForeignKey('exercises.id'), nullable=False)
+    text = Column(String(1500), nullable=False)
     exercise = Column('Exercise', uselist=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship('User', uselist=False)
 
-    def __init__(self, text, exercise_id, user_id):
+    def __init__(self, text, exercise, user):
         self.text = text
-        self.exercise_id = exercise_id
-        self.user_id = user_id
+        self.exercise = exercise
+        self.user = user
 
 
 class Grade(Base):
     __tablename__ = 'grades'
     id = Column(Integer, primary_key=True)
     score = Column(Enum(Score))
-    submission_id = Column(Integer, ForeignKey('submissions.id'), nullable=False)
     submission = relationship('Submission', uselist=False)
+    statistics = relationship('Statistic')  # TODO: not sure if this is the right way for statistics
 
-    # TODO: how to represent the statistics?
-    # statistics = ...
-
-    def __init__(self, score, submission_id):
+    def __init__(self, score, submission, statistics):
         self.score = score
-        self.submission_id = submission_id
-        # TODO: add statistics
+        self.submission = submission
+        self.statistics = statistics
