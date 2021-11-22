@@ -1,12 +1,20 @@
 from flask import Flask
 from blueprints.exercise import exercise_routes
+from db import db_session, init_db
 
 app = Flask(__name__)
+
+init_db()
 
 
 @app.route('/')
 def index():
     return "JuLe backend active!"
+
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
 
 
 # TODO: register more blueprints here
