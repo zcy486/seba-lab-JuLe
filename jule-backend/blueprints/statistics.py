@@ -16,19 +16,13 @@ def get_info():
     else:
         return abort(405)
 
-@statistics_routes.route('/<exercise_id>/<student_id>', methods=['GET'])
-def get_statistics(exercise_id, student_id):
+@statistics_routes.route('/<exercise_id>/<student_id>', methods=['GET, POST'])
+def grade(exercise_id, student_id):
     if request.method == 'GET':
         # TODO: get peer, sample, and student statistics for the exercise from db
         data = {'some_statistic': "some value"}
         return jsonify(data)
-    else:
-        return abort(405)
-
-@statistics_routes.route('/<exercise_id>/calculate', methods=['POST'])
-def calculate_statistics(exercise_id):
-    if request.method == 'POST':
-
+    elif request.method == 'POST':
         params = request.json
 
         # get parameters from the request body
