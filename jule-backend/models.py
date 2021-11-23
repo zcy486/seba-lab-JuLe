@@ -43,6 +43,17 @@ class Statistic(Base):
     def __repr__(self):
         return f'<Statistic {self.title!r}>'
 
+class Grade(Base):
+    id = Column(Integer, primary_key=True)
+    exercise_id = Column(Integer, foreign_key=True)
+    student_id = Column(Integer, foreign_key=True)
+
+    def __init__(self, exercise_id, student_id):
+        self.exercise_id = exercise_id
+        self.student_id = student_id
+
+def __repr__(self):
+    return f'<Statistic {self.title!r}>'
 
 class Auth(Base):
     __tablename__ = 'authentications'
