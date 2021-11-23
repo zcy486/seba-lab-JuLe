@@ -20,7 +20,6 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
 
     register_extensions(app)
-
     register_blueprints(app)
 
     @app.route('/')
@@ -34,7 +33,7 @@ def register_extensions(app):
     # bind database
     db.init_app(app)
     # db.create_all()
-
+    
     # bind marshmallow
     ma.init_app(app)
 
