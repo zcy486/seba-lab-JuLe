@@ -30,7 +30,7 @@ class Score(enum.Enum):
     unsatisfactory = 4
 
 
-class Statistic(Base):
+class StatisticType(Base):
     __tablename__ = 'statistic_types'
     id = Column(Integer, primary_key=True)
     title = Column(String(50), unique=True)
@@ -43,6 +43,20 @@ class Statistic(Base):
     def __repr__(self):
         return f'<Statistic {self.title!r}>'
 
+class Statistic(Base):
+    __tablename__ = 'statistics'
+    id = Column(Integer, primary_key=True)
+    statistic_type_id = Column(Integer, foreign_key=True)
+    exercise_id = Column(Integer, foreign_key=True)
+    submission_value = Column(Integer)
+
+    def __init__(self, statistic_type_id, exercise_id, submission_value):
+        self.statistic_type_id = statistic_type_id
+        self.exercise_id = exercise_id
+        self.submission_value = submission_value
+
+    def __repr__(self):
+        return f'<Statistic {self.title!r}>'
 
 class Auth(Base):
     __tablename__ = 'authentications'

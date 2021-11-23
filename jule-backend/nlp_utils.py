@@ -3,6 +3,7 @@ import textstat
 # setting language support to german
 textstat.set_lang('de')
 
+# TODO: add statistics
 def calculate_statistics(text):
 
     statistics = dict()

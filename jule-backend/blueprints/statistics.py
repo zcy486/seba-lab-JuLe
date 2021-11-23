@@ -36,15 +36,11 @@ def calculate_statistics(exercise_id):
             params = request.args
 
         if params is not None:
-            if 'text' in params and 'sample_solution' in params:
+            if 'text' in params:
                 text = params['text']
-                # TODO: define how to indicate if its a sample solution
-                sample_solution = params['sample_solution']
-
                 # TODO: add statistics to db
                 statistics = nlp_utils.calculate_statistics(text)
-                return jsonify(statistics)
             else:
-                return abort(400, "Parameter(s) missinig from request.")
+                return abort(400, "Parameter missinig from request.")
     else:
         return abort(405)
