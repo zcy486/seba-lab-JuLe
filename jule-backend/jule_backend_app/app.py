@@ -34,8 +34,8 @@ def register_extensions(app):
     # bind database
     db.init_app(app)
     # db.create_all()
-    # bind marshmallow
 
+    # bind marshmallow
     ma.init_app(app)
 
 

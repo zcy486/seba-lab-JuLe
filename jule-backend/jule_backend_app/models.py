@@ -1,5 +1,4 @@
 from extensions import db
-from extensions import ma
 from datetime import datetime
 import enum
 
@@ -85,44 +84,3 @@ class Grade(db.Model):
     score = db.Column(db.Enum(Score))
     submission = db.relationship('Submission', uselist=False)
     statistics = db.relationship('Statistic')  # TODO: not sure if this is the right way for statistics
-
-
-# marshmallow schemas
-class StatisticSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Statistic
-
-
-class AuthSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Auth
-
-
-class UserSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = User
-
-
-class UniversitySchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = University
-
-
-class TagSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Tag
-
-
-class ExerciseSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Exercise
-
-
-class SubmissionSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Submission
-
-
-class GradeSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Grade
