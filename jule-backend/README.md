@@ -8,7 +8,7 @@
 
 3. launch jule-backend/app.py with python3
 
-## How to start on Windows (TODO)
+## How to start on Windows
 
 1. Install python3
 
@@ -20,4 +20,6 @@
 
 5. Run "pip install -r requirements.txt" to install the packages
 
-6. Run "python app.py" to start
+6. Run "set FLASK_APP=app" and "set FLASK_ENV=development"
+
+7. Run "flask run" to start
