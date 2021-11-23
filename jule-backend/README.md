@@ -1,6 +1,6 @@
 # JuLe backend
 
-## How to start
+## How to start (TODO)
 
 1. Install python3 with virtualenv
 
@@ -8,7 +8,7 @@
 
 3. launch jule-backend/app.py with python3
 
-## How to start on Windows
+## How to start on Windows (TODO)
 
 1. Install python3
 
