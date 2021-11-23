@@ -1,5 +1,5 @@
-from app.extensions import db
-from app.extensions import ma
+from extensions import db
+from extensions import ma
 from datetime import datetime
 import enum
 

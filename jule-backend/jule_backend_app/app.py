@@ -1,5 +1,13 @@
 from flask import Flask
 
+from jule_backend_app.extensions import (
+    db,
+    ma
+)
+from jule_backend_app.blueprints import (
+    exercise
+)
+
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -11,21 +19,25 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
-    # bind database
-    from app.extensions import db
-    db.init_app(app)
-    # db.create_all()
+    register_extensions(app)
 
-    # bind marshmallow
-    from app.extensions import ma
-    ma.init_app(app)
-
-    # TODO: bind blueprints here
-    from app.blueprints.exercise import exercise_routes
-    app.register_blueprint(exercise_routes, url_prefix='/exercise')
+    register_blueprints(app)
 
     @app.route('/')
     def index():
         return "JuLe backend active!"
 
     return app
+
+
+def register_extensions(app):
+    # bind database
+    db.init_app(app)
+    # db.create_all()
+    # bind marshmallow
+
+    ma.init_app(app)
+
+
+def register_blueprints(app):
+    app.register_blueprint(exercise.exercise_routes)

@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-exercise_routes = Blueprint('exercise', __name__)
+exercise_routes = Blueprint('exercise', __name__, url_prefix="/exercises")
 
 
 @exercise_routes.route('/')

@@ -2,7 +2,7 @@ FROM python:3
 
 WORKDIR /jule-backend
 
-ENV FLASK_APP=app
+ENV FLASK_APP=jule_backend_app.app:create_app
 
 ENV FLASK_ENV=development
 
