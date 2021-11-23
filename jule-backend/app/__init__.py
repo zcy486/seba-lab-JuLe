@@ -14,6 +14,11 @@ def create_app(test_config=None):
     # bind database
     from app.extensions import db
     db.init_app(app)
+    # db.create_all()
+
+    # bind marshmallow
+    from app.extensions import ma
+    ma.init_app(app)
 
     # TODO: bind blueprints here
     from app.blueprints.exercise import exercise_routes

@@ -1,9 +1,6 @@
-# TODO: modify this file
-from sqlalchemy import Column, Integer, String, Enum, DateTime
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-
-from db import Base
+from app.extensions import db
+from app.extensions import ma
+from datetime import datetime
 import enum
 
 
@@ -31,124 +28,101 @@ class Score(enum.Enum):
     unsatisfactory = 4
 
 
-class Statistic(Base):
-    __tablename__ = 'statistic_types'
-    id = Column(Integer, primary_key=True)
-    title = Column(String(50), unique=True)
-    description = Column(String(140), unique=False)
-
-    def __init__(self, title, description):
-        self.title = title
-        self.description = description
-
-    def __repr__(self):
-        return f'<Statistic {self.title!r}>'
+class Statistic(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), unique=True)
+    description = db.Column(db.String(140), unique=False)
 
 
-class Auth(Base):
-    __tablename__ = 'authentications'
-    id = Column(Integer, primary_key=True)
-    email = Column(String(120), unique=True, nullable=False)
-    password = Column(String(128), nullable=False)
-    user = relationship('User', uselist=False)
-
-    def __init__(self, email, password, user):
-        self.email = email
-        self.password = password
-        self.user = user
+class Auth(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+    user = db.relationship('User', uselist=False)
 
 
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50))
-    role = Column(Enum(Role))
-    last_login = Column(DateTime(timezone=True))
-    register_time = Column(DateTime(timezone=True), server_default=func.now())
-    university = relationship('University', uselist=False)
-
-    def __init__(self, name, role, university):
-        self.name = name
-        self.role = role
-        self.university = university
-
-    def __repr__(self):
-        return f'<User {self.name!r}>'
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    role = db.Column(db.Enum(Role))
+    last_login = db.Column(db.DateTime(timezone=True))
+    register_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+    university = db.relationship('University', uselist=False)
 
 
-class University(Base):
-    __tablename__ = 'universities'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(80), unique=True, nullable=False)
-    abbreviation = Column(String(20))
-    logo_src = Column(String(140), nullable=True)
-
-    def __init__(self, name, abbreviation, logo_src):
-        self.name = name
-        self.abbreviation = abbreviation
-        self.logo_src = logo_src
-
-    def __repr__(self):
-        return f'<University {self.name!r}>'
+class University(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    abbreviation = db.Column(db.String(20))
+    logo_src = db.Column(db.String(140), nullable=True)
 
 
-class Tag(Base):
-    __tablename__ = 'tags'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50), unique=True, nullable=False)
-    amount = Column(Integer, nullable=False)
-
-    def __init__(self, name):
-        self.name = name
-        self.amount = 1
-
-    def __repr__(self):
-        return f'<Tag {self.name!r}>'
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    amount = db.Column(db.Integer, nullable=False)
 
 
-class Exercise(Base):
-    __tablename__ = 'exercises'
-    id = Column(Integer, primary_key=True)
-    title = Column(String(50), unique=True, nullable=False)
-    text = Column(String(1500), nullable=False)
-    sample_solution = Column(String(1500))
-    difficulty = Column(Enum(Difficulty))
-    scope = Column(Enum(Scope))
-    tags = relationship('Tag')
-
-    def __init__(self, title, text, sample_solution, difficulty, scope, tags):
-        self.title = title
-        self.text = text
-        self.sample_solution = sample_solution
-        self.difficulty = difficulty
-        self.scope = scope
-        self.tags = tags
-
-    def __repr__(self):
-        return f'<Exercise {self.title!r}>'
+class Exercise(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), unique=True, nullable=False)
+    text = db.Column(db.Text, nullable=False)
+    sample_solution = db.Column(db.Text)
+    difficulty = db.Column(db.Enum(Difficulty))
+    scope = db.Column(db.Enum(Scope))
+    tags = db.relationship('Tag')
 
 
-class Submission(Base):
-    __tablename__ = 'submissions'
-    id = Column(Integer, primary_key=True)
-    text = Column(String(1500), nullable=False)
-    exercise = Column('Exercise', uselist=False)
-    user = relationship('User', uselist=False)
-
-    def __init__(self, text, exercise, user):
-        self.text = text
-        self.exercise = exercise
-        self.user = user
+class Submission(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    exercise = db.Column('Exercise', uselist=False)
+    user = db.relationship('User', uselist=False)
 
 
-class Grade(Base):
-    __tablename__ = 'grades'
-    id = Column(Integer, primary_key=True)
-    score = Column(Enum(Score))
-    submission = relationship('Submission', uselist=False)
-    statistics = relationship('Statistic')  # TODO: not sure if this is the right way for statistics
+class Grade(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    score = db.Column(db.Enum(Score))
+    submission = db.relationship('Submission', uselist=False)
+    statistics = db.relationship('Statistic')  # TODO: not sure if this is the right way for statistics
 
-    def __init__(self, score, submission, statistics):
-        self.score = score
-        self.submission = submission
-        self.statistics = statistics
+
+# marshmallow schemas
+class StatisticSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Statistic
+
+
+class AuthSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Auth
+
+
+class UserSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
+
+
+class UniversitySchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = University
+
+
+class TagSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Tag
+
+
+class ExerciseSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Exercise
+
+
+class SubmissionSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Submission
+
+
+class GradeSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Grade
