@@ -5,7 +5,7 @@ from jule_backend_app.extensions import (
     ma
 )
 from jule_backend_app.blueprints import (
-    exercise
+    exercises
 )
 
 
@@ -40,4 +40,4 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
-    app.register_blueprint(exercise.exercise_routes)
+    app.register_blueprint(exercises.exercises_routes)
