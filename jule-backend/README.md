@@ -7,7 +7,7 @@
 2. Open terminal inside the root project folder and type source env/bin/activate
 
 3. ````
-   $ export FLASK_APP=jule_backend_app.app
+   $ export FLASK_APP=jule_backend_app.app:create_app
    $ export FLASK_ENV=development
    $ python -m flask run
    ````
