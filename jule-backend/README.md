@@ -6,7 +6,11 @@
 
 2. Open terminal inside the root project folder and type source env/bin/activate
 
-3. launch jule-backend/app.py with python3
+3. ````
+   $ export FLASK_APP=jule_backend_app.app
+   $ export FLASK_ENV=development
+   $ python -m flask run
+   ````
 
 ## How to start on Windows
 
