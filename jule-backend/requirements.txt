@@ -2,3 +2,4 @@ flask==1.1.2
 flask_sqlalchemy
 flask_marshmallow
 marshmallow-sqlalchemy
+psycopg2-binary

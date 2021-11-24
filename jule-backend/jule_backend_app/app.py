@@ -33,7 +33,8 @@ def create_app(test_config=None):
 def register_extensions(app):
     # bind database
     db.init_app(app)
-    # db.create_all()
+    with app.app_context():
+        db.create_all()
 
     # bind marshmallow
     ma.init_app(app)

@@ -1,7 +1,9 @@
-from flask import abort, Blueprint
-from dataclasses import dataclass
+from typing import List
+from flask import abort, Blueprint, jsonify
 
+from jule_backend_app.app import db
 from jule_backend_app.schemas import TagSchema
+from jule_backend_app.models import Tag
 
 # Tag blueprint used to register blueprint in app.py
 tags_routes = Blueprint('tags', __name__, url_prefix="/tags")
@@ -11,29 +13,22 @@ tag_schema = TagSchema()  # For single tags
 tags_schema = TagSchema(many=True)  # For lists of tags
 
 
-# Tag model
-@dataclass
-class Tag:
-    id: int
-    name: str
-    use_count: int
-
-
 # returns a list of all tags sorted by descending use_count (popularity)
 @tags_routes.route('/', methods=['GET'])
 def read_tags():
     try:
-        # TODO: get all tags from db and replace mock tags
-        mock_tags: list[Tag] = [Tag(1, "tag1", 1), Tag(2, "tag2", 2)]
-        tags: list[Tag] = mock_tags
-        tags.sort(reverse=True, key=lambda elem: elem.use_count)
+        query_tags = Tag.query.order_by(Tag.use_count).all()
+        mock_tags: List[Tag] = [Tag(id=1, name="one", use_count=1), Tag(id=2, name="two", use_count=2)]
+        all_tags = query_tags
+        all_tags.sort(key=lambda e: e.use_count, reverse=True)
 
-    except:
+    except Exception as N:
+        print(N)
         # TODO: make except less general
         return abort(405)
 
     else:
-        return tags_schema.dump(tags)
+        return jsonify(tags_schema.dump(all_tags))
 
 
 # returns a single tag with matching id or throws error if no tag exists
@@ -41,26 +36,14 @@ def read_tags():
 def read_tag(tag_id: int):
     try:
         # TODO: get specific tag from db and replace mock tag
-        mock_tag: Tag = Tag(1, "tag1", 1)
-        tag: Tag = mock_tag
+        query_tag = Tag.query.filter_by(id=tag_id).first()
+        if query_tag is None:
+            raise Exception("No Tag with matching id")
+        mock_tag: Tag = Tag(id=1, name="one", use_count=1)
+        tag: Tag = query_tag
 
-    except:
-        # TODO: make except less general
-        return abort(405)
-
-    else:
-        return tag_schema.dump(tag)
-
-
-# creates a new tag and stores it in db returns tag that was created in db throws error if tag already exists
-@tags_routes.route('/', methods=['POST'])
-def create_tag():
-    try:
-        # TODO: create new tag in db fail if tag already exists
-        mock_tag: Tag = Tag(1, "tag1", 1)
-        tag: Tag = mock_tag
-
-    except:
+    except Exception as N:
+        print(N)
         # TODO: make except less general
         return abort(405)
 
@@ -69,13 +52,43 @@ def create_tag():
 
 
 # helper functions not exposed to REST API
-# increments use_count from tag
-def increment_tag_use(tag_id: int):
+# creates a new tag and stores it in db returns tag that was created in db throws error if tag already exists
+def create_tag(tag_name: str) -> Tag:
     try:
-        # TODO: increment tag in db and remove mock tag
-        tag: Tag(1, "tag1", 1)
+        # TODO: create new tag in db fail if tag already exists
+        new_tag = Tag(name=tag_name, use_count=1)
+        db.session.add(new_tag)
+        db.session.commit()
+        mock_tag: Tag = Tag(1, "tag1", 1)
+        db.session.refresh(new_tag)
+        tag: Tag = new_tag
+
+    except Exception as N:
+        print(N)
+        # TODO: make except less general
+
+    else:
         return tag
 
+
+# get a tag's id from its name
+def get_tag_id_from_name(tag_name: str):
+    tag = Tag.query.filter_by(name=tag_name).first()  # get first tag from db with matching name (should be unique)
+    if tag is None:  # if there is no tag with matching name
+        raise Exception("No tag with matching name")
+    else:
+        return tag.id
+
+
+# increments use_count from tag and save in db
+def increment_tag_use(tag_id: int):
+    try:
+        tag = Tag.query.get(tag_id)  # get first tag from sb with matching id (should be unique)
+        if tag is None:  # if there is no tag with matching name
+            raise Exception("No tag with matching name")
+        else:
+            tag.use_count += 1  # increment use_count
+            db.session.commit()
     except:
         # TODO: make except less general
         raise Exception("IncrementFailed")
@@ -84,15 +97,15 @@ def increment_tag_use(tag_id: int):
 # decrement use_count from tag and if use_count equals zero, delete tag
 def decrement_tag_use(tag_id: int):
     try:
-        # TODO: decrement tag in db and remove mock tag
-        tag: Tag(1, "tag1", 1)
-
-        if tag.use_count < 1:
-            # TODO: delete tag from db
-            tag = None
-
-        return tag
-    except:
+        tag = Tag.query.get(tag_id)  # get first tag from sb with matching id (should be unique)
+        if tag is None:  # if there is no tag with matching name
+            raise Exception("No tag with matching name")
+        else:
+            tag.use_count -= 1  # increment use_count
+            if tag.use_count < 1:  # if a tag's use_count is less than 1
+                db.session.delete(tag)
+            db.session.commit()  # commit changes to tag to db
+    except Exception as N:
+        print(N)
         # TODO: make except less general
-        # TODO: add further exceptions for db errors / delete errors
         raise Exception("DecrementFailed")
