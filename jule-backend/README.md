@@ -27,16 +27,20 @@
 6. Run '$env:FLASK_APP = "jule_backend_app.app:create_app"' and '$env:FLASK_ENV = "development"'
 
 7. Run "flask run" to start
-
+---
 ## REST API
+
+---
 ### Tags
 #### Get list of tags
-#### Request
+##### Request
 `GET /tags/`
-#### Response
+##### Response
     TODO
-### Get tag
-#### Request
+#### Get tag
+##### Request
 `GET /tags/<tag_id>`
-#### Response
+##### Response
     TODO
+
+---
