@@ -1,2 +1,4 @@
 flask==1.1.2
-sqlalchemy
+flask_sqlalchemy
+flask_marshmallow
+marshmallow-sqlalchemy
