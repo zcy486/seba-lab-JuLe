@@ -1,6 +1,6 @@
 # JuLe backend
 
-## How to start (TODO)
+## How to start
 
 1. Install python3 with virtualenv
 
@@ -24,6 +24,6 @@
 
 5. Run "pip install -r requirements.txt" to install the packages
 
-6. Run "set FLASK_APP=app" and "set FLASK_ENV=development"
+6. Run '$env:FLASK_APP = "jule_backend_app.app:create_app"' and '$env:FLASK_ENV = "development"'
 
 7. Run "flask run" to start
