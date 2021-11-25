@@ -90,8 +90,8 @@ class Exercise(db.Model):
     title = db.Column(db.String(50), unique=True, nullable=False)
     text = db.Column(db.Text, nullable=False)
     sample_solution = db.Column(db.Text)
-    difficulty = db.Column(db.Enum(Difficulty))
-    scope = db.Column(db.Enum(Scope))
+    difficulty = db.Column(db.Enum(Difficulty), nullable=False)
+    scope = db.Column(db.Enum(Scope), nullable=False)
 
     tags = db.relationship('Tag', secondary=tags_helper)  # Exercise -> Tag (many-to-many)
 

@@ -49,7 +49,10 @@ class TagSchema(CamelCaseSQLASchema):
     name = ma.auto_field()
 
 
-class ExerciseSchema(ma.SQLAlchemyAutoSchema):
+class ExerciseSchema(ma.SQLAlchemySchema):
+    # a list of tags
+    tags = ma.Nested(TagSchema, many=True)
+
     class Meta:
         model = models.Exercise
 
