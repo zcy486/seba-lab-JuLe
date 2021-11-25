@@ -72,9 +72,9 @@ class University(db.Model):
 
 
 class Tag(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
-    amount = db.Column(db.Integer, nullable=False)
+    use_count = db.Column(db.Integer, nullable=False)
 
 
 # If you want to use many-to-many relationships you will need to define a helper table

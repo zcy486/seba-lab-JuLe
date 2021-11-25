@@ -23,9 +23,11 @@ class UniversitySchema(ma.SQLAlchemyAutoSchema):
         model = models.University
 
 
-class TagSchema(ma.SQLAlchemyAutoSchema):
+class TagSchema(ma.SQLAlchemySchema):
     class Meta:
         model = models.Tag
+
+    name = ma.auto_field()
 
 
 class ExerciseSchema(ma.SQLAlchemyAutoSchema):

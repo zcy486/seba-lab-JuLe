@@ -5,7 +5,8 @@ from jule_backend_app.extensions import (
     ma
 )
 from jule_backend_app.blueprints import (
-    exercises
+    exercises,
+    tags
 )
 
 
@@ -32,11 +33,13 @@ def create_app(test_config=None):
 def register_extensions(app):
     # bind database
     db.init_app(app)
-    # db.create_all()
-    
+    with app.app_context():
+        db.create_all()
+
     # bind marshmallow
     ma.init_app(app)
 
 
 def register_blueprints(app):
     app.register_blueprint(exercises.exercises_routes)
+    app.register_blueprint(tags.tags_routes)
