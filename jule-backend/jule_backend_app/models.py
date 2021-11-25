@@ -55,6 +55,7 @@ class User(db.Model):
     last_login = db.Column(db.DateTime(timezone=True))
     register_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
 
+    university_id = db.Column(db.Integer, db.ForeignKey('university.id'), nullable=False)  # User -> University (one-to-one)
     university = db.relationship('University', back_populates='user', uselist=False)  # User -> University (one-to-one)
 
     auth_id = db.Column(db.Integer, db.ForeignKey('auth.id'), nullable=False)  # Auth <- User (one-to-one)
@@ -67,8 +68,7 @@ class University(db.Model):
     abbreviation = db.Column(db.String(20))
     logo_src = db.Column(db.String(140), nullable=True)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # User <- University (one-to-one)
-    user = db.relationship('User', back_populates='university')  # User <- University (one-to-one)
+    user = db.relationship('User', back_populates='university', uselist=False)  # University -> User (one-to-one)
 
 
 class Tag(db.Model):
