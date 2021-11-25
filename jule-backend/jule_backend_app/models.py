@@ -7,7 +7,7 @@ import enum
 # https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
 
-class Role(enum.Enum):
+class Role(enum.IntEnum):
     student = 1
     lecturer = 2
 
