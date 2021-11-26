@@ -86,12 +86,17 @@ tags_helper = db.Table('tags_helper',
 
 
 class Exercise(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(50), unique=True, nullable=False)
     text = db.Column(db.Text, nullable=False)
-    sample_solution = db.Column(db.Text)
+    question = db.Column(db.Text, nullable=False)
+    hints = db.Column(db.Text, nullable=True)
     difficulty = db.Column(db.Enum(Difficulty), nullable=False)
     scope = db.Column(db.Enum(Scope), nullable=False)
+    sample_solution = db.Column(db.Text)
+
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Exercise -> User (many-to-one)
+    owner = db.relationship('User')  # Exercise -> User (many-to-one)
 
     tags = db.relationship('Tag', secondary=tags_helper)  # Exercise -> Tag (many-to-many)
 
