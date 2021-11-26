@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, abort
 from jule_backend_app.extensions import db
 from jule_backend_app.models import Exercise, Tag
 from jule_backend_app.schemas import ExerciseSchema
-from jule_backend_app.blueprints.tags import get_tag_id_from_name, create_tag
+from jule_backend_app.blueprints.tags import get_tag_id_from_name, create_tag, increment_tag_use
 
 # Exercise blueprint used to register blueprint in app.py
 exercises_routes = Blueprint('exercise', __name__, url_prefix="/exercises")
@@ -62,6 +62,7 @@ def create_exercise():
                 tag_id = get_tag_id_from_name(tag_name)
                 tag = Tag.query.filter_by(id=tag_id).first()
                 new_exercise.tags.append(tag)
+                increment_tag_use(tag_id)
             except Exception as N:
                 # if there is no tag with matching name
                 # create new tag

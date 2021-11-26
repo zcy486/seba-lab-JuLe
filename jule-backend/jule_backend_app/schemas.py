@@ -56,6 +56,9 @@ class ExerciseSchema(ma.SQLAlchemySchema):
     class Meta:
         model = models.Exercise
 
+    title = ma.auto_field()
+    text = ma.auto_field()
+
 
 class SubmissionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
