@@ -18,9 +18,13 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         model = models.User
 
 
-class UniversitySchema(ma.SQLAlchemyAutoSchema):
+class UniversitySchema(ma.SQLAlchemySchema):
     class Meta:
         model = models.University
+
+    name = ma.auto_field()
+    abbreviation = ma.auto_field()
+    logo_src = ma.auto_field()
 
 
 class TagSchema(ma.SQLAlchemySchema):

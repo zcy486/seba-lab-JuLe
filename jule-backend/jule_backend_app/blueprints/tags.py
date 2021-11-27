@@ -20,7 +20,6 @@ def read_tags():
         query_tags = Tag.query.order_by(Tag.use_count).all()
         mock_tags: List[Tag] = [Tag(id=1, name="one", use_count=1), Tag(id=2, name="two", use_count=2)]
         all_tags = query_tags
-        all_tags.sort(key=lambda e: e.use_count, reverse=True)
 
     except Exception as N:
         print(N)
@@ -59,7 +58,6 @@ def create_tag(tag_name: str) -> Tag:
         new_tag = Tag(name=tag_name, use_count=1)
         db.session.add(new_tag)
         db.session.commit()
-        mock_tag: Tag = Tag(1, "tag1", 1)
         db.session.refresh(new_tag)
         tag: Tag = new_tag
 
