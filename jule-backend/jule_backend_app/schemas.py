@@ -58,6 +58,10 @@ class ExerciseSchema(ma.SQLAlchemySchema):
 
     title = ma.auto_field()
     text = ma.auto_field()
+    question = ma.auto_field()
+    hints = ma.auto_field()
+    difficulty = ma.auto_field()
+    scope = ma.auto_field()
 
 
 class SubmissionSchema(ma.SQLAlchemyAutoSchema):

@@ -2,28 +2,32 @@ import math
 
 from flask import Blueprint, request, jsonify, abort
 from jule_backend_app.extensions import db
-from jule_backend_app.models import Exercise, Tag
+from jule_backend_app.models import Exercise, User, Tag
 from jule_backend_app.schemas import ExerciseSchema
-from jule_backend_app.blueprints.tags import get_tag_id_from_name, create_tag, increment_tag_use
+from jule_backend_app.blueprints.tags import get_tag_id_from_name, create_tag, increment_tag_use, decrement_tag_use
 
 # Exercise blueprint used to register blueprint in app.py
-exercises_routes = Blueprint('exercise', __name__, url_prefix="/exercises")
+exercises_routes = Blueprint('exercise', __name__, url_prefix='/exercises')
 
 # Schemas
 exercise_schema = ExerciseSchema()  # For single exercise
 exercises_schema = ExerciseSchema(many=True)  # For list of exercises
 
 
+# index route, not in use
 @exercises_routes.route('/')
 def index():
-    return "Index of the exercise routes!"
+    return 'Index of the exercise routes!'
 
 
-# returns a list of exercises together with the total page number by filters
+# returns a list of exercises and total page count by filters
 @exercises_routes.route('/page/<int:page>', methods=['GET', 'POST'])
-def list_exercises(page):
+def read_exercises(page):
     if request.method == 'POST':
         query = db.session.query(Exercise)
+
+        # TODO: add filters
+        ''' 
         if request.form['title']:
             query = query.filter(Exercise.title.contains(request.form['title']))
         if request.form['difficulty']:
@@ -33,44 +37,150 @@ def list_exercises(page):
         if request.form['tags']:
             tag_names = request.form['tags']
             query = query.filter(db.or_(*[Exercise.tags.any(Tag.name == tag_name) for tag_name in tag_names]))
+        '''
 
-        per_page = 10
+        per_page = 5
         pages = math.ceil(query.count() / per_page)
         exercises_per_page = query.paginate(page, per_page, error_out=False)
         return jsonify({'pages': pages, 'exercises': exercises_schema.dump(exercises_per_page)})
 
+    else:
+        return abort(405, 'Request method is not supported')
 
+
+# returns a list of exercises published by the lecturer
+@exercises_routes.route('/<owner_id>/page/<int:page>', methods=['GET', 'POST'])
+def read_published_exercises(owner_id, page):
+    if request.method == 'POST':
+        query = Exercise.query.filter_by(owner_id=owner_id)
+        # TODO: add filters and pagination
+    else:
+        return abort(405, 'Request method is not supported')
+
+
+# route for reading, updating, deleting a single exercise by id
+@exercises_routes.route('/<exercise_id>', methods=['GET', 'POST', 'DELETE'])
+def rud_exercise(exercise_id):
+    exercise = Exercise.query.filter_by(id=exercise_id).first()
+    if exercise is None:
+        return abort(405, 'No exercise found with matching id')
+
+    # read exercise by id
+    if request.method == 'GET':
+        return jsonify(exercise_schema.dump(exercise))
+
+    # update exercise by id
+    elif request.method == 'POST':
+        if request.form['title']:
+            exercise.title = request.form['title']
+        if request.form['text']:
+            exercise.text = request.form['text']
+        if request.form['question']:
+            exercise.question = request.form['question']
+        if request.form['hints']:
+            exercise.hints = request.form['hints']
+        if request.form['sample_solution']:
+            exercise.sample_solution = request.form['sample_solution']
+        if request.form['difficulty']:
+            exercise.difficulty = request.form['difficulty']
+        if request.form['scope']:
+            exercise.scope = request.form['scope']
+        if request.form['tags']:
+            new_tag_names = request.form['tags']
+            # clear old tags in the exercise
+            remove_tags_from_exercise(exercise)
+            # append new tags to the exercise
+            add_tags_by_name(exercise, new_tag_names)
+
+        # commit changes to db
+        db.session.commit()
+        return jsonify(exercise_schema.dump(exercise))
+
+    # delete exercise by id
+    elif request.method == 'DELETE':
+        # remove dependencies
+        exercise.owner = None
+        remove_tags_from_exercise(exercise)
+
+        db.session.delete(exercise)
+        db.session.commit()
+        return jsonify({'message': 'successfully deleted'}), 200
+
+    else:
+        return abort(405, 'Request method is not supported')
+
+
+# creates a new exercise and stores it in db returns exercise that was created in db
+# throws error if exercise already exists
 @exercises_routes.route('/create', methods=['GET', 'POST'])
 def create_exercise():
     if request.method == 'POST':
+        owner_id = request.form['owner_id']
+        owner = User.query.filter_by(id=owner_id).first()
+        if owner is None:
+            return abort(405, 'User not exists')
+
         title = request.form['title']
         text = request.form['text']
+        question = request.form['question']
         difficulty = request.form['difficulty']
         scope = request.form['scope']
         tag_names = request.form['tags']
+        hints = request.form['hints']  # optional
+        sample_solution = request.form['sample_solution']  # optional
 
-        if title is None or text is None or difficulty is None or scope is None:
-            # TODO: all these fields are required
-            return abort(405)
+        if title is None or text is None or question is None or difficulty is None or scope is None:
+            return abort(400, 'Some fields of the exercise are empty')
 
-        # create new exercise
-        new_exercise = Exercise(title=title, text=text, difficulty=difficulty, scope=scope)
+        try:
+            # create new exercise
+            new_exercise = Exercise(owner=owner,
+                                    title=title,
+                                    text=text,
+                                    question=question,
+                                    difficulty=difficulty,
+                                    scope=scope,
+                                    hints=hints,
+                                    sample_solution=sample_solution,
+                                    )
 
-        # append tags to the exercise
-        for tag_name in tag_names:
-            try:
-                tag_id = get_tag_id_from_name(tag_name)
-                tag = Tag.query.filter_by(id=tag_id).first()
-                new_exercise.tags.append(tag)
-                increment_tag_use(tag_id)
-            except Exception as N:
-                # if there is no tag with matching name
-                # create new tag
-                print(N)
-                new_tag = create_tag(tag_name)
-                new_exercise.tags.append(new_tag)
+            # append tags to the exercise
+            add_tags_by_name(new_exercise, tag_names)
 
-        db.session.add(new_exercise)
-        db.session.commit()
+            db.session.add(new_exercise)
+            db.session.commit()
 
-        return jsonify(exercise_schema.dump(new_exercise))
+            return jsonify(exercise_schema.dump(new_exercise))
+
+        except Exception as N:
+            print(N)
+            # if exercise already exists
+            return abort(409, 'exercise with same title already exists')
+
+    else:
+        return abort(405, 'Request method is not supported')
+
+
+# helper function not exposed to REST API
+# append tags to the exercise by tag_names
+def add_tags_by_name(exercise, tag_names):
+    for tag_name in tag_names:
+        try:
+            tag_id = get_tag_id_from_name(tag_name)
+            tag = Tag.query.filter_by(id=tag_id).first()
+            exercise.tags.append(tag)
+            increment_tag_use(tag_id)
+        except Exception as N:
+            print(N)
+            # if there is no tag with matching name
+            # create new tag
+            new_tag = create_tag(tag_name)
+            exercise.tags.append(new_tag)
+
+
+# helper function not exposed to REST API
+# remove all the tags from the exercise
+def remove_tags_from_exercise(exercise):
+    for old_tag in exercise.tags:
+        exercise.tags.remove(old_tag)
+        decrement_tag_use(old_tag.id)

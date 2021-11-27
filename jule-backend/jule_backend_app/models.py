@@ -7,24 +7,24 @@ import enum
 # https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
 
-class Role(enum.Enum):
+class Role(enum.IntEnum):
     student = 1
     lecturer = 2
 
 
-class Scope(enum.Enum):
+class Scope(enum.IntEnum):
     draft = 1
     internal = 2
     public = 3
 
 
-class Difficulty(enum.Enum):
+class Difficulty(enum.IntEnum):
     easy = 1
     medium = 2
     hard = 3
 
 
-class Score(enum.Enum):
+class Score(enum.IntEnum):
     excellent = 1
     good = 2
     satisfactory = 3
