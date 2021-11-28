@@ -2,6 +2,21 @@ from jule_backend_app.extensions import ma
 from jule_backend_app import models
 
 
+# Helper Schemas
+def camelcase(s):
+    parts = iter(s.split("_"))
+    return next(parts) + "".join(i.title() for i in parts)
+
+
+class CamelCaseSQLASchema(ma.SQLAlchemySchema):
+    """
+    Converts dumped data keys into camelCase and incoming data keys into snake_case
+    https://marshmallow.readthedocs.io/en/latest/examples.html#inflection-camel-casing-keys
+    """
+    def on_bind_field(self, field_name, field_obj):
+        field_obj.data_key = camelcase(field_name or field_obj.data_key)
+
+
 # Schemas
 class StatisticSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -18,7 +33,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         model = models.User
 
 
-class UniversitySchema(ma.SQLAlchemySchema):
+class UniversitySchema(CamelCaseSQLASchema):
     class Meta:
         model = models.University
 
@@ -27,7 +42,7 @@ class UniversitySchema(ma.SQLAlchemySchema):
     logo_src = ma.auto_field()
 
 
-class TagSchema(ma.SQLAlchemySchema):
+class TagSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Tag
 
