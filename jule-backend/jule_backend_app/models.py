@@ -31,13 +31,33 @@ class Score(enum.Enum):
     unsatisfactory = 4
 
 
-class Statistic(db.Model):
-    # TODO: to be modified
+class StatisticType(db.Model):
+    __tablename__ = 'statistic_types'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), unique=True)
     description = db.Column(db.String(140), unique=False)
 
-    grade_id = db.Column(db.Integer, db.ForeignKey('grade.id'), nullable=False)  # Grade <- Statistic (one-to-many)
+    def __init__(self, title, description):
+        self.title = title
+        self.description = description
+
+    def __repr__(self):
+        return f'<Statistic {self.title!r}>'
+
+class Statistic(db.Model):
+    __tablename__ = 'statistics'
+    id = db.Column(db.Integer, primary_key=True)
+    statistic_type_id = db.Column(db.Integer, foreign_key=True)
+    exercise_id = db.Column(db.Integer, foreign_key=True)
+    submission_value = db.Column(db.Integer)
+
+    def __init__(self, statistic_type_id, exercise_id, submission_value):
+        self.statistic_type_id = statistic_type_id
+        self.exercise_id = exercise_id
+        self.submission_value = submission_value
+
+    def __repr__(self):
+        return f'<Statistic {self.title!r}>'
 
 
 class Auth(db.Model):
