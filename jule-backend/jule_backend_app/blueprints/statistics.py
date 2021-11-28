@@ -30,8 +30,13 @@ statistics_routes = Blueprint('statistics', __name__)
 @statistics_routes.route('/', methods=['GET'])
 def get_info():
     if request.method == 'GET':
-        statistics_types = StatisticType.query.all()
-        return jsonify(statistics_types)
+        try:
+            statistics_types = StatisticType.query.all()
+            return jsonify(statistics_types)
+        except Exception as N:
+            print(N)
+            # TODO: make except less general
+            return abort(405)
     else:
         return abort(405)
 
@@ -40,40 +45,51 @@ def get_info():
 @statistics_routes.route('/<exercise_id>/<student_id>', methods=['GET, POST'])
 def grade(exercise_id, student_id):
     if request.method == 'GET':
+        try:
+            # TODO: check how return of group by looks like and whether it needs to be reformatted
+            # get statistics from db
+            exercise = Exercise.get(exercise_id)
+            student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id)
+            peer_stats = db.session.query(func.avg(Statistic.submission_value)).group_by(Statistic.statistic_type_id)
+            solution_stats = calculate_statistics(exercise.sample_solution)
 
-        # TODO: check how return of group by looks like and whether it needs to be reformatted
-        # get statistics from db
-        exercise = Exercise.get(exercise_id)
-        student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id)
-        peer_stats = db.session.query(func.avg(Statistic.submission_value)).group_by(Statistic.statistic_type_id)
-        solution_stats = calculate_statistics(exercise.sample_solution)
+            # add values to dict
+            data = dict()
+            data['student_stats'] = student_stats
+            data['peer_stats'] = peer_stats
+            data['solution_stats'] = solution_stats
 
-        # add values to dict
-        data = dict()
-        data['student_stats'] = student_stats
-        data['peer_stats'] = peer_stats
-        data['solution_stats'] = solution_stats
-
-        return jsonify(data)
+            return jsonify(data)
+        except Exception as N:
+            print(N)
+            # TODO: make except less general
+            return abort(405)
     elif request.method == 'POST':
-        params = request.json
+        try:
+            params = request.json
 
-        # get parameters from the request body
-        if params is None:
-            params = request.args
+            # get parameters from the request body
+            if params is None:
+                params = request.args
 
-        if params is not None:
-            if 'text' in params:
-                text = params['text']
-                student_stats = calculate_statistics(text)
+            if params is not None:
+                if 'text' in params:
+                    text = params['text']
+                    student_stats = calculate_statistics(text)
 
-                for stat_title in student_stats:
-                    stat_value, stat_type_id = student_stats[stat_title]
-                    stat = Statistic(statistic_type_id=stat_type_id, exercise_id=exercise_id, student_id=student_id,
-                                     submission_value=stat_value)
-                    db.session.add(stat)
-                    db.session.commit()
-            else:
-                return abort(400, "Parameter missinig from request.")
+                    # iterate over calculated statistics and add each to db
+                    for stat_title in student_stats:
+                        stat_value, stat_type_id = student_stats[stat_title]
+                        stat = Statistic(statistic_type_id=stat_type_id, exercise_id=exercise_id, student_id=student_id,
+                                         submission_value=stat_value)
+                        db.session.add(stat)
+                        db.session.commit()
+                else:
+                    return abort(400, "Parameter missinig from request.")
+
+        except Exception as N:
+            print(N)
+            # TODO: make except less general
+            return abort(405)
     else:
         return abort(405)
