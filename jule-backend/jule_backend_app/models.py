@@ -49,11 +49,13 @@ class Statistic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     statistic_type_id = db.Column(db.Integer, foreign_key=True)
     exercise_id = db.Column(db.Integer, foreign_key=True)
+    student_id = db.Column(db.Integer, foreign_key=True)
     submission_value = db.Column(db.Integer)
 
-    def __init__(self, statistic_type_id, exercise_id, submission_value):
+    def __init__(self, statistic_type_id, exercise_id, submission_value, student_id):
         self.statistic_type_id = statistic_type_id
         self.exercise_id = exercise_id
+        self.student_id = student_id
         self.submission_value = submission_value
 
     def __repr__(self):

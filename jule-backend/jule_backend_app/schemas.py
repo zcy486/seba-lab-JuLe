@@ -7,6 +7,9 @@ class StatisticSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.Statistic
 
+class StatisticTypeSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.StatisticType
 
 class AuthSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
