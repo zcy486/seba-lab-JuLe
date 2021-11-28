@@ -13,12 +13,21 @@ textstat.set_lang('de')
 # could be extened to make the types of statistics to be calculated variable
 # more elegant to not hard code statistic type ids, but if we only have 5 it doesn't make sense to query them all the time
 # TODO: add statistics
+# TODO: add statistics typs to data base
 def calculate_statistics(text):
     statistics = dict()
 
     syllable_count = textstat.syllable_count(text)
+    poly_syl_count = textstat.polysyllabcount(text)
+    char_count = textstat.char_count(text)
+    lexicon_count = textstat.lexicon_count(text)
+    sentence_count = textstat.sentence_count(text)
 
     statistics['syllable_count'] = (syllable_count, 1)
+    statistics['poly_syl_count'] = (poly_syl_count, 2)
+    statistics['char_count'] = (char_count, 3)
+    statistics['lexicon_count'] = (lexicon_count, 4)
+    statistics['sentence_count'] = (sentence_count, 5)
 
     return statistics
 
