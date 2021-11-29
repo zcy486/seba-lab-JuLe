@@ -6,5 +6,6 @@
   "recaptcha_sitekey": "6LfJGDgdAAAAAIaTVAMpnPVFubgbdIE_z_wNkv73",
   "landingVideo": {
     "videoId": "fj8lAfaKy-c"
-  }
+  },
+  "serverLocation": "http://localhost:5000"
 }
