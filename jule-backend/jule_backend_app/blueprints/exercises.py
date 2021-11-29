@@ -73,18 +73,16 @@ def rud_exercise(exercise_id):
     elif request.method == 'POST':
         if request.form['title']:
             exercise.title = request.form['title']
-        if request.form['text']:
-            exercise.text = request.form['text']
+        if request.form['explanation']:
+            exercise.explanation = request.form['explanation']
         if request.form['question']:
             exercise.question = request.form['question']
-        if request.form['hints']:
-            exercise.hints = request.form['hints']
-        if request.form['sample_solution']:
-            exercise.sample_solution = request.form['sample_solution']
         if request.form['difficulty']:
             exercise.difficulty = request.form['difficulty']
         if request.form['scope']:
             exercise.scope = request.form['scope']
+        if request.form['sample_solution']:
+            exercise.sample_solution = request.form['sample_solution']
         if request.form['tags']:
             new_tag_names = request.form['tags']
             # clear old tags in the exercise
@@ -121,28 +119,27 @@ def create_exercise():
             return abort(405, 'User not exists')
 
         title = request.form['title']
-        text = request.form['text']
+        explanation = request.form['explanation']
         question = request.form['question']
         difficulty = request.form['difficulty']
         scope = request.form['scope']
         tag_names = request.form['tags']
-        hints = request.form['hints']  # optional
         sample_solution = request.form['sample_solution']  # optional
 
-        if title is None or text is None or question is None or difficulty is None or scope is None:
+        if title is None or explanation is None or question is None or difficulty is None or scope is None:
             return abort(400, 'Some fields of the exercise are empty')
 
         try:
             # create new exercise
-            new_exercise = Exercise(owner=owner,
-                                    title=title,
-                                    text=text,
-                                    question=question,
-                                    difficulty=difficulty,
-                                    scope=scope,
-                                    hints=hints,
-                                    sample_solution=sample_solution,
-                                    )
+            new_exercise = Exercise(
+                owner=owner,
+                title=title,
+                explanation=explanation,
+                question=question,
+                difficulty=int(difficulty),
+                scope=int(scope),
+                sample_solution=sample_solution,
+            )
 
             # append tags to the exercise
             add_tags_by_name(new_exercise, tag_names)

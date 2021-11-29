@@ -57,9 +57,8 @@ class ExerciseSchema(ma.SQLAlchemySchema):
         model = models.Exercise
 
     title = ma.auto_field()
-    text = ma.auto_field()
+    explanation = ma.auto_field()
     question = ma.auto_field()
-    hints = ma.auto_field()
     difficulty = ma.auto_field()
     scope = ma.auto_field()
 
