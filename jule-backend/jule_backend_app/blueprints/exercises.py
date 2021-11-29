@@ -1,3 +1,4 @@
+import json
 import math
 
 from flask import Blueprint, request, jsonify, abort
@@ -13,11 +14,25 @@ exercises_routes = Blueprint('exercise', __name__, url_prefix='/exercises')
 exercise_schema = ExerciseSchema()  # For single exercise
 exercises_schema = ExerciseSchema(many=True)  # For list of exercises
 
+per_page = 5  # number of exercises displayed per page
+
 
 # index route, not in use
 @exercises_routes.route('/')
 def index():
     return 'Index of the exercise routes!'
+
+
+# returns the total page number by filters
+@exercises_routes.route('/pages', methods=['POST'])
+def get_exercise_pages():
+    query = db.session.query(Exercise)
+
+    # TODO: apply filters
+
+    pages = math.ceil(query.count() / per_page)
+
+    return jsonify({'pages': pages})
 
 
 # returns a list of exercises and total page count by filters
@@ -26,7 +41,7 @@ def read_exercises(page):
     if request.method == 'POST':
         query = db.session.query(Exercise)
 
-        # TODO: add filters
+        # TODO: apply filters
         ''' 
         if request.form['title']:
             query = query.filter(Exercise.title.contains(request.form['title']))
@@ -39,10 +54,8 @@ def read_exercises(page):
             query = query.filter(db.or_(*[Exercise.tags.any(Tag.name == tag_name) for tag_name in tag_names]))
         '''
 
-        per_page = 5
-        pages = math.ceil(query.count() / per_page)
-        exercises_per_page = query.paginate(page, per_page, error_out=False)
-        return jsonify({'pages': pages, 'exercises': exercises_schema.dump(exercises_per_page)})
+        exercises_per_page = query.paginate(page, per_page, error_out=False).items
+        return jsonify(exercises_schema.dump(exercises_per_page))
 
     else:
         return abort(405, 'Request method is not supported')
@@ -88,7 +101,7 @@ def rud_exercise(exercise_id):
             # clear old tags in the exercise
             remove_tags_from_exercise(exercise)
             # append new tags to the exercise
-            add_tags_by_name(exercise, new_tag_names)
+            add_tags_by_name(exercise, json.loads(new_tag_names))
 
         # commit changes to db
         db.session.commit()
@@ -142,7 +155,7 @@ def create_exercise():
             )
 
             # append tags to the exercise
-            add_tags_by_name(new_exercise, tag_names)
+            add_tags_by_name(new_exercise, json.loads(tag_names))
 
             db.session.add(new_exercise)
             db.session.commit()

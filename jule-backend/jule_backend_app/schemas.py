@@ -18,17 +18,12 @@ class CamelCaseSQLASchema(ma.SQLAlchemySchema):
 
 
 # Schemas
-class StatisticSchema(ma.SQLAlchemyAutoSchema):
+class StatisticSchema(ma.SQLAlchemySchema):
     class Meta:
         model = models.Statistic
 
 
-class AuthSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = models.Auth
-
-
-class UserSchema(ma.SQLAlchemyAutoSchema):
+class UserSchema(ma.SQLAlchemySchema):
     class Meta:
         model = models.User
 
@@ -56,6 +51,7 @@ class ExerciseSchema(ma.SQLAlchemySchema):
     class Meta:
         model = models.Exercise
 
+    id = ma.auto_field()
     title = ma.auto_field()
     explanation = ma.auto_field()
     question = ma.auto_field()
@@ -63,11 +59,11 @@ class ExerciseSchema(ma.SQLAlchemySchema):
     scope = ma.auto_field()
 
 
-class SubmissionSchema(ma.SQLAlchemyAutoSchema):
+class SubmissionSchema(ma.SQLAlchemySchema):
     class Meta:
         model = models.Submission
 
 
-class GradeSchema(ma.SQLAlchemyAutoSchema):
+class GradeSchema(ma.SQLAlchemySchema):
     class Meta:
         model = models.Grade
