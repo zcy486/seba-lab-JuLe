@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 
 from jule_backend_app.extensions import (
     db,
@@ -14,7 +15,7 @@ from jule_backend_app.blueprints import (
 
 def create_app(test_config=None):
     app = Flask(__name__)
-
+    CORS(app)
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
@@ -27,6 +28,9 @@ def create_app(test_config=None):
 
     @app.route('/')
     def index():
+        # Uncomment bellow lines, to recreate database
+        #db.drop_all()
+        #db.create_all()
         return "JuLe backend active!"
 
     return app

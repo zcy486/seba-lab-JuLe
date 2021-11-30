@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
 import config from "../config.json"
+import APIService from "../services/APIService";
 
 var email: string, password: string;
 
@@ -28,13 +29,19 @@ function onCaptcha(value: string) {
 }
 
 function loginButtonClick() {
-    
+    const loginObject = {
+      ['email'] : email,
+      ['password'] : password
+    };
+    APIService.login(JSON.stringify(loginObject))
+    .catch(error => console.log('error',error))
+    .then(response => console.log('response', response));
 }
 
 function handleOnChange(e: React.FormEvent<HTMLInputElement>) {
-    if (e.currentTarget.name == "email") {
+    if (e.currentTarget.name === "email") {
         email = e.currentTarget.value;
-    } else if (e.currentTarget.name == "password") {
+    } else if (e.currentTarget.name === "password") {
         password = e.currentTarget.value;   
     }
 }

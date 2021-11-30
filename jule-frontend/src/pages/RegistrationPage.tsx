@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
 import config from "../config.json"
+import APIService from "../services/APIService";
 
 var name: string, email: string, password1: string, password2: string, type: string, university:string;
 
@@ -41,25 +42,35 @@ function onCaptcha(value: string) {
 }
 
 function registerButtonClick() {
-
+    // TODO check if password1 equals password2
+    const registerObject = {
+        ['name'] : name,
+        ['email'] : email,
+        ['password'] : password1,
+        ['type'] : type,
+        ['university_id'] : university
+    };
+    APIService.register(JSON.stringify(registerObject))
+    .catch(error => console.log('error',error))
+    .then(response => console.log('response', response));
 }
 
 function handleOnChange(e: React.FormEvent<HTMLInputElement>) {
-    if (e.currentTarget.name == "name") {
+    if (e.currentTarget.name === "name") {
         name = e.currentTarget.value;
-    } else if (e.currentTarget.name == "email") {
+    } else if (e.currentTarget.name === "email") {
         email = e.currentTarget.value;
-    } else if (e.currentTarget.name == "password1") {
+    } else if (e.currentTarget.name === "password1") {
         password1 = e.currentTarget.value;   
-    } else if (e.currentTarget.name == "password2") {
+    } else if (e.currentTarget.name === "password2") {
         password2 = e.currentTarget.value;
     }
 }
 
 function handleOnSelect(e: React.ChangeEvent<HTMLSelectElement>) {
-    if (e.currentTarget.name == "type") {
+    if (e.currentTarget.name === "type") {
         type = e.currentTarget.value;
-    } else if (e.currentTarget.name == "university") {
+    } else if (e.currentTarget.name === "university") {
         university = e.currentTarget.value;
     }
 }

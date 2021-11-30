@@ -12,11 +12,20 @@ account_schema = AccountSchema()
 
 @register_routes.route('/', methods=['POST'])
 def index():
-    email = request.args.get('email')
-    password = request.args.get('password')
-    name = request.args.get('name')
-    role = request.args.get('role')
-    university_id = request.args.get('university_id')
+    data = request.get_json()
+    print('received the following data: ' + str(data))
+    email = data['email']
+    password = data['password']
+    name = data['name']
+    if ('role' not in data):
+        role = 'student'
+    else:
+        role = request.json['role']
+    if ('university' not in data):
+        university_id = 0
+    else:
+        university_id = 0 # TODO get the university_id (best way to achieve this is not decided yet)
+    # TODO check for existing email, and give according error response
     new_account = Account(email=email, password=password, name=name, role=role, university_id=university_id)
     db.session.add(new_account)
     db.session.commit()

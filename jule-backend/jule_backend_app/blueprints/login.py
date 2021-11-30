@@ -10,15 +10,16 @@ login_routes = Blueprint('login', __name__, url_prefix="/login")
 # Schemas
 account_schema = AccountSchema()
 
-@login_routes.route('/', methods=['GET'])
+@login_routes.route('/', methods=['POST'])
 def index():
-    email = request.args.get('email')
-    password = request.args.get('password')
+    data = request.get_json()
+    email = data['email']
+    password = data['password']
     try:
         query_account = Account.query.filter_by(email=email).first()
 
         if (query_account is None):
-            return "wrong email!"
+            return "wrong email!" # TODO: JSON formatted error responses
         if (query_account.password != password):
             return "wrong password!"
         response = account_schema.dump(query_account)
