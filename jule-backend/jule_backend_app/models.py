@@ -12,19 +12,19 @@ class Role(enum.IntEnum):
     lecturer = 2
 
 
-class Scope(enum.Enum):
+class Scope(enum.IntEnum):
     draft = 1
     internal = 2
     public = 3
 
 
-class Difficulty(enum.Enum):
+class Difficulty(enum.IntEnum):
     easy = 1
     medium = 2
     hard = 3
 
 
-class Score(enum.Enum):
+class Score(enum.IntEnum):
     excellent = 1
     good = 2
     satisfactory = 3
@@ -48,6 +48,8 @@ class Account(db.Model):
     role = db.Column(db.Enum(Role))
     last_login = db.Column(db.DateTime(timezone=True))
     register_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
 
     university_id = db.Column(db.Integer, db.ForeignKey('university.id'), nullable=False)  # Account -> University (many-to-one)
     university = db.relationship('University', back_populates='account', uselist=False)  # Account -> University (many-to-one)
@@ -78,12 +80,17 @@ tags_helper = db.Table('tags_helper',
 
 
 class Exercise(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(50), unique=True, nullable=False)
-    text = db.Column(db.Text, nullable=False)
+    explanation = db.Column(db.Text, nullable=False)
+    question = db.Column(db.Text, nullable=False)
+    difficulty = db.Column(db.Enum(Difficulty), nullable=False)
+    scope = db.Column(db.Enum(Scope), nullable=False)
     sample_solution = db.Column(db.Text)
-    difficulty = db.Column(db.Enum(Difficulty))
-    scope = db.Column(db.Enum(Scope))
+
+    # TODO: uncomment these two lines when user data is ready
+    # owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Exercise -> User (many-to-one)
+    # owner = db.relationship('User')  # Exercise -> User (many-to-one)
 
     tags = db.relationship('Tag', secondary=tags_helper)  # Exercise -> Tag (many-to-many)
 

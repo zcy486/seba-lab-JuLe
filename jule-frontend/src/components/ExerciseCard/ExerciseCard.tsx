@@ -33,7 +33,7 @@ const ExerciseCard = (props: Props) => {
                         {props.title}
                     </Typography>
                 }
-                subheader={props.exerciseTags.map((val) => (<Chip label={val}/>))}
+                subheader={props.exerciseTags.map((val, i) => (<Chip key={i} label={val}/>))}
             >
 
             </CardHeader>

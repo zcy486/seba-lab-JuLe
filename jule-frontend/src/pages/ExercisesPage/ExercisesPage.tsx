@@ -1,35 +1,53 @@
-import React, {useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import styles from "./ExercisesPage.module.css";
+import {Pagination} from "@mui/material";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
 import ExerciseService from "../../services/ExerciseService";
-import {Pagination} from "@mui/material";
+import TagService from "../../services/TagService";
 
 const ExercisesPage = () => {
 
     //current page of the exercises
-    const [page, setPage] = React.useState(1);
-    //total count of the pages
-    const [count, setCount] = React.useState(0);
-    //exercises that display on the current page
-    const [exercises, setExercises] = React.useState([]);
+    const [page, setPage] = useState(1);
+    //total page number
+    const [pages, setPages] = useState(1);
+    //exercises to be displayed on the current page
+    const [exercises, setExercises] = useState([]);
 
+    //available tags to be displayed on the search bar
+    const [availableTags, setAvailableTags] = useState<string[]>([]);
+
+    // get all available tags from backend
     useEffect(() => {
         (async () => {
-            const pageCnt = await ExerciseService.getPageCount();
-            setCount(pageCnt);
+            const all_tags = await TagService.getAll()
+            if (!all_tags) return
+            setAvailableTags(all_tags.map((tag) => tag.name))
         })();
-    }, []);
+    }, [])
 
+    // get total pages after changing the filters
+    useEffect(() => {
+        // TODO: pass filter values to the backend
+        (async () => {
+            const total_pages = await ExerciseService.getPages()
+            setPages(total_pages)
+            // always redirect to the first page after changing the filters
+            setPage(1)
+        })();
+    }, []); // TODO: dependencies should be all values in filters
+
+    // get exercises to be displayed on the current page
     useEffect(() => {
         let active = true;
 
         (async () => {
-            const newData = await ExerciseService.getExercisesPerPage(page);
+            const data = await ExerciseService.getExercisesPerPage(page);
             if (!active) {
                 return;
             }
-            setExercises(newData);
+            setExercises(data)
         })();
 
         return () => {
@@ -44,20 +62,19 @@ const ExercisesPage = () => {
     return (
         <>
             <h1>Available Exercises</h1>
-            <SearchBar/>
-            {exercises.map((mockdata: any, i) => {
+            <SearchBar tags_in_use={availableTags}/>
+            {exercises && exercises.map((exercise: any, i) => {
                 return (
                     <ExerciseCard key={i}
-                                  title={mockdata.title!}
-                                  exerciseTags={mockdata.exerciseTags!}
-                                  finished={mockdata.finished}
+                                  title={exercise.title}
+                                  exerciseTags={exercise.tags && exercise.tags.map((tag: any) => tag.name)}
                         //there are some optional properties
                         //check ExerciseCard
                     />
                 );
             })}
             <div className={styles.pagination}>
-                <Pagination count={count} page={page} onChange={handlePageChange}/>
+                <Pagination count={pages} page={page} onChange={handlePageChange}/>
             </div>
         </>
     );

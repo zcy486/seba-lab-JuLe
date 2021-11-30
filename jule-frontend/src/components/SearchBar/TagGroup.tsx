@@ -3,10 +3,10 @@ import Tag from "./Tag";
 import {Stack} from "@mui/material";
 
 interface Props {
-    all_tags: string[];
+    tags_in_use: string[];
 }
 
-const TagGroup = ({all_tags}: Props) => {
+const TagGroup = ({tags_in_use}: Props) => {
 
     const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
 
@@ -20,7 +20,7 @@ const TagGroup = ({all_tags}: Props) => {
 
     return (
         <Stack direction={"row"} spacing={3}>
-            {all_tags.map((tag, i) => {
+            {tags_in_use.map((tag, i) => {
                 return (
                     <Tag key={i} name={tag} handleAdd={handleAdd} handleRemove={handleRemove}/>
                 )
