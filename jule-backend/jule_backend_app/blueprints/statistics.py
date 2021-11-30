@@ -55,7 +55,7 @@ def get_info():
 def grade(exercise_id, student_id):
     if request.method == 'GET':
         try:
-            # TODO: check how return of group by looks like and whether it needs to be reformatted
+            # TODO: check how return of group by looks like reformat return
             # get statistics from db
             exercise = Exercise.get(exercise_id)
             student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id)
