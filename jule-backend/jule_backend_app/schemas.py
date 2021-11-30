@@ -18,12 +18,12 @@ class CamelCaseSQLASchema(ma.SQLAlchemySchema):
 
 
 # Schemas
-class StatisticSchema(ma.SQLAlchemySchema):
+class StatisticSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Statistic
 
 
-class UserSchema(ma.SQLAlchemySchema):
+class UserSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.User
 
@@ -44,7 +44,7 @@ class TagSchema(CamelCaseSQLASchema):
     name = ma.auto_field()
 
 
-class ExerciseSchema(ma.SQLAlchemySchema):
+class ExerciseSchema(CamelCaseSQLASchema):
     # a list of tags
     tags = ma.Nested(TagSchema, many=True)
 
@@ -59,11 +59,11 @@ class ExerciseSchema(ma.SQLAlchemySchema):
     scope = ma.auto_field()
 
 
-class SubmissionSchema(ma.SQLAlchemySchema):
+class SubmissionSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Submission
 
 
-class GradeSchema(ma.SQLAlchemySchema):
+class GradeSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Grade

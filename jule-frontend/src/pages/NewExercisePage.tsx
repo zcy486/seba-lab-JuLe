@@ -22,9 +22,9 @@ const NewExercisePage = () => {
     useEffect(() => {
         // get all available tags from backend as options
         (async () => {
-            const tag_options = await TagService.getAll()
-            if (!tag_options) return
-            setOptions(tag_options.map((tag) => tag.name))
+            const all_tags = await TagService.getAll()
+            if (!all_tags) return
+            setOptions(all_tags.map((tag) => tag.name))
         })();
     }, [])
 
@@ -94,10 +94,8 @@ const NewExercisePage = () => {
         new_exercise.append('scope', scope)
         new_exercise.append('tags', JSON.stringify(tags))
 
-        // specify the exercise's owner_id
-        // TODO: replace fake_id with the lecturer's id
-        let fake_id = '123'
-        new_exercise.append('owner_id', fake_id)
+        // TODO: specify the exercise's owner_id (the lecturer's id)
+        // new_exercise.append('owner_id', '123')
 
         ExerciseService.createExercise(new_exercise).then((res) => {
             if (res.status === 200) {

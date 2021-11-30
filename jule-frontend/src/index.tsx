@@ -26,7 +26,7 @@ ReactDOM.render(
                     <Route path={"register"} element={<RegistrationPage/>}/>
                     <Route path={"login"} element={<LoginPage/>}/>
                     <Route path={"contact-us"} element={<ContactPage/>}/>
-                    <Route path={":user_id/create"} element={<NewExercisePage/>}/>
+                    <Route path={"exercises/create"} element={<NewExercisePage/>}/>
                     <Route path={"*"} element={<ErrorPage/>}/>
 
                 </Route>

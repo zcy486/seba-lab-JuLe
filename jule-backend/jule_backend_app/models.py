@@ -86,8 +86,9 @@ class Exercise(db.Model):
     scope = db.Column(db.Enum(Scope), nullable=False)
     sample_solution = db.Column(db.Text)
 
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Exercise -> User (many-to-one)
-    owner = db.relationship('User')  # Exercise -> User (many-to-one)
+    # TODO: uncomment these two lines when user data is ready
+    # owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Exercise -> User (many-to-one)
+    # owner = db.relationship('User')  # Exercise -> User (many-to-one)
 
     tags = db.relationship('Tag', secondary=tags_helper)  # Exercise -> Tag (many-to-many)
 

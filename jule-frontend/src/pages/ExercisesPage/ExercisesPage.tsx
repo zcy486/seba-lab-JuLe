@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from "react";
 import styles from "./ExercisesPage.module.css";
+import {Pagination} from "@mui/material";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
 import ExerciseService from "../../services/ExerciseService";
-import {Pagination} from "@mui/material";
+import TagService from "../../services/TagService";
 
 const ExercisesPage = () => {
 
@@ -12,7 +13,19 @@ const ExercisesPage = () => {
     //total page number
     const [pages, setPages] = useState(1);
     //exercises to be displayed on the current page
-    const [exercises, setExercises] = React.useState([]);
+    const [exercises, setExercises] = useState([]);
+
+    //available tags to be displayed on the search bar
+    const [availableTags, setAvailableTags] = useState<string[]>([]);
+
+    // get all available tags from backend
+    useEffect(() => {
+        (async () => {
+            const all_tags = await TagService.getAll()
+            if (!all_tags) return
+            setAvailableTags(all_tags.map((tag) => tag.name))
+        })();
+    }, [])
 
     // get total pages after changing the filters
     useEffect(() => {
@@ -20,7 +33,7 @@ const ExercisesPage = () => {
         (async () => {
             const total_pages = await ExerciseService.getPages()
             setPages(total_pages)
-            // redirect to the first page after changing the filters
+            // always redirect to the first page after changing the filters
             setPage(1)
         })();
     }, []); // TODO: dependencies should be all values in filters
@@ -49,8 +62,8 @@ const ExercisesPage = () => {
     return (
         <>
             <h1>Available Exercises</h1>
-            <SearchBar/>
-            {exercises.map((exercise: any, i) => {
+            <SearchBar tags_in_use={availableTags}/>
+            {exercises && exercises.map((exercise: any, i) => {
                 return (
                     <ExerciseCard key={i}
                                   title={exercise.title}
