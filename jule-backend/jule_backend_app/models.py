@@ -32,35 +32,25 @@ class Score(enum.Enum):
 
 
 class StatisticType(db.Model):
-    __tablename__ = 'statistic_types'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), unique=True)
     description = db.Column(db.String(140), unique=False)
 
-    def __init__(self, title, description):
-        self.title = title
-        self.description = description
-
-    def __repr__(self):
-        return f'<Statistic {self.title!r}>'
-
 class Statistic(db.Model):
-    __tablename__ = 'statistics'
     id = db.Column(db.Integer, primary_key=True)
-    statistic_type_id = db.Column(db.Integer, foreign_key=True)
-    exercise_id = db.Column(db.Integer, foreign_key=True)
-    student_id = db.Column(db.Integer, foreign_key=True)
     submission_value = db.Column(db.Integer)
 
-    def __init__(self, statistic_type_id, exercise_id, submission_value, student_id):
-        self.statistic_type_id = statistic_type_id
-        self.exercise_id = exercise_id
-        self.student_id = student_id
-        self.submission_value = submission_value
+    statistic_type_id = db.Column(db.Integer, db.ForeignKey('statistic_type.id'), nullable=False)
+    statistic_type = db.relationship('StatisticType')
 
-    def __repr__(self):
-        return f'<Statistic {self.title!r}>'
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=False)
+    exercise = db.relationship('Exercise')  # Statistic -> Exercise (one-to-many)
 
+    submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=False)
+    submission = db.relationship('Submission')  # Statistic -> Submission (one-to-one)
+
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User')  # Statistic -> User (one-to-one)
 
 class Auth(db.Model):
     id = db.Column(db.Integer, primary_key=True)

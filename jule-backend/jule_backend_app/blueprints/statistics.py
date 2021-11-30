@@ -74,6 +74,8 @@ def grade(exercise_id, student_id):
             # TODO: make except less general
             return abort(405)
     elif request.method == 'POST':
+
+        # TODO: check if this should actually happen here
         try:
             params = request.json
 
