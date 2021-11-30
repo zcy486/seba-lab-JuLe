@@ -4,28 +4,23 @@ import Filter from "./Filter";
 import SearchBox from "./SearchBox";
 import TagGroup from "./TagGroup";
 
-const SearchBar = () => {
+interface Props {
+    tags_in_use: string[];
+}
 
-    //mock data
-    const filters = [
-        {name: "Difficulty", options: [1, 2, 3]},
-        {name: "Status", options: ["finished", "unfinished"]}
-    ];
+const SearchBar = ({tags_in_use}: Props) => {
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={8}>
-                {filters.map((filter, i) => {
-                    return (
-                        <Filter key={i} name={filter.name} options={filter.options}/>
-                    )
-                })}
+                <Filter name={"Difficulty"} options={['Easy', 'Medium', 'Hard']}/>
+                <Filter name={"Status"} options={["finished", "unfinished"]}/>
             </Grid>
             <Grid item xs={4}>
                 <SearchBox/>
             </Grid>
-            <Grid item xs={8}>
-                <TagGroup all_tags={["tag1", "tag2", "tag3"]}/>
+            <Grid item xs={12}>
+                <TagGroup tags_in_use={tags_in_use}/>
             </Grid>
         </Grid>
     )

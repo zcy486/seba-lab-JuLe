@@ -1,24 +1,25 @@
 import Tag from "./Tag";
 
 export enum Difficulty {
-    easy = 0,
-    medium,
-    hard
+    easy = 1,
+    medium = 2,
+    hard = 3
 }
 
 export enum Scope {
-    Draft,
-    Internal,
-    Public
+    draft = 1,
+    internal = 2 ,
+    public = 3
 }
 
 type Exercise = {
     id: number,
     title: string,
-    text: string,
+    explanation: string,
+    question: string,
     difficulty: Difficulty,
     scope: Scope,
-    sampleSolution: string
+    sampleSolution: string,
     tags: Tag[]
 }
 
