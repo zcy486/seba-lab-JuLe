@@ -1,8 +1,8 @@
 FROM python:3
 
-WORKDIR /app
+WORKDIR /jule-backend
 
-ENV FLASK_APP=app.py
+ENV FLASK_APP=jule_backend_app.app:create_app
 
 ENV FLASK_ENV=development
 
@@ -12,4 +12,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "app.py"]
+CMD ["flask", "run"]

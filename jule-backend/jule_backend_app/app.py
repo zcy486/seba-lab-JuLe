@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 
 from jule_backend_app.extensions import (
     db,
@@ -7,12 +8,14 @@ from jule_backend_app.extensions import (
 from jule_backend_app.blueprints import (
     exercises,
     tags,
-    statistics
+    statistics,
+    universities
 )
 
 
 def create_app(test_config=None):
     app = Flask(__name__)
+    CORS(app)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -45,3 +48,4 @@ def register_blueprints(app):
     app.register_blueprint(exercises.exercises_routes)
     app.register_blueprint(tags.tags_routes)
     app.register_blueprint(statistics.statistics_routes)
+    app.register_blueprint(universities.universities_routes)

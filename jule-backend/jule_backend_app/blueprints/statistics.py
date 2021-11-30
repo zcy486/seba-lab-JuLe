@@ -10,8 +10,6 @@ textstat.set_lang('de')
 
 
 # calculutae all statistics for one solution
-# could be extened to make the types of statistics to be calculated variable
-# more elegant to not hard code statistic type ids, but if we only have 5 it doesn't make sense to query them all the time
 # TODO: add statistics
 # TODO: add statistics typs to data base
 def calculate_statistics(text):
