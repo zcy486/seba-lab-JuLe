@@ -54,10 +54,10 @@ class Account(db.Model):
 
 
 class University(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
-    abbreviation = db.Column(db.String(20))
-    logo_src = db.Column(db.String(140), nullable=True)
+    abbreviation = db.Column(db.String(8))
+    logo_src = db.Column(db.String(250), nullable=True)
 
     account = db.relationship('Account', back_populates='university', uselist=False)  # University -> Account (one-to-one)
 

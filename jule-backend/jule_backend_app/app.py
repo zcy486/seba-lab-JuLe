@@ -9,7 +9,8 @@ from jule_backend_app.blueprints import (
     exercises,
     tags,
     login,
-    register
+    register,
+    universities
 )
 
 
@@ -51,3 +52,4 @@ def register_blueprints(app):
     app.register_blueprint(tags.tags_routes)
     app.register_blueprint(login.login_routes)
     app.register_blueprint(register.register_routes)
+    app.register_blueprint(universities.universities_routes)
