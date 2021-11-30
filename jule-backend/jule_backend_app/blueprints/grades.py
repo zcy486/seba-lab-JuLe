@@ -4,7 +4,9 @@ from jule_backend_app.app import db
 from jule_backend_app.models import Grade
 from jule_backend_app.schemas import GradeSchema
 from jule_backend_app.models import Submission
-
+from jule_backend_app.models import Exercise
+from jule_backend_app.models import Statistic
+from jule_backend_app.models import Score
 
 grades_routes = Blueprint('grades', __name__)
 
@@ -28,7 +30,22 @@ def calculate_statistics(text):
     return statistics
 
 def calculate_score(exercise_id, submission_id, student_id):
-    return ""
+    exercise = Exercise.get(exercise_id)
+    solution_stats = calculate_statistics(exercise.sample_solution)
+    student_stats = Statistic.query.filter_by(submission_id=submission_id, student_id=student_id).order_by(
+        Statistic.statistic_type_id.asc())
+
+    stat_diffs = [abs(student_stat.submission_value - student_stat[0])/student_stat.submission_value
+                  for student_stat, sample_stat in zip(student_stats, solution_stats.values())]
+
+    if all(x <= 0.1 for x in stat_diffs):
+        return Score.excellent
+    elif all(x <= 0.3 for x in stat_diffs):
+        return Score.good
+    elif all(x <= 0.4 for x in stat_diffs):
+        return Score.satisfactory
+    elif all(x <= 0.6 for x in stat_diffs):
+        return Score.unsatisfactory
 
 @grades_routes.route('/<submission_id>/<student_id>', methods=['GET, POST'])
 def grade(submission_id, student_id):
