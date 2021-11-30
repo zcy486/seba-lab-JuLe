@@ -1,2 +1,6 @@
 flask==1.1.2
-sqlalchemy
+flask_sqlalchemy
+flask_marshmallow
+marshmallow-sqlalchemy
+psycopg2-binary
+textstat~=0.7.2
