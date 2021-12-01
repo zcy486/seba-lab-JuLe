@@ -48,11 +48,9 @@ class Account(db.Model):
     role = db.Column(db.Enum(Role))
     last_login = db.Column(db.DateTime(timezone=True))
     register_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(128), nullable=False)
 
     university_id = db.Column(db.Integer, db.ForeignKey('university.id'), nullable=False)  # Account -> University (many-to-one)
-    university = db.relationship('University', back_populates='account', uselist=False)  # Account -> University (many-to-one)
+    university = db.relationship('University', back_populates='account')  # Account -> University (many-to-one)
 
 
 class University(db.Model):
@@ -61,7 +59,7 @@ class University(db.Model):
     abbreviation = db.Column(db.String(8))
     logo_src = db.Column(db.String(250), nullable=True)
 
-    account = db.relationship('Account', back_populates='university', uselist=False)  # University -> Account (one-to-one)
+    account = db.relationship('Account', back_populates='university')  # University -> Account (one-to-one)
 
 
 class Tag(db.Model):

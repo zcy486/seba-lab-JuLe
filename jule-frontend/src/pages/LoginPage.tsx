@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
 import config from "../config.json"
-import APIService from "../services/APIService";
+import AuthService from "../services/AuthService";
 
 var email: string, password: string;
 
@@ -29,13 +29,7 @@ function onCaptcha(value: string) {
 }
 
 function loginButtonClick() {
-    const loginObject = {
-      ['email'] : email,
-      ['password'] : password
-    };
-    APIService.login(JSON.stringify(loginObject))
-    .catch(error => console.log('error',error))
-    .then(response => console.log('response', response));
+    AuthService.login(email, password).then(response => console.log('response', response));
 }
 
 function handleOnChange(e: React.FormEvent<HTMLInputElement>) {

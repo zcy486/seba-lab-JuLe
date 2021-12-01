@@ -32,5 +32,4 @@ def index():
     db.session.refresh(new_account)
     response = account_schema.dump(new_account)
     response['university_id'] = new_account.university_id
-    response.pop('password')
     return jsonify(response)

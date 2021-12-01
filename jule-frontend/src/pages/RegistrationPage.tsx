@@ -3,9 +3,10 @@ import Button from "@mui/material/Button";
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
 import config from "../config.json"
-import APIService from "../services/APIService";
+import AuthService from "../services/AuthService";
+import Auth from "../models/Auth";
 
-var name: string, email: string, password1: string, password2: string, type: string, university:string;
+var name: string, email: string, password1: string, password2: string, role: string, university:string;
 
 const RegistrationPage = () => {
   return (<div>
@@ -19,7 +20,7 @@ const RegistrationPage = () => {
     <h3>Retype Password:</h3>
     <input name="password2" type="password" onChange={handleOnChange}/>
     <h3>Account Type:</h3>
-    <select name="type" onChange={handleOnSelect}>
+    <select name="role" onChange={handleOnSelect}>
       <option value="student">Student</option>
       <option value="lecturer">Lecturer</option>
     </select>
@@ -43,35 +44,43 @@ function onCaptcha(value: string) {
 
 function registerButtonClick() {
     // TODO check if password1 equals password2
-    const registerObject = {
-        ['name'] : name,
-        ['email'] : email,
-        ['password'] : password1,
-        ['type'] : type,
-        ['university_id'] : university
-    };
-    APIService.register(JSON.stringify(registerObject))
-    .catch(error => console.log('error',error))
-    .then(response => console.log('response', response));
+
+    let registrationData : Auth = {name: name, email: email, password: password1, role: role, university_id: university}
+
+    AuthService.register(JSON.stringify(registrationData)).then((res) => {
+        if (res.status === 200) {
+            console.log('Successfully created')
+            //TODO: navigate to profile page
+        } else if (res.status === 409) {
+            //TODO: setError
+        } else if (res.status === 405) {
+            //TODO: setError
+        } else {
+            console.log(res)
+            //setError('Unknown error')
+        }
+    })
+
+
 }
 
 function handleOnChange(e: React.FormEvent<HTMLInputElement>) {
     if (e.currentTarget.name === "name") {
-        name = e.currentTarget.value;
+        name = e.currentTarget.value
     } else if (e.currentTarget.name === "email") {
-        email = e.currentTarget.value;
+        email = e.currentTarget.value
     } else if (e.currentTarget.name === "password1") {
-        password1 = e.currentTarget.value;   
+        password1 = e.currentTarget.value
     } else if (e.currentTarget.name === "password2") {
-        password2 = e.currentTarget.value;
+        password2 = e.currentTarget.value
     }
 }
 
 function handleOnSelect(e: React.ChangeEvent<HTMLSelectElement>) {
-    if (e.currentTarget.name === "type") {
-        type = e.currentTarget.value;
+    if (e.currentTarget.name === "role") {
+        role = e.currentTarget.value
     } else if (e.currentTarget.name === "university") {
-        university = e.currentTarget.value;
+        university = e.currentTarget.value
     }
 }
 

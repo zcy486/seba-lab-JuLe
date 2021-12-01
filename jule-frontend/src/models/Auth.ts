@@ -1,10 +1,9 @@
-import User from "./User";
-
 type Auth = {
-    id: number,
+    name: string,
     email: string,
-    user: User,
-    password: string
+    password: string,
+    role: string,
+    university_id: string
 }
 
 export default Auth

@@ -27,6 +27,13 @@ class AccountSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Account
 
+    id = ma.auto_field()
+    email = ma.auto_field()
+    name = ma.auto_field()
+    role = ma.auto_field()
+    last_login = ma.auto_field()
+    register_time = ma.auto_field()
+
 
 class UniversitySchema(CamelCaseSQLASchema):
     class Meta:

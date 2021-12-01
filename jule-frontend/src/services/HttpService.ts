@@ -6,7 +6,7 @@ const httpServer = serverLocation
 
 
 // a base http request using axios
-export const HttpService = axios.create({baseURL: serverLocation, headers: {"Content-type": "application/json"}})
+export const HttpService = axios.create({baseURL: serverLocation, headers: {"Content-Type":"application/json"}})
 
 // TODO: decide if this should be deleted
 // a basic http request using fetch()
