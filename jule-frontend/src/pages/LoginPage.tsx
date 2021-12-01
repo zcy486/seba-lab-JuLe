@@ -4,6 +4,8 @@ import Button from "@mui/material/Button";
 import ReCAPTCHA from "react-google-recaptcha";
 import config from "../config.json"
 import AuthService from "../services/AuthService";
+import User from "../models/User";
+import Auth from "../models/Auth";
 
 var email: string, password: string;
 
@@ -29,7 +31,12 @@ function onCaptcha(value: string) {
 }
 
 function loginButtonClick() {
-    AuthService.login(email, password).then(response => console.log('response', response));
+    let loginData : Auth = { email: email, password: password }
+    AuthService.login(loginData).then(response => handleSignIn(response.data));
+}
+
+function handleSignIn(userFromBackend: User) {
+
 }
 
 function handleOnChange(e: React.FormEvent<HTMLInputElement>) {

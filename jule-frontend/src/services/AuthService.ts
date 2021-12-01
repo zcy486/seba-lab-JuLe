@@ -1,15 +1,18 @@
 import HttpService from "./HttpService";
-import User from "../models/User";
 import Auth from "../models/Auth";
 
 const AuthService = {
-    login: (email: string, password: string): Promise<User> => HttpService.post<User>("/login/").then(response => response.data),
-
-    register: async (registrationData: string) => {
+    login: async (loginData: Auth) => {
         try {
-            const resp = await HttpService.post('/register/', registrationData)
-            console.log(resp.data)
-            return resp
+            return await HttpService.post('/login/', JSON.stringify(loginData))
+        } catch (err: any) {
+            return err.response
+        }
+    },
+
+    register: async (registrationData: Auth) => {
+        try {
+            return await HttpService.post('/register/', JSON.stringify(registrationData))
         } catch (err: any) {
             return err.response
         }

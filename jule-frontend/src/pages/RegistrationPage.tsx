@@ -45,10 +45,11 @@ function onCaptcha(value: string) {
 function registerButtonClick() {
     // TODO check if password1 equals password2
 
-    let registrationData : Auth = {name: name, email: email, password: password1, role: role, university_id: university}
+    let registrationData : Auth = { name: name, email: email, password: password1, role: role, university_id: university }
 
-    AuthService.register(JSON.stringify(registrationData)).then((res) => {
+    AuthService.register(registrationData).then((res) => {
         if (res.status === 200) {
+            
             console.log('Successfully created')
             //TODO: navigate to profile page
         } else if (res.status === 409) {

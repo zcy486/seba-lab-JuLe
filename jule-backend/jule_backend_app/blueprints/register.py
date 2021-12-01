@@ -2,13 +2,14 @@ from flask import Blueprint
 from flask import request
 from flask.json import jsonify
 from jule_backend_app.app import db
-from jule_backend_app.schemas import AccountSchema
-from jule_backend_app.models import Account
+from jule_backend_app.schemas import AccountSchema, UniversitySchema
+from jule_backend_app.models import Account, University
 
 register_routes = Blueprint('register', __name__, url_prefix="/register")
 
 # Schemas
 account_schema = AccountSchema()
+university_schema = UniversitySchema()
 
 @register_routes.route('/', methods=['POST'])
 def index():
@@ -31,5 +32,7 @@ def index():
     db.session.commit()
     db.session.refresh(new_account)
     response = account_schema.dump(new_account)
-    response['university_id'] = new_account.university_id
+    query_university = University.query.filter_by(id=university_id).first()
+    university_response = university_schema.dump(query_university)
+    response['university'] = university_response
     return jsonify(response)
