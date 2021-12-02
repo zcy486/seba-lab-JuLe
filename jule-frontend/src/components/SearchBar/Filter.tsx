@@ -1,50 +1,31 @@
 import React from "react";
-import {makeStyles} from "@material-ui/styles";
 import {FormControl, InputLabel, MenuItem} from "@mui/material";
-import Select, {SelectChangeEvent} from "@mui/material/Select";
-
-const useStyles = makeStyles({
-    //this class overrides padding of the inputbase inside of the mui Select
-    //TODO: change this into a separate CSS file while keeping the same effect if feasible
-    select: {
-        "& .MuiInputBase-input": {
-            padding: "16px 20px 10px 12px",
-        },
-    }
-});
+import Select from "@mui/material/Select";
 
 interface Props {
     name: string;
     options: any[];
+    value: string;
+    onChangeValue: (e: any) => void;
 }
 
-const Filter = ({name, options}: Props) => {
-
-    const classes = useStyles();
-
-    const [value, setValue] = React.useState("");
-
-    const handleChange = (e: SelectChangeEvent) => {
-        setValue(e.target.value)
-    }
+const Filter = ({name, options, value, onChangeValue}: Props) => {
 
     return (
-        <FormControl sx={{mr: 1, minWidth: 120}}>
+        <FormControl sx={{mr: 2, minWidth: 140}}>
             <InputLabel id="label-id">{name}</InputLabel>
             <Select
-                className={classes.select}
-                variant={"filled"}
                 labelId="label-id"
                 label={name}
                 value={value}
-                onChange={handleChange}
+                onChange={onChangeValue}
             >
                 <MenuItem value="">
                     <em>None</em>
                 </MenuItem>
                 {options.map((option, i) => (
-                        <MenuItem key={i} value={option}>
-                            {option}
+                        <MenuItem key={i} value={option.value}>
+                            {option.name}
                         </MenuItem>
                     )
                 )}

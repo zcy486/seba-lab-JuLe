@@ -65,23 +65,27 @@ const NewExercisePage = () => {
 
     const handleSubmit = () => {
         if (!title) {
-            setError('Field title must not be empty.')
+            setError('Field Title must not be empty.')
             return;
         }
         if (!explanation) {
-            setError('Field explanation must not be empty.')
+            setError('Field Explanation must not be empty.')
             return;
         }
         if (!question) {
-            setError('Field question must not be empty.')
+            setError('Field Question must not be empty.')
+            return;
+        }
+        if (!solution) {
+            setError('Field Sample Solution must not be empty.')
             return;
         }
         if (!difficulty) {
-            setError('Field difficulty must not be empty.')
+            setError('Field Difficulty must not be empty.')
             return;
         }
         if (!scope) {
-            setError('Field scope must not be empty.')
+            setError('Field Scope must not be empty.')
             return;
         }
         // if above fields are not empty
@@ -97,19 +101,21 @@ const NewExercisePage = () => {
         // TODO: specify the exercise's owner_id (the lecturer's id)
         // new_exercise.append('owner_id', '123')
 
-        ExerciseService.createExercise(new_exercise).then((res) => {
-            if (res.status === 200) {
+        ExerciseService.createExercise(new_exercise)
+            .then((res) => {
                 console.log('Successfully created')
+                console.log(res);
                 //TODO: navigate to profile page (lecturer's view)
-            } else if (res.status === 409) {
-                setError('Exercise with same title already exists.')
-            } else if (res.status === 405) {
-                setError('User not exists.')
-            } else {
-                console.log(res)
-                setError('Unknown error')
-            }
-        })
+            })
+            .catch(err => {
+                if (err.status === 409) {
+                    setError('Exercise with same title already exists.')
+                } else if (err.status === 405) {
+                    setError('User not exists.')
+                } else {
+                    setError('Unknown error.')
+                }
+            });
     }
 
     const handleCancel = () => {
@@ -120,40 +126,40 @@ const NewExercisePage = () => {
         <div>
             <h1>Create New Exercise</h1>
 
-            <Typography variant={'h6'}>Title</Typography>
+            <Typography variant={'h6'}>Title<span style={{color: 'red'}}>*</span></Typography>
             <TextField
                 fullWidth
                 value={title}
                 onChange={handleChangeTitle}
             />
 
-            <Typography variant={'h6'} sx={{mt: 3}}>Explanation</Typography>
+            <Typography variant={'h6'} sx={{mt: 3}}>Explanation<span style={{color: 'red'}}>*</span></Typography>
             <TextEditor text={explanation} setText={handleChangeExplanation}/>
 
-            <Typography variant={'h6'} sx={{mt: 3}}>Question</Typography>
+            <Typography variant={'h6'} sx={{mt: 3}}>Question<span style={{color: 'red'}}>*</span></Typography>
             <TextEditor text={question} setText={handleChangeQuestion}/>
 
-            <Typography variant={'h6'} sx={{mt: 3}}>Sample Solution</Typography>
+            <Typography variant={'h6'} sx={{mt: 3}}>Sample Solution<span style={{color: 'red'}}>*</span></Typography>
             <TextEditor text={solution} setText={handleChangeSolution}/>
 
-            <Typography variant={'h6'} sx={{mt: 3}}>Tags</Typography>
+            <Typography variant={'h6'} sx={{mt: 3}}>Tags (optional)</Typography>
             <TagInput tags={tags} onChange={handleChangeTags} options={options}/>
 
-            <Typography variant={'h6'} sx={{mt: 3}}>Difficulty</Typography>
+            <Typography variant={'h6'} sx={{mt: 3}}>Difficulty<span style={{color: 'red'}}>*</span></Typography>
             <Select value={difficulty} onChange={handleChangeDifficulty} sx={{minWidth: 160}}>
                 <MenuItem value={1}>Easy</MenuItem>
                 <MenuItem value={2}>Medium</MenuItem>
                 <MenuItem value={3}>Hard</MenuItem>
             </Select>
 
-            <Typography variant={'h6'} sx={{mt: 3}}>Scope</Typography>
+            <Typography variant={'h6'} sx={{mt: 3}}>Scope<span style={{color: 'red'}}>*</span></Typography>
             <Select value={scope} onChange={handleChangeScope} sx={{minWidth: 160}}>
                 <MenuItem value={1}>Draft</MenuItem>
                 <MenuItem value={2}>Internal</MenuItem>
                 <MenuItem value={3}>Public</MenuItem>
             </Select>
 
-            <Typography color={'error'} sx={{mt: 3}}>{error}</Typography>
+            <Typography variant={'h6'} color={'error'} sx={{mt: 3}}>{error}</Typography>
             <TextEditorButtonPanel saveText={handleSubmit} onCancel={handleCancel}/>
         </div>
     )
