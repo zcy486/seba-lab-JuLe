@@ -32,7 +32,19 @@ function onCaptcha(value: string) {
 
 function loginButtonClick() {
     let loginData : Auth = { email: email, password: password }
-    AuthService.login(loginData).then(response => handleSignIn(response.data));
+    AuthService.login(loginData).then((res) => {
+      if (res.status === 200) {
+          console.log('Successfully logged in')
+          handleSignIn(res.data)
+      } else if (res.status === 401) { // Wrong Email
+          alert('Email does not exist! Please try again.')
+      } else if (res.status === 403) { // Wrong Password
+          alert('Wrong Password! Please try again.')
+      } else { // Unknown error
+          console.log(res)
+          alert('Sorry, an unknown error has occured! Please try again.')
+      }
+  })
 }
 
 function handleSignIn(userFromBackend: User) {

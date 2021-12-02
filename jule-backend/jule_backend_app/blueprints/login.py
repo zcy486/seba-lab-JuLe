@@ -1,9 +1,11 @@
 from flask import Blueprint
 from flask import request, abort
 from flask.json import jsonify
+from flask.wrappers import Response
 from jule_backend_app.app import db
 from jule_backend_app.schemas import AccountSchema, UniversitySchema
 from jule_backend_app.models import Account, University
+from werkzeug.security import check_password_hash
 
 login_routes = Blueprint('login', __name__, url_prefix="/login")
 
@@ -19,15 +21,14 @@ def index():
     try:
         query_account = Account.query.filter_by(email=email).first()
         if (query_account is None):
-            return "wrong email!" # TODO: JSON formatted error responses
-        if (query_account.password != password):
-            return "wrong password!"
+            return Response(status=401) # Wrong email
+        if (check_password_hash(query_account.password, password) == False):
+            return Response(status=403) # Wrong password
         response = account_schema.dump(query_account)
         query_university = University.query.filter_by(id=query_account.university_id).first()
         university_response = university_schema.dump(query_university)
         response['university'] = university_response
         return jsonify(response)
     except Exception as N:
-        print(N)
-        # TODO: make except less general
-        return abort(405)
+        print("bad request:" + N)
+        return Response(status=400)

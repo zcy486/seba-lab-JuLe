@@ -13,6 +13,7 @@ import RegistrationPage from "./pages/RegistrationPage";
 import LoginPage from "./pages/LoginPage";
 import ContactPage from "./pages/ContactPage";
 import NewExercisePage from "./pages/NewExercisePage";
+import VerifyEmailPage from "./pages/VerifyEmailPage/VerifyEmailPage"
 
 ReactDOM.render(
     <React.StrictMode>
@@ -24,11 +25,11 @@ ReactDOM.render(
                     <Route path={"profile"} element={<ProfilePage/>}/>
                     <Route path={"impressum"} element={<ImpressumPage/>}/>
                     <Route path={"register"} element={<RegistrationPage/>}/>
+                    <Route path={"register-complete"} element={<VerifyEmailPage/>}/>
                     <Route path={"login"} element={<LoginPage/>}/>
                     <Route path={"contact-us"} element={<ContactPage/>}/>
                     <Route path={"exercises/create"} element={<NewExercisePage/>}/>
                     <Route path={"*"} element={<ErrorPage/>}/>
-
                 </Route>
             </Routes>
         </BrowserRouter>
