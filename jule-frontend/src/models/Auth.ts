@@ -1,9 +1,11 @@
+import { Role } from "./User"
+
 type Auth = {
     name?: string,
     email: string,
     password: string,
     role?: string,
-    university_id?: string
+    universityId?: number
 }
 
 export default Auth

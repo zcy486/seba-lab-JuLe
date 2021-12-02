@@ -1,5 +1,5 @@
 from flask import Blueprint
-from flask import request, abort
+from flask import request
 from flask.json import jsonify
 from flask.wrappers import Response
 from jule_backend_app.app import db

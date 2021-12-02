@@ -18,7 +18,7 @@ const ContactPage = () => {
     <textarea name="message" onChange={handleOnTextChange}/>
     <h3>Captcha:</h3>
     <ReCAPTCHA
-        sitekey={config.recaptcha_sitekey}
+        sitekey={config.recaptchaSitekey}
         onChange={onCaptcha}
       />
     <br />
