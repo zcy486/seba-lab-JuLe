@@ -4,16 +4,19 @@ import Exercise from "../models/Exercise";
 const baseRoute = '/exercises'
 
 const ExerciseService = {
-    getPages: () => {
-        return new Promise<number>((resolve) => {
-            HttpService.get(`${baseRoute}/pages`)
-                .then(resp => resolve(resp.data.pages))
+
+    // applies filters to backend and returns exercises with the total page number
+    applyFilters: (filters: FormData) => {
+        return new Promise<any>((resolve) => {
+            HttpService.post(`${baseRoute}/filters`, filters)
+                .then(resp => resolve(resp.data))
         });
     },
 
-    getExercisesPerPage: (page: number) => {
+    // get exercises per page by filters
+    getExercisesPerPage: (page: number, filters: FormData) => {
         return new Promise<Exercise[]>((resolve) => {
-            HttpService.get(`${baseRoute}/page/${page}`)
+            HttpService.post(`${baseRoute}/page/${page}`, filters)
                 .then(resp => resolve(resp.data))
         });
     },

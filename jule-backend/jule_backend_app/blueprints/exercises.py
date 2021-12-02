@@ -3,7 +3,7 @@ import math
 
 from flask import Blueprint, request, jsonify, abort
 from jule_backend_app.extensions import db
-from jule_backend_app.models import Exercise, Account, Tag
+from jule_backend_app.models import Exercise, Account, Tag, Difficulty
 from jule_backend_app.schemas import ExerciseSchema
 from jule_backend_app.blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
 
@@ -23,33 +23,42 @@ def index():
     return 'Index of the exercise routes!'
 
 
-# returns the total page number by filters
-@exercises_routes.route('/pages', methods=['GET'])
-def get_exercise_pages():
+# applies filters from frontend and returns a list of exercises together with the total page number
+@exercises_routes.route('/filters', methods=['POST'])
+def read_exercises_by_filters():
     query = db.session.query(Exercise)
 
-    # TODO: apply filters
+    # filters by difficulty
+    if request.form['difficulty']:
+        difficulty_int = int(request.form['difficulty'])
+        query = query.filter_by(difficulty=Difficulty(difficulty_int))
+
+    # filters by selected tags (treated as "OR")
+    if request.form['tags']:
+        tag_names = json.loads(request.form['tags'])
+        query = query.filter(db.or_(*[Exercise.tags.any(Tag.name == tag_name) for tag_name in tag_names]))
 
     pages = math.ceil(query.count() / per_page)
+    # get exercises in the 1st page because it's redirected to the 1st page after applying filters
+    exercises_first_page = query.paginate(1, per_page, error_out=False).items
 
-    return jsonify({'pages': pages})
+    return jsonify({'pages': pages, 'exercises': exercises_schema.dump(exercises_first_page)})
 
 
-# returns a list of exercises and total page count by filters
-@exercises_routes.route('/page/<int:page>', methods=['GET'])
-def read_exercises(page):
+# returns a list of exercises per page
+@exercises_routes.route('/page/<int:page>', methods=['POST'])
+def read_exercises_per_page(page):
     query = db.session.query(Exercise)
 
-    # TODO: apply filters
-    '''
-    if request.form['title']:
-        query = query.filter(Exercise.title.contains(request.form['title']))
+    # filters by difficulty
     if request.form['difficulty']:
-        query = query.filter(Exercise.difficulty == int(request.form['difficulty']))
+        difficulty_int = int(request.form['difficulty'])
+        query = query.filter_by(difficulty=Difficulty(difficulty_int))
+
+    # filters by selected tags (treated as "OR")
     if request.form['tags']:
-        tag_names = json.load(request.form['tags'])
+        tag_names = json.loads(request.form['tags'])
         query = query.filter(db.or_(*[Exercise.tags.any(Tag.name == tag_name) for tag_name in tag_names]))
-    '''
 
     exercises_per_page = query.paginate(page, per_page, error_out=False).items
     return jsonify(exercises_schema.dump(exercises_per_page))
