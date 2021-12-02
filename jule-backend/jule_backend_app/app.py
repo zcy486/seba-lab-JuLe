@@ -46,3 +46,4 @@ def register_blueprints(app):
     app.register_blueprint(exercises.exercises_routes)
     app.register_blueprint(tags.tags_routes)
     app.register_blueprint(universities.universities_routes)
+    app.register_blueprint(grades.grades_routes)

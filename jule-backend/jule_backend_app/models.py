@@ -40,25 +40,17 @@ class Statistic(db.Model):
     grade_id = db.Column(db.Integer, db.ForeignKey('grade.id'), nullable=False)  # Grade <- Statistic (one-to-many)
 
 
-class Auth(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(128), nullable=False)
-
-    user = db.relationship('User', back_populates='auth', uselist=False)  # Auth -> User (one-to-one)
-
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     role = db.Column(db.Enum(Role))
     last_login = db.Column(db.DateTime(timezone=True))
     register_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
 
-    university = db.relationship('University', back_populates='user', uselist=False)  # User -> University (one-to-one)
-
-    auth_id = db.Column(db.Integer, db.ForeignKey('auth.id'), nullable=False)  # Auth <- User (one-to-one)
-    auth = db.relationship('Auth', back_populates='user')  # Auth <- User (one-to-one)
+    university_id = db.Column(db.Integer, db.ForeignKey('university.id'), nullable=False)
+    university = db.relationship('University')  # User -> University (many-to-one)
 
 
 class University(db.Model):
@@ -86,12 +78,17 @@ tags_helper = db.Table('tags_helper',
 
 
 class Exercise(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(50), unique=True, nullable=False)
-    text = db.Column(db.Text, nullable=False)
+    explanation = db.Column(db.Text, nullable=False)
+    question = db.Column(db.Text, nullable=False)
+    difficulty = db.Column(db.Enum(Difficulty), nullable=False)
+    scope = db.Column(db.Enum(Scope), nullable=False)
     sample_solution = db.Column(db.Text)
-    difficulty = db.Column(db.Enum(Difficulty))
-    scope = db.Column(db.Enum(Scope))
+
+    # TODO: uncomment these two lines when user data is ready
+    # owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Exercise -> User (many-to-one)
+    # owner = db.relationship('User')  # Exercise -> User (many-to-one)
 
     tags = db.relationship('Tag', secondary=tags_helper)  # Exercise -> Tag (many-to-many)
 
@@ -101,26 +98,19 @@ class Submission(db.Model):
     text = db.Column(db.Text, nullable=False)
 
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
-                            nullable=False)  # Submission -> Exercise (many-to-one)
+                            nullable=False)
     exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Submission -> User (many-to-one)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User')  # Submission -> User (many-to-one)
-
-    grade_id = db.Column(db.Integer, db.ForeignKey('grade.id'), nullable=False)  # Submission <- Grade (one-to-one)
-    grade = db.relationship('Grade', back_populates='submission')  # Submission <- Grade (one-to-one)
 
 
 class Grade(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Enum(Score))
 
-    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=False)
-    exercise = db.relationship('Exercise')  # Grade -> Exercise (many-to-one)
-
     student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    student = db.relationship('User', back_populates='auth', uselist=False)  # Grade -> User (one-to-one)
+    student = db.relationship('User', uselist=False)  # Grade -> User (one-to-one)
 
     submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=False)
-    submission = db.relationship('Submission', back_populates='grade',
-                                 uselist=False)  # Grade -> Submission (one-to-one)
+    submission = db.relationship('Submission', uselist=False)  # Grade -> Submission (one-to-one)

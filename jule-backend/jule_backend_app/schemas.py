@@ -23,11 +23,6 @@ class StatisticSchema(ma.SQLAlchemyAutoSchema):
         model = models.Statistic
 
 
-class AuthSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = models.Auth
-
-
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.User

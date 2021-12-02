@@ -8,7 +8,7 @@ from jule_backend_app.models import Exercise
 from jule_backend_app.models import Statistic
 from jule_backend_app.models import Score
 
-grades_routes = Blueprint('grades', __name__)
+grades_routes = Blueprint('grades', __name__, url_prefix="/grades")
 
 gradeSchema = GradeSchema()
 
@@ -47,16 +47,20 @@ def calculate_score(exercise_id, submission_id, student_id):
     elif all(x <= 0.6 for x in stat_diffs):
         return Score.unsatisfactory
 
-@grades_routes.route('/<submission_id>/<student_id>', methods=['GET, POST'])
-def grade(submission_id, student_id):
+@grades_routes.route('/<submission_id>/<student_id>', methods=['GET'])
+def get_grade(submission_id, student_id):
     if request.method == 'GET':
 
-        # TODO: use submission time stamp to get latest one. Or always replace older submissions?
         submission_grade = Grade.query.filter_by(submission_id=submission_id,
-                                                 student_id=student_id)
-        return jsonify(GradeSchema.dump(submission_grade))
+                                                 student_id=student_id).all()
 
-    elif request.method == 'POST':
+        return jsonify(GradeSchema.dump(submission_grade))
+    else:
+        return abort(405)
+
+@grades_routes.route('/<submission_id>/<student_id>', methods=['POST'])
+def add_grade(submission_id, student_id):
+    if request.method == 'POST':
         try:
             # TODO: decide if this should really be happening here
             submission = Submission.get(submission_id)
@@ -79,4 +83,6 @@ def grade(submission_id, student_id):
             # TODO: make except less general
     else:
         return abort(405)
+
+
 
