@@ -34,8 +34,8 @@ statistics_routes = Blueprint('statistics', __name__)
 
 
 # return information about all existing types of statistics
-@statistics_routes.route('/', methods=['GET'])
-def get_info():
+@statistics_routes.route('/statisticTypes', methods=['GET'])
+def get_statistics_types():
     if request.method == 'GET':
         try:
             statistics_types = StatisticType.query.all()
@@ -49,31 +49,10 @@ def get_info():
 
 
 # create or return all available statistics for one student and one exercise
-@statistics_routes.route('/<exercise_id>/<student_id>', methods=['GET, POST'])
-def grade(exercise_id, student_id):
-    if request.method == 'GET':
-        try:
-            # TODO: check how return of group by looks like reformat return
-            # get statistics from db
-            exercise = Exercise.get(exercise_id)
-            student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id)
-            peer_stats = db.session.query(func.avg(Statistic.submission_value)).group_by(Statistic.statistic_type_id)
-            solution_stats = calculate_statistics(exercise.sample_solution)
-
-            # add values to dict
-            data = dict()
-            data['student_stats'] = student_stats
-            data['peer_stats'] = peer_stats
-            data['solution_stats'] = solution_stats
-
-            return jsonify(data)
-        except Exception as N:
-            print(N)
-            # TODO: make except less general
-            return abort(405)
-    elif request.method == 'POST':
-
-        # TODO: check if this should actually happen here
+@statistics_routes.route('/statistics/<exercise_id>/<student_id>', methods=['POST'])
+def add_statistics(exercise_id, student_id):
+    print("test")
+    if request.method == 'POST':
         try:
             params = request.json
 
@@ -96,6 +75,33 @@ def grade(exercise_id, student_id):
                 else:
                     return abort(400, "Parameter missinig from request.")
 
+        except Exception as N:
+            print(N)
+            # TODO: make except less general
+            return abort(405)
+    else:
+        return abort(405)
+
+
+@statistics_routes.route('/statistics/<exercise_id>/<student_id>', methods=['GET'])
+def get_statistics(exercise_id, student_id):
+    print("test")
+    if request.method == 'GET':
+        try:
+            # TODO: check how return of group by looks like reformat return
+            # get statistics from db
+            exercise = Exercise.get(exercise_id)
+            student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id)
+            peer_stats = db.session.query(func.avg(Statistic.submission_value)).group_by(Statistic.statistic_type_id)
+            solution_stats = calculate_statistics(exercise.sample_solution)
+
+            # add values to dict
+            data = dict()
+            data['student_stats'] = student_stats
+            data['peer_stats'] = peer_stats
+            data['solution_stats'] = solution_stats
+
+            return jsonify(data)
         except Exception as N:
             print(N)
             # TODO: make except less general
