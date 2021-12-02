@@ -1,38 +1,29 @@
 import HttpService from "./HttpService";
+import Exercise from "../models/Exercise";
 
 const baseRoute = '/exercises'
 
 const ExerciseService = {
-    getPages: async () => {
-        try {
-            // TODO: get pages with filters
-            const resp = await HttpService.get(`${baseRoute}/pages`)
-            //console.log(resp.data)
-            return resp.data.pages
-        } catch (err: any) {
-            console.log(err)
-        }
+    getPages: () => {
+        return new Promise<number>((resolve) => {
+            HttpService.get(`${baseRoute}/pages`)
+                .then(resp => resolve(resp.data.pages))
+        });
     },
 
-    getExercisesPerPage: async (page: number) => {
-        try {
-            // TODO: get exercises per page with filters
-            const resp = await HttpService.get(`${baseRoute}/page/${page}`)
-            //console.log(resp.data)
-            return resp.data
-        } catch (err: any) {
-            console.log(err)
-        }
+    getExercisesPerPage: (page: number) => {
+        return new Promise<Exercise[]>((resolve) => {
+            HttpService.get(`${baseRoute}/page/${page}`)
+                .then(resp => resolve(resp.data))
+        });
     },
 
-    createExercise: async (exercise: FormData) => {
-        try {
-            const resp = await HttpService.post(`${baseRoute}/create`, exercise)
-            console.log(resp.data)
-            return resp
-        } catch (err: any) {
-            return err.response
-        }
+    createExercise: (exercise: FormData) => {
+        return new Promise<Exercise>((resolve, reject) => {
+            HttpService.post(`${baseRoute}/create`, exercise)
+                .then(resp => resolve(resp.data))
+                .catch(err => reject(err.response));
+        });
     }
 };
 

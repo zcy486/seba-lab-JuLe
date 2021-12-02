@@ -5,6 +5,7 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
 import ExerciseService from "../../services/ExerciseService";
 import TagService from "../../services/TagService";
+import Exercise from "../../models/Exercise";
 
 const ExercisesPage = () => {
 
@@ -13,10 +14,12 @@ const ExercisesPage = () => {
     //total page number
     const [pages, setPages] = useState(1);
     //exercises to be displayed on the current page
-    const [exercises, setExercises] = useState([]);
-
+    const [exercises, setExercises] = useState<Exercise[]>([]);
     //available tags to be displayed on the search bar
     const [availableTags, setAvailableTags] = useState<string[]>([]);
+
+    //input of search box
+    const [input, setInput] = useState('');
 
     // get all available tags from backend
     useEffect(() => {
@@ -55,14 +58,30 @@ const ExercisesPage = () => {
         };
     }, [page]);
 
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
     };
+
+    const handleChangeInput = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setInput(event.target.value)
+    }
+
+    const handleSearch = () => {
+        if (input) {
+            // TODO: add exercise service for searching
+            console.log("Search with:", input);
+        }
+    }
 
     return (
         <>
             <h1>Available Exercises</h1>
-            <SearchBar tags_in_use={availableTags}/>
+            <SearchBar
+                tags_in_use={availableTags}
+                input={input}
+                onChangeInput={handleChangeInput}
+                onSearch={handleSearch}
+            />
             {exercises && exercises.map((exercise: any, i) => {
                 return (
                     <ExerciseCard key={i}
@@ -74,7 +93,7 @@ const ExercisesPage = () => {
                 );
             })}
             <div className={styles.pagination}>
-                <Pagination count={pages} page={page} onChange={handlePageChange}/>
+                <Pagination count={pages} page={page} onChange={handleChangePage}/>
             </div>
         </>
     );

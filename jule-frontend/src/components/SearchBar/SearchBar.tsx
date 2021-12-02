@@ -6,9 +6,12 @@ import TagGroup from "./TagGroup";
 
 interface Props {
     tags_in_use: string[];
+    input: string;
+    onChangeInput: (e: any) => void;
+    onSearch: () => void;
 }
 
-const SearchBar = ({tags_in_use}: Props) => {
+const SearchBar = ({tags_in_use, input, onChangeInput, onSearch}: Props) => {
 
     return (
         <Grid container spacing={2}>
@@ -17,7 +20,7 @@ const SearchBar = ({tags_in_use}: Props) => {
                 <Filter name={"Status"} options={["finished", "unfinished"]}/>
             </Grid>
             <Grid item xs={4}>
-                <SearchBox/>
+                <SearchBox input={input} onChangeInput={onChangeInput} onSearch={onSearch}/>
             </Grid>
             <Grid item xs={12}>
                 <TagGroup tags_in_use={tags_in_use}/>

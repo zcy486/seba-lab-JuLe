@@ -101,7 +101,8 @@ def rud_exercise(exercise_id):
     # delete exercise by id
     elif request.method == 'DELETE':
         # remove dependencies
-        exercise.owner = None
+        # TODO: uncomment this line when user data is ready
+        # exercise.owner = None
         remove_tags_from_exercise(exercise)
 
         db.session.delete(exercise)
@@ -127,10 +128,11 @@ def create_exercise():
     question = request.form['question']
     difficulty = request.form['difficulty']
     scope = request.form['scope']
+    sample_solution = request.form['sample_solution']
     tag_names = request.form['tags']
-    sample_solution = request.form['sample_solution']  # optional
 
-    if title is None or explanation is None or question is None or difficulty is None or scope is None:
+    if title is None or explanation is None or question is None or difficulty is None or scope is None \
+            or sample_solution is None:
         return abort(400, 'Some required fields of the request are empty')
 
     exists = Exercise.query.filter_by(title=title).first() is not None
