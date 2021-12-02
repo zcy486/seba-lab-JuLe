@@ -3,7 +3,7 @@ import math
 
 from flask import Blueprint, request, jsonify, abort
 from jule_backend_app.extensions import db
-from jule_backend_app.models import Exercise, User, Tag
+from jule_backend_app.models import Exercise, Account, Tag
 from jule_backend_app.schemas import ExerciseSchema
 from jule_backend_app.blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
 

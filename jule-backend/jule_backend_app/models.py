@@ -40,17 +40,17 @@ class Statistic(db.Model):
     grade_id = db.Column(db.Integer, db.ForeignKey('grade.id'), nullable=False)  # Grade <- Statistic (one-to-many)
 
 
-class User(db.Model):
+class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
     name = db.Column(db.String(50))
     role = db.Column(db.Enum(Role))
     last_login = db.Column(db.DateTime(timezone=True))
     register_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(128), nullable=False)
 
-    university_id = db.Column(db.Integer, db.ForeignKey('university.id'), nullable=False)
-    university = db.relationship('University')  # User -> University (many-to-one)
+    university_id = db.Column(db.Integer, db.ForeignKey('university.id'), nullable=False)  # Account -> University (many-to-one)
+    university = db.relationship('University', back_populates='account')  # Account -> University (many-to-one)
 
 
 class University(db.Model):
@@ -59,7 +59,7 @@ class University(db.Model):
     abbreviation = db.Column(db.String(8))
     logo_src = db.Column(db.String(250), nullable=True)
 
-    users = db.relationship('User', back_populates='university', lazy=True)  # University <- User (one-to-many)
+    account = db.relationship('Account', back_populates='university')  # University -> Account (one-to-one)
 
 
 class Tag(db.Model):
@@ -101,8 +101,8 @@ class Submission(db.Model):
                             nullable=False)  # Submission -> Exercise (many-to-one)
     exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Submission -> User (many-to-one)
-    user = db.relationship('User')  # Submission -> User (many-to-one)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)  # Submission -> Account (many-to-one)
+    account = db.relationship('Account')  # Submission -> Account (many-to-one)
 
     grade_id = db.Column(db.Integer, db.ForeignKey('grade.id'), nullable=False)  # Submission <- Grade (one-to-one)
     grade = db.relationship('Grade', back_populates='submission')  # Submission <- Grade (one-to-one)

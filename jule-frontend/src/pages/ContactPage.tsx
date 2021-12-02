@@ -18,7 +18,7 @@ const ContactPage = () => {
     <textarea name="message" onChange={handleOnTextChange}/>
     <h3>Captcha:</h3>
     <ReCAPTCHA
-        sitekey={config.recaptcha_sitekey}
+        sitekey={config.recaptchaSitekey}
         onChange={onCaptcha}
       />
     <br />
@@ -39,11 +39,11 @@ function handleOnTextChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
 }
 
 function handleOnChange(e: React.FormEvent<HTMLInputElement>) {
-    if (e.currentTarget.name == "name") {
+    if (e.currentTarget.name === "name") {
         name = e.currentTarget.value;
-    } else if (e.currentTarget.name == "email") {
+    } else if (e.currentTarget.name === "email") {
         email = e.currentTarget.value;   
-    } else if (e.currentTarget.name == "message") {
+    } else if (e.currentTarget.name === "message") {
         message = e.currentTarget.value;   
     }
 }
