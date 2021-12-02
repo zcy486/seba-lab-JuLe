@@ -51,7 +51,6 @@ def get_statistics_types():
 # create or return all available statistics for one student and one exercise
 @statistics_routes.route('/statistics/<exercise_id>/<student_id>', methods=['POST'])
 def add_statistics(exercise_id, student_id):
-    print("test")
     if request.method == 'POST':
         try:
             params = request.json
@@ -85,13 +84,12 @@ def add_statistics(exercise_id, student_id):
 
 @statistics_routes.route('/statistics/<exercise_id>/<student_id>', methods=['GET'])
 def get_statistics(exercise_id, student_id):
-    print("test")
     if request.method == 'GET':
         try:
             # TODO: check how return of group by looks like reformat return
             # get statistics from db
             exercise = Exercise.get(exercise_id)
-            student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id)
+            student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id).all()
             peer_stats = db.session.query(func.avg(Statistic.submission_value)).group_by(Statistic.statistic_type_id)
             solution_stats = calculate_statistics(exercise.sample_solution)
 
