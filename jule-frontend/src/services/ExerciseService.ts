@@ -27,6 +27,14 @@ const ExerciseService = {
                 .then(resp => resolve(resp.data))
                 .catch(err => reject(err.response));
         });
+    },
+
+    getExercise: (id: string) => {
+        return new Promise<Exercise>((resolve, reject) => {
+            HttpService.get(`${baseRoute}/${id}`)
+                .then(resp => resolve(resp.data))
+                .catch(err => reject(err.response))
+        })
     }
 };
 

@@ -2,10 +2,12 @@ import React from "react";
 import styles from "./ExerciseCard.module.css";
 import {Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Typography} from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
+import {useNavigate} from "react-router-dom";
 
 const MockUni = "/images/university.svg";
 
 interface Props {
+    id: number;
     title: string;
     exerciseTags: string[];
     //optional properties
@@ -16,6 +18,9 @@ interface Props {
 }
 
 const ExerciseCard = (props: Props) => {
+
+    const navigate = useNavigate()
+
     return (
         <Card className={styles.exerciseCard}>
             <CardHeader
@@ -51,7 +56,8 @@ const ExerciseCard = (props: Props) => {
                                                  variant={"contained"}>
                     View Statistics
                 </Button>}
-                <Button className={styles.button} variant={"contained"}>
+                <Button className={styles.button} variant={"contained"}
+                        onClick={() => navigate(`/exercises/${props.id}`)}>
                     View Exercise
                 </Button>
             </CardActions>

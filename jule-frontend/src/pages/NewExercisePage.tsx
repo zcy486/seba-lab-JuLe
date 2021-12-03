@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {MenuItem, Select, TextField, Typography} from "@mui/material";
+import {Alert, MenuItem, Select, TextField, Typography} from "@mui/material";
 import {SelectChangeEvent} from "@mui/material/Select";
 import TextEditor from "../components/TextEditor/TextEditor";
 import TagInput from "../components/TagInput/TagInput";
@@ -159,7 +159,7 @@ const NewExercisePage = () => {
                 <MenuItem value={3}>Public</MenuItem>
             </Select>
 
-            <Typography variant={'h6'} color={'error'} sx={{mt: 3}}>{error}</Typography>
+            {error && <Alert sx={{mt: 3}} severity="error">{error}</Alert>}
             <TextEditorButtonPanel saveText={handleSubmit} onCancel={handleCancel}/>
         </div>
     )

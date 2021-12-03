@@ -114,11 +114,13 @@ const ExercisesPage = () => {
                 onChangeInput={handleChangeInput}
                 onSearch={onSearch}
             />
-            {exercises && exercises.map((exercise: any, i) => {
+            {exercises && exercises.map((exercise: Exercise, i) => {
                 return (
-                    <ExerciseCard key={i}
-                                  title={exercise.title}
-                                  exerciseTags={exercise.tags && exercise.tags.map((tag: any) => tag.name)}
+                    <ExerciseCard
+                        key={i}
+                        id={exercise.id}
+                        title={exercise.title}
+                        exerciseTags={exercise.tags && exercise.tags.map((tag) => tag.name)}
                         //there are some optional properties
                         //check ExerciseCard
                     />

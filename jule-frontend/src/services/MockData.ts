@@ -44,26 +44,31 @@ export async function fetchUserName() {
 // mocked exercise data
 export const mockExercises = [
     {
+        id: 123,
         title: "Exercise 1",
         exerciseTags: ["indirekte Rede"],
         finished: false
     },
     {
+        id: 123,
         title: "Exercise 2",
         exerciseTags: ["Schachtelsatz"],
         finished: true
     },
     {
+        id: 123,
         title: "Exercise 3",
         exerciseTags: ["Grammatik", "Gutachtenstil"],
         finished: false
     },
     {
+        id: 123,
         title: "Exercise 4",
         exerciseTags: [],
         finished: false
     },
     {
+        id: 123,
         title: "Exercise 5",
         exerciseTags: ["Verständlichkeit"],
         finished: true

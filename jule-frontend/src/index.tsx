@@ -14,6 +14,7 @@ import LoginPage from "./pages/LoginPage";
 import ContactPage from "./pages/ContactPage";
 import NewExercisePage from "./pages/NewExercisePage";
 import VerifyEmailPage from "./pages/VerifyEmailPage/VerifyEmailPage"
+import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 
 ReactDOM.render(
     <React.StrictMode>
@@ -29,6 +30,7 @@ ReactDOM.render(
                     <Route path={"login"} element={<LoginPage/>}/>
                     <Route path={"contact-us"} element={<ContactPage/>}/>
                     <Route path={"exercises/create"} element={<NewExercisePage/>}/>
+                    <Route path={"exercises/:id"} element={<ExerciseDetailPage/>}/>
                     <Route path={"*"} element={<ErrorPage/>}/>
                 </Route>
             </Routes>
