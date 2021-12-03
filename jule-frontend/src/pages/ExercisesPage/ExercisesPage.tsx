@@ -7,6 +7,7 @@ import ExerciseService from "../../services/ExerciseService";
 import TagService from "../../services/TagService";
 import Exercise from "../../models/Exercise";
 import {SelectChangeEvent} from "@mui/material/Select";
+import Loading from "../../components/Loading";
 
 const ExercisesPage = () => {
 
@@ -26,6 +27,8 @@ const ExercisesPage = () => {
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     //input of search box
     const [input, setInput] = useState('');
+    //indicator of loading state
+    const [loading, setLoading] = useState(true);
 
     // get all available tags from backend
     useEffect(() => {
@@ -52,6 +55,7 @@ const ExercisesPage = () => {
             // always redirect to the first page after changing the filters
             setPage(1)
         })();
+        // cleanup function
         return () => {
             active = false;
         };
@@ -70,17 +74,27 @@ const ExercisesPage = () => {
             }
             setExercises(exercisesPerPage)
         })();
+        // cleanup function
         return () => {
             active = false;
         };
     }, [page]);
 
+    useEffect(() => {
+        // set loading to false if exercises are loaded
+        if (exercises.length > 0) {
+            setLoading(false)
+        }
+    }, [exercises]);
+
     const onChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
+        setLoading(true)
     };
 
     const onChangeDifficulty = (event: SelectChangeEvent) => {
         setDifficulty(event.target.value);
+        setLoading(true)
     }
 
     const onChangeSelectedTags = (event: SelectChangeEvent<string[]>) => {
@@ -88,6 +102,7 @@ const ExercisesPage = () => {
         setSelectedTags(
             typeof value === 'string' ? value.split(',') : value,
         );
+        setLoading(true)
     };
 
     const handleChangeInput = (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -102,7 +117,7 @@ const ExercisesPage = () => {
     };
 
     return (
-        <>
+        <div>
             <h1>Available Exercises</h1>
             <SearchBar
                 difficulty={difficulty}
@@ -114,22 +129,31 @@ const ExercisesPage = () => {
                 onChangeInput={handleChangeInput}
                 onSearch={onSearch}
             />
-            {exercises && exercises.map((exercise: Exercise, i) => {
-                return (
-                    <ExerciseCard
-                        key={i}
-                        id={exercise.id}
-                        title={exercise.title}
-                        exerciseTags={exercise.tags && exercise.tags.map((tag) => tag.name)}
-                        //there are some optional properties
-                        //check ExerciseCard
-                    />
-                );
-            })}
-            <div className={styles.pagination}>
-                <Pagination count={pages} page={page} onChange={onChangePage}/>
-            </div>
-        </>
+            {loading ?
+                (
+                    <Loading/>
+                ) :
+                (
+                    <div>
+                        {exercises.map((exercise: Exercise, i) => {
+                            return (
+                                <ExerciseCard
+                                    key={i}
+                                    id={exercise.id}
+                                    title={exercise.title}
+                                    exerciseTags={exercise.tags && exercise.tags.map((tag) => tag.name)}
+                                    //there are some optional properties
+                                    //check ExerciseCard
+                                />
+                            );
+                        })}
+                        <div className={styles.pagination}>
+                            <Pagination count={pages} page={page} onChange={onChangePage}/>
+                        </div>
+                    </div>
+                )
+            }
+        </div>
     );
 };
 
