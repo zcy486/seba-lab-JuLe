@@ -49,8 +49,8 @@ def get_statistics_types():
 
 
 # create or return all available statistics for one student and one exercise
-@statistics_routes.route('/statistics/<exercise_id>/<student_id>', methods=['POST'])
-def add_statistics(exercise_id, student_id):
+@statistics_routes.route('/statistics/<student_id>/<exercise_id>/<submission_id>', methods=['POST'])
+def add_statistics(exercise_id, student_id, submission_id):
     if request.method == 'POST':
         try:
             params = request.json
@@ -68,7 +68,7 @@ def add_statistics(exercise_id, student_id):
                     for stat_title in student_stats:
                         stat_value, stat_type_id = student_stats[stat_title]
                         stat = Statistic(statistic_type_id=stat_type_id, exercise_id=exercise_id, student_id=student_id,
-                                         submission_value=stat_value)
+                                         submission_value=stat_value, submission_id=submission_id)
                         db.session.add(stat)
                         db.session.commit()
                 else:
