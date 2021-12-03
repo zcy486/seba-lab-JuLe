@@ -81,6 +81,7 @@ const ExercisesPage = () => {
     }, [page]);
 
     useEffect(() => {
+        console.log("once")
         // set loading to false if exercises are loaded
         if (exercises.length > 0) {
             setLoading(false)
@@ -88,8 +89,10 @@ const ExercisesPage = () => {
     }, [exercises]);
 
     const onChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value);
-        setLoading(true)
+        if (value !== page) {
+            setPage(value);
+            setLoading(true)
+        }
     };
 
     const onChangeDifficulty = (event: SelectChangeEvent) => {
