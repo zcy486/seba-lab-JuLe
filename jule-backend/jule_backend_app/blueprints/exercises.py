@@ -6,6 +6,7 @@ from jule_backend_app.extensions import db
 from jule_backend_app.models import Exercise, Account, Tag
 from jule_backend_app.schemas import ExerciseSchema
 from jule_backend_app.blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
+from jule_backend_app.jwt_signature_verification import requireAuthorization
 
 # Exercise blueprint used to register blueprint in app.py
 exercises_routes = Blueprint('exercise', __name__, url_prefix='/exercises')
@@ -25,7 +26,8 @@ def index():
 
 # returns the total page number by filters
 @exercises_routes.route('/pages', methods=['GET'])
-def get_exercise_pages():
+@requireAuthorization
+def get_exercise_pages(current_account: Account):
     query = db.session.query(Exercise)
 
     # TODO: apply filters
@@ -37,7 +39,8 @@ def get_exercise_pages():
 
 # returns a list of exercises and total page count by filters
 @exercises_routes.route('/page/<int:page>', methods=['GET'])
-def read_exercises(page):
+@requireAuthorization
+def read_exercises(current_account: Account, page):
     query = db.session.query(Exercise)
 
     # TODO: apply filters
@@ -57,14 +60,16 @@ def read_exercises(page):
 
 # returns a list of exercises published by the lecturer
 @exercises_routes.route('/<owner_id>/page/<int:page>', methods=['GET'])
-def read_published_exercises(owner_id, page):
+@requireAuthorization
+def read_published_exercises(current_account: Account, owner_id, page):
     query = Exercise.query.filter_by(owner_id=owner_id)
     # TODO: add filters and pagination
 
 
 # route for reading, updating, deleting a single exercise by id
 @exercises_routes.route('/<exercise_id>', methods=['GET', 'POST', 'DELETE'])
-def rud_exercise(exercise_id):
+@requireAuthorization
+def rud_exercise(current_account: Account, exercise_id):
     exercise = Exercise.query.filter_by(id=exercise_id).first()
     if exercise is None:
         return abort(405, 'No exercise found with matching id')
@@ -115,7 +120,8 @@ def rud_exercise(exercise_id):
 # creates a new exercise and stores it in db returns exercise that was created in db
 # throws error if exercise already exists
 @exercises_routes.route('/create', methods=['POST'])
-def create_exercise():
+@requireAuthorization
+def create_exercise(current_account: Account):
     # TODO: add owner to the exercise when user data is ready
     # owner_id = request.form['owner_id']
     # owner = User.query.filter_by(id=owner_id).first()

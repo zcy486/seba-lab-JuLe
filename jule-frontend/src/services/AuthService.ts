@@ -1,10 +1,13 @@
 import HttpService from "./HttpService";
 import Auth from "../models/Auth";
 
+
 const AuthService = {
     login: async (loginData: Auth) => {
         try {
-            return await HttpService.post('/login/', JSON.stringify(loginData))
+            const response = await HttpService(false).post('/login/', JSON.stringify(loginData))
+            localStorage.setItem('jwtToken', response.data.jwtToken)
+            return response
         } catch (err: any) {
             return err.response
         }
@@ -12,7 +15,7 @@ const AuthService = {
 
     register: async (registrationData: Auth) => {
         try {
-            return await HttpService.post('/register/', JSON.stringify(registrationData))
+            return await HttpService(false).post('/register/', JSON.stringify(registrationData))
         } catch (err: any) {
             return err.response
         }
