@@ -81,7 +81,6 @@ const ExercisesPage = () => {
     }, [page]);
 
     useEffect(() => {
-        console.log("once")
         // set loading to false if exercises are loaded
         if (exercises.length > 0) {
             setLoading(false)
@@ -144,7 +143,7 @@ const ExercisesPage = () => {
                                     key={i}
                                     id={exercise.id}
                                     title={exercise.title}
-                                    exerciseTags={exercise.tags && exercise.tags.map((tag) => tag.name)}
+                                    exerciseTags={exercise.tags.map((tag) => tag.name)}
                                     //there are some optional properties
                                     //check ExerciseCard
                                 />
