@@ -3,21 +3,29 @@ import styles from "./SearchBox.module.css";
 import {IconButton, InputBase, Paper} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-const SearchBox = () => {
+interface Props {
+    input: string;
+    onChangeInput: (e: any) => void;
+    onSearch: () => void;
+}
 
-    const [input, setInput] = React.useState("");
-
-    const handleChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-        setInput(e.target.value);
-    }
+const SearchBox = ({input, onChangeInput, onSearch}: Props) => {
 
     return (
         <Paper className={styles.paper} component={"form"}>
             <InputBase className={styles.inputBase}
                        value={input}
-                       onChange={handleChange}
+                       onChange={onChangeInput}
+                       onKeyPress={
+                           (e) => {
+                               if (e.key === 'Enter') {
+                                   e.preventDefault();
+                                   onSearch();
+                               }
+                           }
+                       }
                        placeholder={"Search by title..."}/>
-            <IconButton className={styles.iconButton}>
+            <IconButton className={styles.iconButton} onClick={onSearch}>
                 <SearchIcon/>
             </IconButton>
         </Paper>

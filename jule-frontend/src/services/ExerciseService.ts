@@ -1,38 +1,32 @@
 import HttpService from "./HttpService";
+import Exercise from "../models/Exercise";
 
 const baseRoute = '/exercises'
 
 const ExerciseService = {
-    getPages: async () => {
-        try {
-            // TODO: get pages with filters
-            const resp = await HttpService(true).get(`${baseRoute}/pages`)
-            //console.log(resp.data)
-            return resp.data.pages
-        } catch (err: any) {
-            console.log(err)
-        }
+    
+    // applies filters to backend and returns exercises with the total page number
+    applyFilters: (filters: FormData) => {
+        return new Promise<any>((resolve) => {
+            HttpService(true).post(`${baseRoute}/filters`, filters)
+                .then(resp => resolve(resp.data))
+        });
     },
 
-    getExercisesPerPage: async (page: number) => {
-        try {
-            // TODO: get exercises per page with filters
-            const resp = await HttpService(true).get(`${baseRoute}/page/${page}`)
-            //console.log(resp.data)
-            return resp.data
-        } catch (err: any) {
-            console.log(err)
-        }
+    // get exercises per page by filters
+    getExercisesPerPage: (page: number, filters: FormData) => {
+        return new Promise<Exercise[]>((resolve) => {
+            HttpService(true).post(`${baseRoute}/page/${page}`, filters)
+                .then(resp => resolve(resp.data))
+        });
     },
 
-    createExercise: async (exercise: FormData) => {
-        try {
-            const resp = await HttpService(true).post(`${baseRoute}/create`, exercise)
-            console.log(resp.data)
-            return resp
-        } catch (err: any) {
-            return err.response
-        }
+    createExercise: (exercise: FormData) => {
+        return new Promise<Exercise>((resolve, reject) => {
+            HttpService(true).post(`${baseRoute}/create`, exercise)
+                .then(resp => resolve(resp.data))
+                .catch(err => reject(err.response));
+        });
     }
 };
 

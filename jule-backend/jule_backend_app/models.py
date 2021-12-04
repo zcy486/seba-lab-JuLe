@@ -49,7 +49,8 @@ class Account(db.Model):
     last_login = db.Column(db.DateTime(timezone=True))
     register_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
 
-    university_id = db.Column(db.Integer, db.ForeignKey('university.id'), nullable=False)  # Account -> University (many-to-one)
+    university_id = db.Column(db.Integer, db.ForeignKey('university.id'),
+                              nullable=False)  # Account -> University (many-to-one)
     university = db.relationship('University', back_populates='account')  # Account -> University (many-to-one)
 
 
@@ -59,7 +60,7 @@ class University(db.Model):
     abbreviation = db.Column(db.String(8))
     logo_src = db.Column(db.String(250), nullable=True)
 
-    account = db.relationship('Account', back_populates='university')  # University -> Account (one-to-one)
+    account = db.relationship('Account', back_populates='university')  # University -> Account (one-to-many)
 
 
 class Tag(db.Model):
@@ -84,11 +85,11 @@ class Exercise(db.Model):
     question = db.Column(db.Text, nullable=False)
     difficulty = db.Column(db.Enum(Difficulty), nullable=False)
     scope = db.Column(db.Enum(Scope), nullable=False)
-    sample_solution = db.Column(db.Text)
+    sample_solution = db.Column(db.Text, nullable=False)
 
     # TODO: uncomment these two lines when user data is ready
-    # owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Exercise -> User (many-to-one)
-    # owner = db.relationship('User')  # Exercise -> User (many-to-one)
+    # owner_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)  # Exercise -> Account (many-to-one)
+    # owner = db.relationship('Account')  # Exercise -> Account (many-to-one)
 
     tags = db.relationship('Tag', secondary=tags_helper)  # Exercise -> Tag (many-to-many)
 
@@ -101,7 +102,8 @@ class Submission(db.Model):
                             nullable=False)  # Submission -> Exercise (many-to-one)
     exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)
 
-    account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)  # Submission -> Account (many-to-one)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'),
+                           nullable=False)  # Submission -> Account (many-to-one)
     account = db.relationship('Account')  # Submission -> Account (many-to-one)
 
     grade_id = db.Column(db.Integer, db.ForeignKey('grade.id'), nullable=False)  # Submission <- Grade (one-to-one)

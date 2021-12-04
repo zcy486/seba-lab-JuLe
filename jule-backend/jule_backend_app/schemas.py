@@ -48,6 +48,7 @@ class TagSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Tag
 
+    id = ma.auto_field()
     name = ma.auto_field()
 
 
@@ -64,6 +65,7 @@ class ExerciseSchema(CamelCaseSQLASchema):
     question = ma.auto_field()
     difficulty = ma.auto_field()
     scope = ma.auto_field()
+    sample_solution = ma.auto_field()
 
 
 class SubmissionSchema(CamelCaseSQLASchema):
