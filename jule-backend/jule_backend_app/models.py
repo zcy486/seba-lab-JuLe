@@ -114,3 +114,7 @@ class Grade(db.Model):
 
     submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=False)
     submission = db.relationship('Submission', uselist=False)  # Grade -> Submission (one-to-one)
+
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
+                            nullable=False)
+    exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)

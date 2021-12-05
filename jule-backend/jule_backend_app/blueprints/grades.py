@@ -47,11 +47,11 @@ def calculate_score(exercise_id, submission_id, student_id):
     elif all(x <= 0.6 for x in stat_diffs):
         return Score.unsatisfactory
 
-@grades_routes.route('/<submission_id>/<student_id>', methods=['GET'])
-def get_grade(submission_id, student_id):
+@grades_routes.route('/<exercise_id>/<student_id>', methods=['GET'])
+def get_grade(exercise_id, student_id):
     if request.method == 'GET':
 
-        submission_grade = Grade.query.filter_by(submission_id=submission_id,
+        submission_grade = Grade.query.filter_by(exercise_id=exercise_id,
                                                  student_id=student_id).all()
 
         return jsonify(GradeSchema.dump(submission_grade))
