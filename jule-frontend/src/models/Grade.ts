@@ -1,4 +1,4 @@
-import Statistic from "./Statistic";
+import Statistics from "./Statistics";
 import Submission from "./Submission";
 
 export enum Score {
@@ -11,7 +11,7 @@ export enum Score {
 type Grade = {
     id: number,
     score: Score,
-    statistics: [userStatistic: Statistic, sampleSatatistic: Statistic, peerStatistic?: Statistic][],
+    statistics: [userStatistic: Statistics, sampleSatatistic: Statistics, peerStatistic?: Statistics][],
     submission: Submission,
 }
 
