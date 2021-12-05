@@ -9,8 +9,9 @@ export enum Score {
 type Grade = {
     id: number,
     score: Score,
-    submissionID: number,
     studentID: number,
+    submissionID: number,
+    exerciseID: number
 }
 
 export default Grade
