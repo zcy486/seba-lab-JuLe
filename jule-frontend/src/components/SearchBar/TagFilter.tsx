@@ -1,10 +1,11 @@
 import React from "react";
-import {Box, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, OutlinedInput, Select} from "@mui/material";
+import Tag from "../../models/Tag";
 
 interface Props {
     selectedTags: string[];
     onChangeSelectedTags: (e: any) => void;
-    tagsInUse: string[];
+    availableTags: Tag[];
 }
 
 const ITEM_HEIGHT = 48;
@@ -17,7 +18,7 @@ const MenuProps = {
     },
 };
 
-const TagFilter = ({selectedTags, onChangeSelectedTags, tagsInUse}: Props) => {
+const TagFilter = ({selectedTags, onChangeSelectedTags, availableTags}: Props) => {
     return (
         <FormControl fullWidth sx={{mb: 1}}>
             <InputLabel id={'tag-filter-label'}>Tags</InputLabel>
@@ -28,21 +29,14 @@ const TagFilter = ({selectedTags, onChangeSelectedTags, tagsInUse}: Props) => {
                 value={selectedTags}
                 onChange={onChangeSelectedTags}
                 input={<OutlinedInput id="select-multiple-chip" label="Tags"/>}
-                renderValue={(selected) => (
-                    <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
-                        {selected.map((value) => (
-                            <Chip key={value} label={value}/>
-                        ))}
-                    </Box>
-                )}
                 MenuProps={MenuProps}
             >
-                {tagsInUse.map((tag_name) => (
+                {availableTags.map((tag) => (
                     <MenuItem
-                        key={tag_name}
-                        value={tag_name}
+                        key={tag.id}
+                        value={tag.id}
                     >
-                        {tag_name}
+                        {tag.name}
                     </MenuItem>
                 ))}
             </Select>
