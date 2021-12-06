@@ -2,13 +2,13 @@ import React, {useState, useEffect} from "react";
 import styles from "./ExercisesPage.module.css";
 import {Pagination, Typography} from "@mui/material";
 import {SelectChangeEvent} from "@mui/material/Select";
-import SearchBar from "../../components/SearchBar/SearchBar";
-import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
-import ExerciseService from "../../services/ExerciseService";
-import TagService from "../../services/TagService";
-import Exercise from "../../models/Exercise";
-import Tag from "../../models/Tag";
-import Loading from "../../components/Loading";
+import SearchBar from "../../../components/SearchBar/SearchBar";
+import ExerciseCard from "../../../components/ExerciseCard/ExerciseCard";
+import ExerciseService from "../../../services/ExerciseService";
+import TagService from "../../../services/TagService";
+import Exercise from "../../../models/Exercise";
+import Tag from "../../../models/Tag";
+import Loading from "../../../components/Loading";
 
 const ExercisesPage = () => {
 

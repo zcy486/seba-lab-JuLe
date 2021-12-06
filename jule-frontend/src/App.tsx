@@ -5,18 +5,18 @@ import {Container} from "@mui/material";
 import Footer from "./components/Footer/Footer";
 import NavigationBar from "./components/NavigationBar/NavigationBar";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import ProfilePage from "./pages/ProfilePage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import ErrorPage from "./pages/ErrorPage";
-import ExercisesPage from "./pages/ExercisesPage/ExercisesPage";
+import ExercisesPage from "./pages/Exercises/ExercisesPage/ExercisesPage";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import ImpressumPage from "./pages/ImpressumPage/ImpressumPage";
 import RegistrationPage from "./pages/RegistrationPage";
 import LoginPage from "./pages/LoginPage";
 import ContactPage from "./pages/ContactPage";
-import NewExercisePage from "./pages/NewExercisePage";
+import NewExercisePage from "./pages/Exercises/NewExercisePage";
 import VerifyEmailPage from "./pages/VerifyEmailPage/VerifyEmailPage"
-import ExerciseDetailPage from "./pages/ExerciseDetailPage";
-import EditExercisePage from "./pages/EditExercisePage";
+import ExerciseDetailPage from "./pages/Exercises/ExerciseDetailPage";
+import EditExercisePage from "./pages/Exercises/EditExercisePage";
 
 const App = () => {
     const [loggedIn, setLoggedIn] = useState(false)

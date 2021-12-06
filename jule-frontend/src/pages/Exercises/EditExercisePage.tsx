@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import ExerciseService from "../services/ExerciseService";
-import TagService from "../services/TagService";
-import Loading from "../components/Loading";
+import ExerciseService from "../../services/ExerciseService";
+import TagService from "../../services/TagService";
+import Loading from "../../components/Loading";
 import {Alert, MenuItem, Select, TextField, Typography} from "@mui/material";
-import TextEditor from "../components/TextEditor/TextEditor";
-import TagInput from "../components/TagInput/TagInput";
-import TextEditorButtonPanel from "../components/TextEditorButtonPanel/TextEditorButtonPanel";
+import TextEditor from "../../components/TextEditor/TextEditor";
+import TagInput from "../../components/TagInput/TagInput";
+import TextEditorButtonPanel from "../../components/TextEditorButtonPanel/TextEditorButtonPanel";
 import {SelectChangeEvent} from "@mui/material/Select";
 
 const EditExercisePage = () => {

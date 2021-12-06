@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react"
-import ActivityChart from "../components/ActivityChart/ActivityChart";
-import UserService from "../services/UserService";
-import StreakDisplay from "../components/StreakDisplay/StreakDisplay";
-import config from "../config.json"
-import ScoreGraph from "../components/ScoreGraph/ScoreGraph";
-import ExerciseCard from "../components/ExerciseCard/ExerciseCard";
-import {mockExercises} from "../services/MockData";
+import ActivityChart from "../../components/ActivityChart/ActivityChart";
+import UserService from "../../services/UserService";
+import StreakDisplay from "../../components/StreakDisplay/StreakDisplay";
+import config from "../../config.json"
+import ScoreGraph from "../../components/ScoreGraph/ScoreGraph";
+import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
+import {mockExercises} from "../../services/MockData";
 
 const ProfilePage = () => {
 
