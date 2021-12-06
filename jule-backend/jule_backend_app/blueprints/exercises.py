@@ -90,15 +90,22 @@ def rud_exercise(current_account: Account, exercise_id):
     # update exercise by id
     elif request.method == 'POST':
         if request.form['title']:
-            exercise.title = request.form['title']
+            title = request.form['title']
+            # if title is changed, check duplicate title of other exercises
+            if title != exercise.title:
+                exists = Exercise.query.filter_by(title=title).first() is not None
+                if exists:
+                    # if exercise with same title already exists
+                    return abort(409, 'exercise with same title already exists')
+                exercise.title = title
         if request.form['explanation']:
             exercise.explanation = request.form['explanation']
         if request.form['question']:
             exercise.question = request.form['question']
         if request.form['difficulty']:
-            exercise.difficulty = request.form['difficulty']
+            exercise.difficulty = int(request.form['difficulty'])
         if request.form['scope']:
-            exercise.scope = request.form['scope']
+            exercise.scope = int(request.form['scope'])
         if request.form['sample_solution']:
             exercise.sample_solution = request.form['sample_solution']
         if request.form['tags']:
@@ -192,6 +199,7 @@ def add_tags_by_name(exercise, tag_names):
 # helper function not exposed to REST API
 # remove all the tags from the exercise
 def remove_tags_from_exercise(exercise):
-    for old_tag in exercise.tags:
-        exercise.tags.remove(old_tag)
+    old_tags = exercise.tags
+    exercise.tags = []
+    for old_tag in old_tags:
         decrement_tag_use(old_tag.id)
