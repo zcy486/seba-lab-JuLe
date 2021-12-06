@@ -31,14 +31,16 @@ def read_exercises_by_filters(current_account: Account):
     query = db.session.query(Exercise)
 
     # filters by difficulty
-    if request.form['difficulty']:
-        difficulty_int = int(request.form['difficulty'])
-        query = query.filter_by(difficulty=Difficulty(difficulty_int))
+    if request.json['difficulty']:
+        query = query.filter_by(difficulty=Difficulty(request.json['difficulty']))
+
+    # filters by search text containing
+    if request.json['search']:
+        query = query.filter(Exercise.title.contains(request.json['search']))
 
     # filters by selected tags (treated as "OR")
-    if request.form['tags']:
-        tag_names = json.loads(request.form['tags'])
-        query = query.filter(db.or_(*[Exercise.tags.any(Tag.name == tag_name) for tag_name in tag_names]))
+    if request.json['tags']:
+        query = query.filter(db.or_(*[Exercise.tags.any(Tag.id == tag_id) for tag_id in request.json['tags']]))
 
     pages = math.ceil(query.count() / per_page)
     # get exercises in the 1st page because it's redirected to the 1st page after applying filters
@@ -54,14 +56,16 @@ def read_exercises_per_page(current_account: Account, page):
     query = db.session.query(Exercise)
 
     # filters by difficulty
-    if request.form['difficulty']:
-        difficulty_int = int(request.form['difficulty'])
-        query = query.filter_by(difficulty=Difficulty(difficulty_int))
+    if request.json['difficulty']:
+        query = query.filter_by(difficulty=Difficulty(request.json['difficulty']))
+
+    # filters by search text containing
+    if request.json['search']:
+        query = query.filter(Exercise.title.contains(request.json['search']))
 
     # filters by selected tags (treated as "OR")
-    if request.form['tags']:
-        tag_names = json.loads(request.form['tags'])
-        query = query.filter(db.or_(*[Exercise.tags.any(Tag.name == tag_name) for tag_name in tag_names]))
+    if request.json['tags']:
+        query = query.filter(db.or_(*[Exercise.tags.any(Tag.id == tag_id) for tag_id in request.json['tags']]))
 
     exercises_per_page = query.paginate(page, per_page, error_out=False).items
     return jsonify(exercises_schema.dump(exercises_per_page))

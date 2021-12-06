@@ -6,17 +6,17 @@ const baseRoute = '/exercises'
 const ExerciseService = {
     
     // applies filters to backend and returns exercises with the total page number
-    applyFilters: (filters: FormData) => {
+    applyFilters: (filters: any) => {
         return new Promise<any>((resolve) => {
-            HttpService(true).post(`${baseRoute}/filters`, filters)
+            HttpService(true).post(`${baseRoute}/filters`, JSON.stringify(filters))
                 .then(resp => resolve(resp.data))
         });
     },
 
     // get exercises per page by filters
-    getExercisesPerPage: (page: number, filters: FormData) => {
+    getExercisesPerPage: (page: number, filters: any) => {
         return new Promise<Exercise[]>((resolve) => {
-            HttpService(true).post(`${baseRoute}/page/${page}`, filters)
+            HttpService(true).post(`${baseRoute}/page/${page}`, JSON.stringify(filters))
                 .then(resp => resolve(resp.data))
         });
     },
@@ -33,7 +33,7 @@ const ExerciseService = {
     // get exercise by id
     getExercise: (id: string) => {
         return new Promise<Exercise>((resolve, reject) => {
-            HttpService.get(`${baseRoute}/${id}`)
+            HttpService(true).get(`${baseRoute}/${id}`)
                 .then(resp => resolve(resp.data))
                 .catch(err => reject(err.response))
         })
@@ -42,7 +42,7 @@ const ExerciseService = {
     // update exercise by id with form data
     updateExercise: (id:string, exercise: FormData) => {
         return new Promise<Exercise>((resolve, reject) => {
-            HttpService.post(`${baseRoute}/${id}`, exercise)
+            HttpService(true).post(`${baseRoute}/${id}`, exercise)
                 .then(resp => resolve(resp.data))
                 .catch(err => reject(err.response))
         })
@@ -51,7 +51,7 @@ const ExerciseService = {
     // delete exercise by id
     deleteExercise: (id:string) => {
         return new Promise<string>((resolve,reject) => {
-            HttpService.delete(`${baseRoute}/${id}`)
+            HttpService(true).delete(`${baseRoute}/${id}`)
                 .then(resp => resolve(resp.data.message))
                 .catch(err => reject(err.response))
         })
