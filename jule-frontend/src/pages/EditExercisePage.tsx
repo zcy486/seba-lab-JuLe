@@ -132,8 +132,8 @@ const EditExercisePage = () => {
             .then((res) => {
                 console.log('Successfully updated')
                 console.log(res)
-                //TODO: navigate to profile page or exercise detail page?
-                navigate(`/exercises/${id}`)
+                // navigate to exercise detail page
+                navigate(`/exercises/${res.id}`)
             })
             .catch(err => {
                 if (err.status === 409) {

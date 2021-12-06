@@ -6,8 +6,11 @@ import TagInput from "../components/TagInput/TagInput";
 import TextEditorButtonPanel from "../components/TextEditorButtonPanel/TextEditorButtonPanel";
 import ExerciseService from "../services/ExerciseService";
 import TagService from "../services/TagService";
+import {useNavigate} from "react-router-dom";
 
 const NewExercisePage = () => {
+
+    const navigate = useNavigate()
 
     const [title, setTitle] = useState('');
     const [explanation, setExplanation] = useState('');
@@ -105,7 +108,8 @@ const NewExercisePage = () => {
             .then((res) => {
                 console.log('Successfully created')
                 console.log(res);
-                //TODO: navigate to profile page (lecturer's view)
+                // navigate to exercise detail page
+                navigate(`/exercises/${res.id}`)
             })
             .catch(err => {
                 if (err.status === 409) {

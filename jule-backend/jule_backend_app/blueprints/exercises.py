@@ -193,6 +193,7 @@ def add_tags_by_name(exercise, tag_names):
 # helper function not exposed to REST API
 # remove all the tags from the exercise
 def remove_tags_from_exercise(exercise):
-    for old_tag in exercise.tags:
-        decrement_tag_use(old_tag.id)
+    old_tags = exercise.tags
     exercise.tags = []
+    for old_tag in old_tags:
+        decrement_tag_use(old_tag.id)
