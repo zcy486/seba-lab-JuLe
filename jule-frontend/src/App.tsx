@@ -15,6 +15,8 @@ import LoginPage from "./pages/LoginPage";
 import ContactPage from "./pages/ContactPage";
 import NewExercisePage from "./pages/NewExercisePage";
 import VerifyEmailPage from "./pages/VerifyEmailPage/VerifyEmailPage"
+import ExerciseDetailPage from "./pages/ExerciseDetailPage";
+import EditExercisePage from "./pages/EditExercisePage";
 
 const App = () => {
     const [loggedIn, setLoggedIn] = useState(false)
@@ -26,14 +28,20 @@ const App = () => {
                 <Outlet/>
                 <Routes>
                     <Route path={""} element={<LandingPage/>}/>
-                    <Route path={"exercises"} element={<ExercisesPage/>}/>
+                    <Route path={"exercises"}>
+                        <Route path={":id"}>
+                            <Route path={"edit"} element={<EditExercisePage/>}/>
+                            <Route path={""} element={<ExerciseDetailPage/>}/>
+                        </Route>
+                        <Route path={"create"} element={<NewExercisePage/>}/>
+                        <Route path={""} element={<ExercisesPage/>}/>
+                    </Route>
                     <Route path={"profile"} element={<ProfilePage/>}/>
                     <Route path={"impressum"} element={<ImpressumPage/>}/>
                     <Route path={"register"} element={<RegistrationPage/>}/>
                     <Route path={"register-complete"} element={<VerifyEmailPage/>}/>
                     <Route path={"login"} element={<LoginPage setLoggedIn={setLoggedIn}/>}/>
                     <Route path={"contact-us"} element={<ContactPage/>}/>
-                    <Route path={"exercises/create"} element={<NewExercisePage/>}/>
                     <Route path={"*"} element={<ErrorPage/>}/>
                 </Routes>
             </Container>
