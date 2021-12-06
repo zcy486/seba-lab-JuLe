@@ -1,19 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import {Outlet} from "react-router-dom";
 import {Container} from "@mui/material";
 import Footer from "./components/Footer/Footer";
 import NavigationBar from "./components/NavigationBar/NavigationBar";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import ProfilePage from "./pages/ProfilePage";
+import ErrorPage from "./pages/ErrorPage";
+import ExercisesPage from "./pages/ExercisesPage/ExercisesPage";
+import LandingPage from "./pages/LandingPage/LandingPage";
+import ImpressumPage from "./pages/ImpressumPage/ImpressumPage";
+import RegistrationPage from "./pages/RegistrationPage";
+import LoginPage from "./pages/LoginPage";
+import ContactPage from "./pages/ContactPage";
+import NewExercisePage from "./pages/NewExercisePage";
+import VerifyEmailPage from "./pages/VerifyEmailPage/VerifyEmailPage"
 
-const App = () => (
+const App = () => {
+    const [loggedIn, setLoggedIn] = useState(false)
+    return (
     <>
-        <NavigationBar loggedIn={true}/>
-        <Container maxWidth="lg">
-            <Outlet/>
-        </Container>
-        <div className={"verticalSpacer"}/>
-        <Footer/>
-    </>
-);
+        <BrowserRouter>
+            <NavigationBar loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>
+            <Container maxWidth="lg">
+                <Outlet/>
+                <Routes>
+                    <Route path={""} element={<LandingPage/>}/>
+                    <Route path={"exercises"} element={<ExercisesPage/>}/>
+                    <Route path={"profile"} element={<ProfilePage/>}/>
+                    <Route path={"impressum"} element={<ImpressumPage/>}/>
+                    <Route path={"register"} element={<RegistrationPage/>}/>
+                    <Route path={"register-complete"} element={<VerifyEmailPage/>}/>
+                    <Route path={"login"} element={<LoginPage setLoggedIn={setLoggedIn}/>}/>
+                    <Route path={"contact-us"} element={<ContactPage/>}/>
+                    <Route path={"exercises/create"} element={<NewExercisePage/>}/>
+                    <Route path={"*"} element={<ErrorPage/>}/>
+                </Routes>
+            </Container>
+            <div className={"verticalSpacer"}/>
+            <Footer/>
+        </BrowserRouter>
+    </>)
+}
 
 export default App;
