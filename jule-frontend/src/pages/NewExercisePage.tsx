@@ -1,13 +1,16 @@
 import React, {useState, useEffect} from "react";
-import {MenuItem, Select, TextField, Typography} from "@mui/material";
+import {Alert, MenuItem, Select, TextField, Typography} from "@mui/material";
 import {SelectChangeEvent} from "@mui/material/Select";
 import TextEditor from "../components/TextEditor/TextEditor";
 import TagInput from "../components/TagInput/TagInput";
 import TextEditorButtonPanel from "../components/TextEditorButtonPanel/TextEditorButtonPanel";
 import ExerciseService from "../services/ExerciseService";
 import TagService from "../services/TagService";
+import {useNavigate} from "react-router-dom";
 
 const NewExercisePage = () => {
+
+    const navigate = useNavigate()
 
     const [title, setTitle] = useState('');
     const [explanation, setExplanation] = useState('');
@@ -105,7 +108,8 @@ const NewExercisePage = () => {
             .then((res) => {
                 console.log('Successfully created')
                 console.log(res);
-                //TODO: navigate to profile page (lecturer's view)
+                // navigate to exercise detail page
+                navigate(`/exercises/${res.id}`)
             })
             .catch(err => {
                 if (err.status === 409) {
@@ -159,7 +163,7 @@ const NewExercisePage = () => {
                 <MenuItem value={3}>Public</MenuItem>
             </Select>
 
-            <Typography variant={'h6'} color={'error'} sx={{mt: 3}}>{error}</Typography>
+            {error && <Alert sx={{mt: 3}} severity="error">{error}</Alert>}
             <TextEditorButtonPanel saveText={handleSubmit} onCancel={handleCancel}/>
         </div>
     )
