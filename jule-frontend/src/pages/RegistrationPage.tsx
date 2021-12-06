@@ -5,7 +5,6 @@ import ReCAPTCHA from "react-google-recaptcha";
 import config from "../config.json"
 import AuthService from "../services/AuthService";
 import Auth from "../models/Auth";
-import { Role } from "../models/User";
 import { Navigate } from 'react-router-dom'
 
 const RegistrationPage = () => {
@@ -28,7 +27,7 @@ const RegistrationPage = () => {
         let registrationData: Auth = { name: name, email: email, password: password1, role: role, universityId: universityId }
 
         AuthService.register(registrationData).then((res) => {
-            if (res.status === 200) {
+            if (res.status === 201) {
                 console.log('Successfully created')
                 setNavigate(true)
             } else if (res.status === 409) { // Email exists

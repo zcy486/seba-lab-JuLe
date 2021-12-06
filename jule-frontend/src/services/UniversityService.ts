@@ -5,9 +5,9 @@ const baseRoute = "/universities"
 
 const UniversityService = {
     getAll: (): Promise<University[]> =>
-        HttpService.get<University[]>(baseRoute).then(response => response.data),
+        HttpService(true).get<University[]>(baseRoute).then(response => response.data),
     get: (id: number): Promise<University> =>
-        HttpService.get<University>(baseRoute + `/${id}`).then(response => response.data)
+        HttpService(true).get<University>(baseRoute + `/${id}`).then(response => response.data)
 }
 
 export default UniversityService

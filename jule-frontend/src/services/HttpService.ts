@@ -6,7 +6,18 @@ const httpServer = serverLocation
 
 
 // a base http request using axios
-export const HttpService = axios.create({baseURL: serverLocation, headers: {"Content-Type":"application/json"}})
+export const HttpService = (useAuthentication: boolean) => {
+    if (useAuthentication) {
+        let jwtToken = localStorage.getItem('jwtToken')
+        if (jwtToken !== null) {
+            return axios.create({baseURL: serverLocation, headers: {"Content-Type":"application/json", "x-access-token":jwtToken}})
+        } else {
+            throw Error('Authorization was not possible, because the JWT-Token is missing from Browser Local Storage')
+        }
+    } else {
+        return axios.create({baseURL: serverLocation, headers: {"Content-Type":"application/json"}})
+    }
+}
 
 // TODO: decide if this should be deleted
 // a basic http request using fetch()
