@@ -35,6 +35,16 @@ class AccountSchema(CamelCaseSQLASchema):
     register_time = ma.auto_field()
 
 
+class UserSchema(CamelCaseSQLASchema):
+    class Meta:
+        model = models.Account
+
+    id = ma.auto_field()
+    email = ma.auto_field()
+    name = ma.auto_field()
+    role = ma.auto_field()
+
+
 class UniversitySchema(CamelCaseSQLASchema):
     class Meta:
         model = models.University

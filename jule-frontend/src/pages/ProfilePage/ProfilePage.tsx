@@ -6,6 +6,10 @@ import config from "../../config.json"
 import ScoreGraph from "../../components/ScoreGraph/ScoreGraph";
 import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
 import {mockExercises} from "../../services/MockData";
+import StudentProfileContent from "./StudentProfileContent";
+import LecturerProfileContent from "./LecturerProfileContent";
+import User, {Role} from "../../models/User";
+import Loading from "../../components/Loading";
 
 const ProfilePage = () => {
 
@@ -23,7 +27,7 @@ const ProfilePage = () => {
     }
 
     // States
-    const [userName, setUserName] = useState<string>(" ")
+    const [user, setUser] = useState<User>()
     const [exerciseDateData, setExerciseDateData] = useState<{ date: Date; count: number }[]>(nullDays(180))
     const [hotStreak, setHotStreak] = useState<{ exerciseCount: number, dayCount: number }>({
         exerciseCount: 0,
@@ -31,8 +35,8 @@ const ProfilePage = () => {
     })
 
     // Getters
-    const getUserName = () => {
-        UserService.getName().then(val => setUserName(val))
+    const getUser = () => {
+        UserService.getCurrentUser().then(val => setUser(val))
     }
     const getExerciseDateData = () => {
         UserService.getExerciseDateData().then(val => setExerciseDateData(val))
@@ -43,7 +47,7 @@ const ProfilePage = () => {
 
     // Set states when loading the component
     useEffect(() => {
-        getUserName()
+        getUser()
         getExerciseDateData()
         getHotStreak()
     }, [])
@@ -58,29 +62,20 @@ const ProfilePage = () => {
         }
     }
 
+    const ProfileContent = () => {
+        if (user?.role === Role.Student){
+            return <StudentProfileContent />
+        } else if (user?.role === Role.Lecturer){
+            return <LecturerProfileContent />
+        } else {
+            return <Loading/>
+        }
+    }
+
     return (
         <div>
-            <h1>{userName}</h1>
-            <h2>Activity</h2>
-            <div className={"centerDiv"}>
-                <ActivityChart exerciseData={exerciseDateData}/>
-            </div>
-            <div className={"verticalSpacer"}/>
-            <HotStreak/>
-            <h2>Scores</h2>
-            <div className={"centerDiv"}>
-                <ScoreGraph/>
-            </div>
-            <h2>Latest Exercises</h2>
-            {mockExercises.map((mockdata, i) => {
-                return (
-                    <ExerciseCard key={i}
-                                  id={mockdata.id!}
-                                  title={mockdata.title!}
-                                  exerciseTags={mockdata.exerciseTags!}
-                    />
-                );
-            })}
+            <h1>{user?.name}</h1>
+            <ProfileContent />
         </div>
     )
 }

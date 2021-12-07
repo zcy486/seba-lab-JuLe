@@ -9,8 +9,6 @@ type User = {
     id: number,
     name: string,
     role: Role,
-    lastLogin: Date,
-    registerDate: Date,
     university: University
 }
 

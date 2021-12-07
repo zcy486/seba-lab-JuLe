@@ -5,7 +5,8 @@ from jule_backend_app.config import JWT_SECRET_KEY
 from jule_backend_app.models import Account
 from functools import wraps
 
-def requireAuthorization(f):
+
+def require_authorization(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         jwt_token = None
