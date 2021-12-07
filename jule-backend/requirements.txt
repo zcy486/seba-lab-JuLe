@@ -4,4 +4,8 @@ flask_marshmallow
 marshmallow-sqlalchemy
 psycopg2-binary
 flask_cors
-pyjwt
+pyjwt~=2.3.0
+
+Werkzeug~=2.0.2
+textstat~=0.7.2
+SQLAlchemy~=1.4.27
