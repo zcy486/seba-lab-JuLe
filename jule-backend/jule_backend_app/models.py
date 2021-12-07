@@ -31,13 +31,27 @@ class Score(enum.IntEnum):
     unsatisfactory = 4
 
 
-class Statistic(db.Model):
-    # TODO: to be modified
+class StatisticType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50), unique=True)
-    description = db.Column(db.String(140), unique=False)
+    title = db.Column(db.String(50))
+    description = db.Column(db.String(140))
 
-    grade_id = db.Column(db.Integer, db.ForeignKey('grade.id'), nullable=False)  # Grade <- Statistic (one-to-many)
+
+class Statistic(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    submission_value = db.Column(db.Integer)
+
+    statistic_type_id = db.Column(db.Integer, db.ForeignKey('statistic_type.id'), nullable=False)
+    statistic_type = db.relationship('StatisticType')
+
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=False)
+    exercise = db.relationship('Exercise')  # Statistic -> Exercise (one-to-many)
+
+    submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=False)
+    submission = db.relationship('Submission')  # Statistic -> Submission (one-to-one)
+
+    student_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
+    account = db.relationship('Account')  # Statistic -> Account (one-to-one)
 
 
 class Account(db.Model):
@@ -106,15 +120,18 @@ class Submission(db.Model):
                            nullable=False)  # Submission -> Account (many-to-one)
     account = db.relationship('Account')  # Submission -> Account (many-to-one)
 
-    grade_id = db.Column(db.Integer, db.ForeignKey('grade.id'), nullable=False)  # Submission <- Grade (one-to-one)
-    grade = db.relationship('Grade', back_populates='submission')  # Submission <- Grade (one-to-one)
-
 
 class Grade(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Enum(Score))
-    submission = db.relationship('Submission', back_populates='grade',
-                                 uselist=False)  # Grade -> Submission (one-to-one)
 
-    # TODO: not sure if this is the right way for statistics
-    statistics = db.relationship('Statistic')  # Grade -> Statistic (one-to-many)
+    account_id = db.Column(db.Integer, db.ForeignKey('Account.id'), nullable=False)
+    account = db.relationship('Account')  # Grade -> User (many-to-one)
+
+    submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=False)
+    submission = db.relationship('Submission', uselist=False)  # Grade -> Submission (one-to-one)
+
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
+                            nullable=False)
+    exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)
+
