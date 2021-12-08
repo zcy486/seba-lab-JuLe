@@ -32,9 +32,11 @@ const LoginPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) => {
 				alert('Email does not exist! Please try again.')
 			} else if (res.status === 403) { // Wrong Password
 				alert('Wrong Password! Please try again.')
-			} else { // Unknown error
-				console.log(res)
-				alert('Sorry, an unknown error has occured! Please try again.')
+			} else { // Errors
+				if (res.data.message === null)
+					alert('Sorry, an unknown error has occured! Please try again.')
+				else
+					alert('The following error occured: ' + res.data.message)
 			}
 		})
 	}

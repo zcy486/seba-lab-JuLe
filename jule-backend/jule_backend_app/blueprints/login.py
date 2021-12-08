@@ -27,10 +27,11 @@ def index():
             return Response(status=401) # Wrong email
         if (check_password_hash(query_account.password, password) == False):
             return Response(status=403) # Wrong password
-
+        if (query_account.is_verified == False):
+            return Response(status=409) # Account not verified
         # Generating JWT Token for User
         expire_date = datetime.datetime.utcnow() + datetime.timedelta(days=1)
-        jwt_token = jwt.encode({'id':query_account.id, 'email':query_account.email, 'exp':expire_date}, JWT_SECRET_KEY)
+        jwt_token = jwt.encode({'id':query_account.id, 'email':query_account.email, 'exp':expire_date, 'is_verified':True}, JWT_SECRET_KEY)
 
         # Building Response
         account_object = account_schema.dump(query_account)

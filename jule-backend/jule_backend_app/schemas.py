@@ -33,6 +33,7 @@ class AccountSchema(CamelCaseSQLASchema):
     role = ma.auto_field()
     last_login = ma.auto_field()
     register_time = ma.auto_field()
+    is_verified = ma.auto_field()
 
 
 class UniversitySchema(CamelCaseSQLASchema):

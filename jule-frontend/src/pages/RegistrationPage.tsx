@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Button from "@mui/material/Button";
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
@@ -6,6 +6,8 @@ import config from "../config.json"
 import AuthService from "../services/AuthService";
 import Auth from "../models/Auth";
 import { Navigate } from 'react-router-dom'
+import UniversityService from "../services/UniversityService";
+import University from "../models/University";
 
 const RegistrationPage = () => {
 
@@ -16,6 +18,18 @@ const RegistrationPage = () => {
     const [password2, setPassword2] = useState('')
     const [role, setRole] = useState('student')
     const [universityId, setUniversityId] = useState(0)
+    //var universities: University[]
+    const [universities, setUniversities] = useState<University[]>([]);
+
+    useEffect(() => {
+        fetchAvailableUniversitiesFromBackend()
+    }, []) // needs to run only once
+
+
+    const fetchAvailableUniversitiesFromBackend = (): void => {
+        UniversityService.getAll().then(res => setUniversities(res))
+        console.log('universities fetched!')
+    }
 
     if (navigate) {
         return <Navigate to={"/register-complete?email=" + email} />
@@ -62,7 +76,7 @@ const RegistrationPage = () => {
         </select>
         <h3>University:</h3>
         <select name="universityId" onChange={e => setUniversityId(+e.target.value)}>
-            <option value={0}>TUM</option>
+            { universities.map((element, index) => <option value={index}>{element.name}</option>) }
         </select>
         <h3>Captcha:</h3>
         <ReCAPTCHA

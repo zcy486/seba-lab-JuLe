@@ -15,6 +15,7 @@ import LoginPage from "./pages/LoginPage";
 import ContactPage from "./pages/ContactPage";
 import NewExercisePage from "./pages/NewExercisePage";
 import VerifyEmailPage from "./pages/VerifyEmailPage/VerifyEmailPage"
+import ConfirmEmailPage from "./pages/ConfirmEmailPage/ConfirmEmailPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 import EditExercisePage from "./pages/EditExercisePage";
 
@@ -40,6 +41,7 @@ const App = () => {
                     <Route path={"impressum"} element={<ImpressumPage/>}/>
                     <Route path={"register"} element={<RegistrationPage/>}/>
                     <Route path={"register-complete"} element={<VerifyEmailPage/>}/>
+                    <Route path={"confirm-email"} element={<ConfirmEmailPage setLoggedIn={setLoggedIn}/>}/>
                     <Route path={"login"} element={<LoginPage setLoggedIn={setLoggedIn}/>}/>
                     <Route path={"contact-us"} element={<ContactPage/>}/>
                     <Route path={"*"} element={<ErrorPage/>}/>
