@@ -1,4 +1,5 @@
 import Tag from "./Tag";
+import User from "./User";
 
 export enum Difficulty {
     easy = 1,
@@ -8,7 +9,7 @@ export enum Difficulty {
 
 export enum Scope {
     draft = 1,
-    internal = 2 ,
+    internal = 2,
     public = 3
 }
 
@@ -20,7 +21,8 @@ type Exercise = {
     difficulty: Difficulty,
     scope: Scope,
     sampleSolution: string,
-    tags: Tag[]
+    tags: Tag[],
+    owner: User
 }
 
 export default Exercise

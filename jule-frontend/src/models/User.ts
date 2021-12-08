@@ -1,8 +1,8 @@
 import University from "./University";
 
 export enum Role {
-    Student,
-    Lecturer
+    Student= 1,
+    Lecturer= 2
 }
 
 type User = {

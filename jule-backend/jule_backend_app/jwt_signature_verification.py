@@ -22,7 +22,7 @@ def require_authorization(f):
             # TODO return decoded token data
             current_account = Account.query.filter_by(id=data['id']).first()
         except:
-            return jsonify({'message' : 'Token is invalid!'}), 401
+            return jsonify({'message': 'Token is invalid!'}), 401
 
         return f(current_account, *args, **kwargs)
 

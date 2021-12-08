@@ -6,9 +6,10 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
 import ExerciseService from "../../services/ExerciseService";
 import TagService from "../../services/TagService";
-import Exercise from "../../models/Exercise";
+import Exercise, {Difficulty} from "../../models/Exercise";
 import Tag from "../../models/Tag";
 import Loading from "../Loading";
+import UserService from "../../services/UserService";
 
 type ExerciseListProps = {
     showTagFilter?: boolean,
@@ -30,7 +31,7 @@ const ExerciseList = (props: ExerciseListProps) => {
 
     //filters-relevant states
     //difficulty in filters
-    const [difficulty, setDifficulty] = useState('');
+    const [difficulty, setDifficulty] = useState<string>('');
     //selected tags in filters
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     //input of search box
@@ -40,8 +41,9 @@ const ExerciseList = (props: ExerciseListProps) => {
     //indicator of loading state
     const [loading, setLoading] = useState(true);
 
-    // get all available tags from backend
+    // states set on component loading
     useEffect(() => {
+        // get all available tags from backend
         TagService.getAll()
             .then(res => {
                 setAvailableTags(res)
@@ -53,9 +55,23 @@ const ExerciseList = (props: ExerciseListProps) => {
         let active = true;
         (async () => {
             let filters = {
-                difficulty: difficulty,
-                tags: selectedTags,
-                search: searchContent,
+                difficulty: undefined as number | undefined,
+                tags: undefined as string[] | undefined,
+                search: undefined as string | undefined,
+                owner_id: undefined as number | undefined
+            }
+            // filter only by current owned exercises if prop is set
+            if (difficulty !== "") {
+                filters.difficulty = parseInt(difficulty)
+            }
+            if (selectedTags.length !== 0) {
+                filters.tags = selectedTags
+            }
+            if (searchContent.length !== 0) {
+                filters.search = searchContent
+            }
+            if (props.onlyCurrentOwned) {
+                await UserService.getCurrentUser().then(res => { filters.owner_id = res.id })
             }
             const resp = await ExerciseService.applyFilters(filters)
             if (!active) {
@@ -75,20 +91,39 @@ const ExerciseList = (props: ExerciseListProps) => {
 
     const onChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         if (value !== page) {
-            setPage(value);
-            setLoading(true);
-            setInput(searchContent);
-            let filters = {
-                difficulty: difficulty,
-                tags: selectedTags,
-                search: searchContent,
-            }
-            //get exercises to be displayed on the new page by current filters
-            ExerciseService.getExercisesPerPage(value, filters)
-                .then(resp => {
-                    setExercises(resp)
-                    setLoading(false)
-                })
+            (async () => {
+                setPage(value);
+                setLoading(true);
+                setInput(searchContent);
+                let filters = {
+                    difficulty: undefined as number | undefined,
+                    tags: undefined as string[] | undefined,
+                    search: undefined as string | undefined,
+                    owner_id: undefined as number | undefined
+                }
+                // filter only by current owned exercises if prop is set
+                if (difficulty !== "") {
+                    filters.difficulty = parseInt(difficulty)
+                }
+                if (selectedTags.length !== 0) {
+                    filters.tags = selectedTags
+                }
+                if (searchContent.length !== 0) {
+                    filters.search = searchContent
+                }
+                if (props.onlyCurrentOwned) {
+                    await UserService.getCurrentUser().then(res => {
+                        filters.owner_id = res.id
+                    })
+                }
+
+                //get exercises to be displayed on the new page by current filters
+                await ExerciseService.getExercisesPerPage(value, filters)
+                    .then(resp => {
+                        setExercises(resp)
+                        setLoading(false)
+                    })
+            })()
         }
     };
 

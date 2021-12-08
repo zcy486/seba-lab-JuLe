@@ -18,12 +18,22 @@ class CamelCaseSQLASchema(ma.SQLAlchemySchema):
 
 
 # Schemas
+class UniversitySchema(CamelCaseSQLASchema):
+    class Meta:
+        model = models.University
+
+    name = ma.auto_field()
+    abbreviation = ma.auto_field()
+    logo_src = ma.auto_field()
+
+
 class StatisticSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Statistic
 
 
 class AccountSchema(CamelCaseSQLASchema):
+
     class Meta:
         model = models.Account
 
@@ -33,6 +43,7 @@ class AccountSchema(CamelCaseSQLASchema):
     role = ma.auto_field()
     last_login = ma.auto_field()
     register_time = ma.auto_field()
+    university = ma.Nested(UniversitySchema)
 
 
 class UserSchema(CamelCaseSQLASchema):
@@ -40,18 +51,9 @@ class UserSchema(CamelCaseSQLASchema):
         model = models.Account
 
     id = ma.auto_field()
-    email = ma.auto_field()
     name = ma.auto_field()
     role = ma.auto_field()
-
-
-class UniversitySchema(CamelCaseSQLASchema):
-    class Meta:
-        model = models.University
-
-    name = ma.auto_field()
-    abbreviation = ma.auto_field()
-    logo_src = ma.auto_field()
+    university = ma.Nested(UniversitySchema)
 
 
 class TagSchema(CamelCaseSQLASchema):
@@ -63,9 +65,6 @@ class TagSchema(CamelCaseSQLASchema):
 
 
 class ExerciseSchema(CamelCaseSQLASchema):
-    # a list of tags
-    tags = ma.Nested(TagSchema, many=True)
-
     class Meta:
         model = models.Exercise
 
@@ -76,6 +75,8 @@ class ExerciseSchema(CamelCaseSQLASchema):
     difficulty = ma.auto_field()
     scope = ma.auto_field()
     sample_solution = ma.auto_field()
+    tags = ma.Nested(TagSchema, many=True)  # list of tags
+    owner = ma.Nested(UserSchema)
 
 
 class SubmissionSchema(CamelCaseSQLASchema):

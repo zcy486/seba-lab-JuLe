@@ -31,16 +31,20 @@ def read_exercises_by_filters(current_account: Account):
     query = db.session.query(Exercise)
 
     # filters by difficulty
-    if request.json['difficulty']:
+    if 'difficulty' in request.json:
         query = query.filter_by(difficulty=Difficulty(request.json['difficulty']))
 
-    # filters by search text containing
-    if request.json['search']:
-        query = query.filter(Exercise.title.contains(request.json['search']))
+    # filters by search text being contained in exercise title
+    if 'search' in request.json:
+        query = query.filter(request.json['search'] in Exercise.title)
 
     # filters by selected tags (treated as "OR")
-    if request.json['tags']:
+    if 'tags' in request.json:
         query = query.filter(db.or_(*[Exercise.tags.any(Tag.id == tag_id) for tag_id in request.json['tags']]))
+
+    # filters by owner's id
+    if 'owner_id' in request.json:
+        query = query.filter_by(owner_id=int(request.json['owner_id']))
 
     pages = math.ceil(query.count() / per_page)
     # get exercises in the 1st page because it's redirected to the 1st page after applying filters
@@ -56,16 +60,20 @@ def read_exercises_per_page(current_account: Account, page):
     query = db.session.query(Exercise)
 
     # filters by difficulty
-    if request.json['difficulty']:
+    if 'difficulty' in request.json:
         query = query.filter_by(difficulty=Difficulty(request.json['difficulty']))
 
     # filters by search text containing
-    if request.json['search']:
-        query = query.filter(Exercise.title.contains(request.json['search']))
+    if 'search' in request.json:
+        query = query.filter(request.json['search'] in Exercise.title)
 
     # filters by selected tags (treated as "OR")
-    if request.json['tags']:
+    if 'tags' in request.json:
         query = query.filter(db.or_(*[Exercise.tags.any(Tag.id == tag_id) for tag_id in request.json['tags']]))
+
+    # filters by difficulty
+    if 'owner_id' in request.json:
+        query = query.filter_by(owner_id=request.json['owner_id'])
 
     exercises_per_page = query.paginate(page, per_page, error_out=False).items
     return jsonify(exercises_schema.dump(exercises_per_page))
@@ -93,7 +101,7 @@ def rud_exercise(current_account: Account, exercise_id):
 
     # update exercise by id
     elif request.method == 'POST':
-        if request.form['title']:
+        if 'title' in request.form:
             title = request.form['title']
             # if title is changed, check duplicate title of other exercises
             if title != exercise.title:
@@ -102,22 +110,25 @@ def rud_exercise(current_account: Account, exercise_id):
                     # if exercise with same title already exists
                     return abort(409, 'exercise with same title already exists')
                 exercise.title = title
-        if request.form['explanation']:
+        if 'explanation' in request.form:
             exercise.explanation = request.form['explanation']
-        if request.form['question']:
+        if 'question' in request.form:
             exercise.question = request.form['question']
-        if request.form['difficulty']:
+        if 'difficulty' in request.form:
             exercise.difficulty = int(request.form['difficulty'])
-        if request.form['scope']:
+        if 'scope' in request.form:
             exercise.scope = int(request.form['scope'])
-        if request.form['sample_solution']:
+        if 'sample_solution' in request.form:
             exercise.sample_solution = request.form['sample_solution']
-        if request.form['tags']:
+        if 'tags' in request.form:
+            # TODO: might have some bugs, review at some point (exercise not being committed yet tags being incremented)
             new_tag_names = request.form['tags']
             # clear old tags in the exercise
             remove_tags_from_exercise(exercise)
             # append new tags to the exercise
             add_tags_by_name(exercise, json.loads(new_tag_names))
+        if 'owner_id' in request.form:
+            exercise.owner_id = request.form['owner_id']
 
         # commit changes to db
         db.session.commit()
@@ -126,8 +137,6 @@ def rud_exercise(current_account: Account, exercise_id):
     # delete exercise by id
     elif request.method == 'DELETE':
         # remove dependencies
-        # TODO: uncomment this line when user data is ready
-        # exercise.owner = None
         remove_tags_from_exercise(exercise)
 
         db.session.delete(exercise)
@@ -144,10 +153,10 @@ def rud_exercise(current_account: Account, exercise_id):
 @require_authorization
 def create_exercise(current_account: Account):
     # TODO: add owner to the exercise when user data is ready
-    # owner_id = request.form['owner_id']
-    # owner = User.query.filter_by(id=owner_id).first()
-    # if owner is None:
-    #    return abort(405, 'User not exists')
+    owner_id = request.form['owner_id']
+    owner = Account.query.filter_by(id=owner_id).first()
+    if owner is None:
+        return abort(405, 'User does not exist')
 
     title = request.form['title']
     explanation = request.form['explanation']
@@ -168,7 +177,7 @@ def create_exercise(current_account: Account):
 
     # create new exercise
     new_exercise = Exercise(
-        # owner=owner,
+        owner=owner,
         title=title,
         explanation=explanation,
         question=question,

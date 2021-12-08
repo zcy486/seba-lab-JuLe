@@ -7,6 +7,7 @@ import TextEditorButtonPanel from "../../components/TextEditorButtonPanel/TextEd
 import ExerciseService from "../../services/ExerciseService";
 import TagService from "../../services/TagService";
 import {useNavigate} from "react-router-dom";
+import UserService from "../../services/UserService";
 
 const NewExercisePage = () => {
 
@@ -66,7 +67,7 @@ const NewExercisePage = () => {
         setError('')
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!title) {
             setError('Field Title must not be empty.')
             return;
@@ -91,6 +92,7 @@ const NewExercisePage = () => {
             setError('Field Scope must not be empty.')
             return;
         }
+
         // if above fields are not empty
         let new_exercise = new FormData()
         new_exercise.append('title', title)
@@ -100,9 +102,7 @@ const NewExercisePage = () => {
         new_exercise.append('difficulty', difficulty)
         new_exercise.append('scope', scope)
         new_exercise.append('tags', JSON.stringify(tags))
-
-        // TODO: specify the exercise's owner_id (the lecturer's id)
-        // new_exercise.append('owner_id', '123')
+        new_exercise.append('owner_id', ((await UserService.getCurrentUser()).id).toString())
 
         ExerciseService.createExercise(new_exercise)
             .then((res) => {
