@@ -1,0 +1,60 @@
+version: '3.9'
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+services:
+  postgres:
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.1
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    volumes:
+      - ~/jule/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=UY6pWbv2KW8E8zxV
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=jule
+
+  smtp:
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.2
+    image: namshi/smtp
+    ports:
+      - 25:25
+    restart: unless-stopped
+    environment:
+      - MAILNAME=jule.de
+
+  api:
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.3
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    image: jule-api
+    volumes:
+      - ~/jule/jule-backend:/jule-backend
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+
+  client:
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.4
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    image: jule-client
+    volumes:
+      - ~/jule/jule-frontend:/jule-frontend
+    ports:
+      - 3000:3000
+    restart: unless-stopped

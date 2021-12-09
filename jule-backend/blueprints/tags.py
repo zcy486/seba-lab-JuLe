@@ -1,10 +1,10 @@
 from typing import List
 from flask import abort, Blueprint, jsonify
 
-from jule_backend_app.app import db
-from jule_backend_app.schemas import TagSchema
-from jule_backend_app.models import Tag, Account
-from jule_backend_app.jwt_signature_verification import requireAuthorization
+from app import db
+from schemas import TagSchema
+from models import Tag, Account
+from jwt_signature_verification import requireAuthorization
 
 # Tag blueprint used to register blueprint in app.py
 tags_routes = Blueprint('tags', __name__, url_prefix="/tags")
