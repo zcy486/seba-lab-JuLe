@@ -13,8 +13,7 @@ services:
     ports:
       - 5432:5432
     restart: unless-stopped
-    volumes:
-      - ~/jule/postgres:/var/lib/postgresql/data
+
     environment:
       - POSTGRES_PASSWORD=UY6pWbv2KW8E8zxV
       - POSTGRES_USER=postgres
@@ -40,7 +39,7 @@ services:
       dockerfile: Dockerfile.backend
     image: jule-api
     volumes:
-      - ~/jule/jule-backend:/jule-backend
+      - ./jule-backend:/jule-backend
     ports:
       - 5000:5000
     restart: unless-stopped
@@ -54,7 +53,11 @@ services:
       dockerfile: Dockerfile.frontend
     image: jule-client
     volumes:
-      - ~/jule/jule-frontend:/jule-frontend
+      - ./jule-frontend:/jule-frontend
     ports:
       - 3000:3000
     restart: unless-stopped
+
+volumes:
+  db_volume:
+    external: true

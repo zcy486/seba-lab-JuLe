@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react"
 import {useLocation} from "react-router-dom";
 import styles from "./ConfirmEmailPage.module.css";
 import Button from "@mui/material/Button";
-import {Link} from "react-router-dom"
-import jwt from 'jwt-decode'
+import {Link} from "react-router-dom";
+import jwt from 'jwt-decode';
 import User from "../../models/User";
 import AuthService from "../../services/AuthService";
 
