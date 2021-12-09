@@ -9,7 +9,6 @@ import {Link, useNavigate} from "react-router-dom";
 
 let NavigationBar = (props: {loggedIn: boolean, setLoggedIn:(loggedIn: boolean)=>void}) => {
 
-
     useEffect(()=> {
         console.log(props.loggedIn)
         if (localStorage.getItem('jwtToken') === null)
@@ -23,6 +22,10 @@ let NavigationBar = (props: {loggedIn: boolean, setLoggedIn:(loggedIn: boolean)=
         localStorage.removeItem('jwtToken')
         props.setLoggedIn(false)
         navigate('/login')
+    }
+
+    const goToHomePage = () => {
+        navigate('/')
     }
     
     return (
@@ -41,8 +44,7 @@ let NavigationBar = (props: {loggedIn: boolean, setLoggedIn:(loggedIn: boolean)=
                             style={{left: 0}}
                             alt="JuLe logo"
                             height="30"
-                            onClick={() => {
-                            }}
+                            onClick={goToHomePage}
                         />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{flexGrow: 1}}>

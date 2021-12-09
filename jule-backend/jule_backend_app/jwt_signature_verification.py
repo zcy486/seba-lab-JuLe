@@ -4,6 +4,7 @@ import jwt
 from jule_backend_app.config import JWT_SECRET_KEY
 from jule_backend_app.models import Account
 from functools import wraps
+import time
 
 
 def require_authorization(f):
@@ -19,7 +20,12 @@ def require_authorization(f):
 
         try:
             data = jwt.decode(jwt_token, JWT_SECRET_KEY, algorithms=["HS256"])
-            # TODO return decoded token data
+
+            # Check for expired token
+            current_date = time.time()
+            if (float(data['exp']) < current_date):
+                return jsonify({'message' : 'Token has expired!'}), 401
+
             current_account = Account.query.filter_by(id=data['id']).first()
         except:
             return jsonify({'message': 'Token is invalid!'}), 401

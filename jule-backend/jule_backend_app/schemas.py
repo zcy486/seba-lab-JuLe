@@ -44,6 +44,7 @@ class AccountSchema(CamelCaseSQLASchema):
     last_login = ma.auto_field()
     register_time = ma.auto_field()
     university = ma.Nested(UniversitySchema)
+    is_verified = ma.auto_field()
 
 
 class UserSchema(CamelCaseSQLASchema):

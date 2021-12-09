@@ -19,6 +19,10 @@ export const HttpService = (useAuthentication: boolean) => {
     }
 }
 
+export const HttpServiceVerifyEmail = (verifyEmailToken: string) => {
+    return axios.create({baseURL: serverLocation, headers: {"Content-Type":"application/json", "x-access-token":verifyEmailToken}})
+}
+
 // TODO: decide if this should be deleted
 // a basic http request using fetch()
 const baseRequest = async (route: string,

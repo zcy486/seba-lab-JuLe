@@ -17,6 +17,7 @@ import NewExercisePage from "./pages/Exercises/NewExercisePage";
 import VerifyEmailPage from "./pages/VerifyEmailPage/VerifyEmailPage"
 import ExerciseDetailPage from "./pages/Exercises/ExerciseDetailPage";
 import EditExercisePage from "./pages/Exercises/EditExercisePage";
+import ConfirmEmailPage from "./pages/ConfirmEmailPage/ConfirmEmailPage";
 
 const App = () => {
     const [loggedIn, setLoggedIn] = useState(false)
@@ -40,6 +41,7 @@ const App = () => {
                     <Route path={"impressum"} element={<ImpressumPage/>}/>
                     <Route path={"register"} element={<RegistrationPage/>}/>
                     <Route path={"register-complete"} element={<VerifyEmailPage/>}/>
+                    <Route path={"confirm-email"} element={<ConfirmEmailPage setLoggedIn={setLoggedIn}/>}/>
                     <Route path={"login"} element={<LoginPage setLoggedIn={setLoggedIn}/>}/>
                     <Route path={"contact-us"} element={<ContactPage/>}/>
                     <Route path={"*"} element={<ErrorPage/>}/>

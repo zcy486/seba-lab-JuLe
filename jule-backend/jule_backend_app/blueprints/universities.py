@@ -22,8 +22,7 @@ universities_schema = UniversitySchema(many=True)  # For lists of universities
 
 # returns a list of all universities sorted by alphabetical
 @universities_routes.route('', methods=['GET'], strict_slashes=False)
-@require_authorization
-def read_universities(current_account: Account):
+def read_universities():
     try:
         query_universities = University.query.all()
         mock_universities: List[University] = [
@@ -43,8 +42,7 @@ def read_universities(current_account: Account):
 
 # returns a single university with matching id or throws error if no university exists
 @universities_routes.route('/<university_id>', methods=['GET'])
-@require_authorization
-def read_university(current_account: Account, university_id: int):
+def read_university(university_id: int):
     try:
         query_university = University.query.filter_by(id=university_id).first()
         if query_university is None:
