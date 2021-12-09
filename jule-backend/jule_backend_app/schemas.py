@@ -87,3 +87,8 @@ class SubmissionSchema(CamelCaseSQLASchema):
 class GradeSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Grade
+
+
+class StatisticTyoeSchema(CamelCaseSQLASchema):
+    class Meta:
+        model = models.StatisticType
