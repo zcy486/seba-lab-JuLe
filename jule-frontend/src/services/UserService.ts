@@ -1,4 +1,8 @@
 import {fetchUserName, MockUserExerciseDateData, MockUserName} from "./MockData";
+import HttpService from "./HttpService";
+import User from "../models/User";
+
+const baseRoute = "/users"
 
 const UserService = {
     getName: async () => await MockUserName,
@@ -16,7 +20,8 @@ const UserService = {
         } catch (e) {
             console.error(e)
         }
-    }
+    },
+    getCurrentUser: (): Promise<User> => HttpService(true).get<User>(baseRoute + "/current").then(response => response.data)
 }
 
 export default UserService

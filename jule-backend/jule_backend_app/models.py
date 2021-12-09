@@ -101,11 +101,10 @@ class Exercise(db.Model):
     scope = db.Column(db.Enum(Scope), nullable=False)
     sample_solution = db.Column(db.Text, nullable=False)
 
-    # TODO: uncomment these two lines when user data is ready
-    # owner_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)  # Exercise -> Account (many-to-one)
-    # owner = db.relationship('Account')  # Exercise -> Account (many-to-one)
-
     tags = db.relationship('Tag', secondary=tags_helper)  # Exercise -> Tag (many-to-many)
+
+    owner_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)  # Exercise -> Account (many-to-one)
+    owner = db.relationship('Account')  # Exercise -> Account (many-to-one)
 
 
 class Submission(db.Model):

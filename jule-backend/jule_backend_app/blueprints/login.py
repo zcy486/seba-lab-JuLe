@@ -16,21 +16,22 @@ login_routes = Blueprint('login', __name__, url_prefix="/login")
 account_schema = AccountSchema()
 university_schema = UniversitySchema()
 
-@login_routes.route('/', methods=['POST'])
+
+@login_routes.route('', methods=['POST'], strict_slashes=False)
 def index():
     data = request.get_json()
     email = data['email']
     password = data['password']
     try:
         query_account = Account.query.filter_by(email=email).first()
-        if (query_account is None):
+        if query_account is None:
             return Response(status=401) # Wrong email
-        if (check_password_hash(query_account.password, password) == False):
+        if not check_password_hash(query_account.password, password):
             return Response(status=403) # Wrong password
 
         # Generating JWT Token for User
         expire_date = datetime.datetime.utcnow() + datetime.timedelta(days=1)
-        jwt_token = jwt.encode({'id':query_account.id, 'email':query_account.email, 'exp':expire_date}, JWT_SECRET_KEY)
+        jwt_token = jwt.encode({'id': query_account.id, 'email': query_account.email, 'exp': expire_date}, JWT_SECRET_KEY)
 
         # Building Response
         account_object = account_schema.dump(query_account)

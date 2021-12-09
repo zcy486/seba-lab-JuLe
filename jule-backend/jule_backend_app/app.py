@@ -13,7 +13,8 @@ from jule_backend_app.blueprints import (
     statistics,
     universities,
     submission,
-    grades
+    grades,
+    users
 )
 
 
@@ -34,8 +35,8 @@ def create_app(test_config=None):
     @app.route('/')
     def index():
         # Uncomment bellow lines, to recreate database
-        #db.drop_all()
-        #db.create_all()
+        # db.drop_all()
+        # db.create_all()
         return "JuLe backend active!"
 
     return app
@@ -60,3 +61,4 @@ def register_blueprints(app):
     app.register_blueprint(universities.universities_routes)
     app.register_blueprint(submission.submission_routes)
     app.register_blueprint(grades.grades_routes)
+    app.register_blueprint(users.users_routes)
