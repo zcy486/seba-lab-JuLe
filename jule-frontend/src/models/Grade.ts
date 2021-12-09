@@ -1,5 +1,3 @@
-import Statistic from "./Statistic";
-import Submission from "./Submission";
 
 export enum Score {
     Unsatisfactory = 1,
@@ -11,8 +9,9 @@ export enum Score {
 type Grade = {
     id: number,
     score: Score,
-    statistics: [userStatistic: Statistic, sampleSatatistic: Statistic, peerStatistic?: Statistic][],
-    submission: Submission,
+    studentID: number,
+    submissionID: number,
+    exerciseID: number
 }
 
 export default Grade
