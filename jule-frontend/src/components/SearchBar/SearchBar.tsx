@@ -3,28 +3,20 @@ import {Grid} from "@mui/material";
 import Filter from "./Filter";
 import SearchBox from "./SearchBox";
 import TagFilter from "./TagFilter";
+import Tag from "../../models/Tag";
 
 interface Props {
     difficulty: string;
     onChangeDifficulty: (e: any) => void;
     selectedTags: string[];
     onChangeSelectedTags: (e: any) => void;
-    tagsInUse: string[];
+    availableTags: Tag[];
     input: string;
     onChangeInput: (e: any) => void;
     onSearch: () => void;
 }
 
-const SearchBar = ({
-                       difficulty,
-                       onChangeDifficulty,
-                       selectedTags,
-                       onChangeSelectedTags,
-                       tagsInUse,
-                       input,
-                       onChangeInput,
-                       onSearch
-                   }: Props) => {
+const SearchBar = (props: Props) => {
 
     // TODO: replace with status outside when submission data is ready
     const [status, setStatus] = React.useState('');
@@ -39,8 +31,8 @@ const SearchBar = ({
                         {name: 'Medium', value: 2},
                         {name: 'Hard', value: 3},
                     ]}
-                    value={difficulty}
-                    onChangeValue={onChangeDifficulty}
+                    value={props.difficulty}
+                    onChangeValue={props.onChangeDifficulty}
                 />
                 <Filter
                     name={"Status"}
@@ -53,13 +45,13 @@ const SearchBar = ({
                 />
             </Grid>
             <Grid item xs={4}>
-                <SearchBox input={input} onChangeInput={onChangeInput} onSearch={onSearch}/>
+                <SearchBox input={props.input} onChangeInput={props.onChangeInput} onSearch={props.onSearch}/>
             </Grid>
             <Grid item xs={12}>
                 <TagFilter
-                    selectedTags={selectedTags}
-                    onChangeSelectedTags={onChangeSelectedTags}
-                    tagsInUse={tagsInUse}
+                    selectedTags={props.selectedTags}
+                    onChangeSelectedTags={props.onChangeSelectedTags}
+                    availableTags={props.availableTags}
                 />
             </Grid>
         </Grid>

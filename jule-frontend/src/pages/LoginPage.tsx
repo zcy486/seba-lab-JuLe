@@ -8,7 +8,7 @@ import User from "../models/User";
 import Auth from "../models/Auth";
 import { Navigate } from 'react-router-dom'
 
-const LoginPage = () => {
+const LoginPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) => {
 
 	const [navigate, setNavigate] = useState(false)
 	const [email, setEmail] = useState('')
@@ -40,6 +40,7 @@ const LoginPage = () => {
 	}
 
 	function handleSignIn(userFromBackend: User) {
+		props.setLoggedIn(true)
 		setNavigate(true)
 	}
 

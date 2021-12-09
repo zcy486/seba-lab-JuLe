@@ -4,8 +4,8 @@ import Exercise from "./Exercise";
 type Submission = {
     id: number,
     text: string,
-    exercise: Exercise,
-    user: User
+    exerciseID: number,
+    userID: number
 }
 
 export default Submission

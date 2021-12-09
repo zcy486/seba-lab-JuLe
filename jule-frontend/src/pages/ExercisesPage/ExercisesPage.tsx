@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from "react";
 import styles from "./ExercisesPage.module.css";
-import {Pagination} from "@mui/material";
+import {Pagination, Typography} from "@mui/material";
+import {SelectChangeEvent} from "@mui/material/Select";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
 import ExerciseService from "../../services/ExerciseService";
 import TagService from "../../services/TagService";
 import Exercise from "../../models/Exercise";
-import {SelectChangeEvent} from "@mui/material/Select";
+import Tag from "../../models/Tag";
+import Loading from "../../components/Loading";
 
 const ExercisesPage = () => {
 
@@ -17,7 +19,7 @@ const ExercisesPage = () => {
     //exercises to be displayed on the current page
     const [exercises, setExercises] = useState<Exercise[]>([]);
     //available tags to be displayed on the search bar
-    const [availableTags, setAvailableTags] = useState<string[]>([]);
+    const [availableTags, setAvailableTags] = useState<Tag[]>([]);
 
     //filters-relevant states
     //difficulty in filters
@@ -26,23 +28,28 @@ const ExercisesPage = () => {
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     //input of search box
     const [input, setInput] = useState('');
+    //current searching content used in filters
+    const [searchContent, setSearchContent] = useState('');
+    //indicator of loading state
+    const [loading, setLoading] = useState(true);
 
     // get all available tags from backend
     useEffect(() => {
-        (async () => {
-            const all_tags = await TagService.getAll()
-            if (!all_tags) return
-            setAvailableTags(all_tags.map((tag) => tag.name))
-        })();
+        TagService.getAll()
+            .then(res => {
+                setAvailableTags(res)
+            });
     }, [])
 
-    // get exercises and total pages after changing the filters
+    // get exercises and total pages after changing the filters or searching
     useEffect(() => {
         let active = true;
         (async () => {
-            let filters = new FormData()
-            filters.append('difficulty', difficulty)
-            filters.append('tags', JSON.stringify(selectedTags))
+            let filters = {
+                difficulty: difficulty,
+                tags: selectedTags,
+                search: searchContent,
+            }
             const resp = await ExerciseService.applyFilters(filters)
             if (!active) {
                 return;
@@ -51,36 +58,36 @@ const ExercisesPage = () => {
             setPages(resp.pages)
             // always redirect to the first page after changing the filters
             setPage(1)
+            setLoading(false)
         })();
+        // cleanup function
         return () => {
             active = false;
         };
-    }, [difficulty, selectedTags]);
-
-    // get exercises to be displayed on the current page
-    useEffect(() => {
-        let active = true;
-        (async () => {
-            let filters = new FormData()
-            filters.append('difficulty', difficulty)
-            filters.append('tags', JSON.stringify(selectedTags))
-            const exercisesPerPage = await ExerciseService.getExercisesPerPage(page, filters)
-            if (!active) {
-                return;
-            }
-            setExercises(exercisesPerPage)
-        })();
-        return () => {
-            active = false;
-        };
-    }, [page]);
+    }, [difficulty, selectedTags, searchContent]);
 
     const onChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value);
+        if (value !== page) {
+            setPage(value);
+            setLoading(true);
+            setInput(searchContent);
+            let filters = {
+                difficulty: difficulty,
+                tags: selectedTags,
+                search: searchContent,
+            }
+            //get exercises to be displayed on the new page by current filters
+            ExerciseService.getExercisesPerPage(value, filters)
+                .then(resp => {
+                    setExercises(resp)
+                    setLoading(false)
+                })
+        }
     };
 
     const onChangeDifficulty = (event: SelectChangeEvent) => {
         setDifficulty(event.target.value);
+        setLoading(true)
     }
 
     const onChangeSelectedTags = (event: SelectChangeEvent<string[]>) => {
@@ -88,46 +95,57 @@ const ExercisesPage = () => {
         setSelectedTags(
             typeof value === 'string' ? value.split(',') : value,
         );
+        setLoading(true)
     };
 
-    const handleChangeInput = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    const handleChangeInput = (event: any) => {
         setInput(event.target.value)
     };
 
     const onSearch = () => {
-        if (input) {
-            // TODO: add exercise service for searching
-            console.log("Search with:", input);
-        }
+        setSearchContent(input);
+        setLoading(true)
     };
 
     return (
-        <>
+        <div>
             <h1>Available Exercises</h1>
             <SearchBar
                 difficulty={difficulty}
                 onChangeDifficulty={onChangeDifficulty}
                 selectedTags={selectedTags}
                 onChangeSelectedTags={onChangeSelectedTags}
-                tagsInUse={availableTags}
+                availableTags={availableTags}
                 input={input}
                 onChangeInput={handleChangeInput}
                 onSearch={onSearch}
             />
-            {exercises && exercises.map((exercise: any, i) => {
-                return (
-                    <ExerciseCard key={i}
-                                  title={exercise.title}
-                                  exerciseTags={exercise.tags && exercise.tags.map((tag: any) => tag.name)}
-                        //there are some optional properties
-                        //check ExerciseCard
-                    />
-                );
-            })}
-            <div className={styles.pagination}>
-                <Pagination count={pages} page={page} onChange={onChangePage}/>
-            </div>
-        </>
+            {searchContent && <Typography>Search results with "{searchContent}"</Typography>}
+            {loading ?
+                (
+                    <Loading/>
+                ) :
+                (
+                    <div>
+                        {exercises.map((exercise: Exercise, i) => {
+                            return (
+                                <ExerciseCard
+                                    key={i}
+                                    id={exercise.id}
+                                    title={exercise.title}
+                                    exerciseTags={exercise.tags.map((tag) => tag.name)}
+                                    //there are some optional properties
+                                    //check ExerciseCard
+                                />
+                            );
+                        })}
+                        <div className={styles.pagination}>
+                            <Pagination count={pages} page={page} onChange={onChangePage}/>
+                        </div>
+                    </div>
+                )
+            }
+        </div>
     );
 };
 
