@@ -128,10 +128,25 @@ class Grade(db.Model):
     account_id = db.Column(db.Integer, db.ForeignKey('Account.id'), nullable=False)
     account = db.relationship('Account')  # Grade -> User (many-to-one)
 
+
+class StatisticType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50))
+    description = db.Column(db.String(140))
+
+
+class Statistic(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    submission_value = db.Column(db.Integer)
+
+    statistic_type_id = db.Column(db.Integer, db.ForeignKey('statistic_type.id'), nullable=False)
+    statistic_type = db.relationship('StatisticType')
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=False)
+
+    exercise = db.relationship('Exercise')  # Statistic -> Exercise (one-to-many)
+
+    submission = db.relationship('Submission')  # Statistic -> Submission (one-to-one)
     submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=False)
-    submission = db.relationship('Submission', uselist=False)  # Grade -> Submission (one-to-one)
 
-    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
-                            nullable=False)
-    exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)
-
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User')  # Statistic -> User (one-to-one)
