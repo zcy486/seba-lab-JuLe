@@ -1,4 +1,4 @@
-from jule_backend_app.extensions import db
+from extensions import db
 from datetime import datetime
 import enum
 

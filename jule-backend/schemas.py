@@ -1,5 +1,5 @@
-from jule_backend_app.extensions import ma
-from jule_backend_app import models
+from extensions import ma
+import models
 
 
 # Helper Schemas

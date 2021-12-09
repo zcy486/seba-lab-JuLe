@@ -1,13 +1,13 @@
 from flask import Blueprint, request, current_app, render_template
 from flask.wrappers import Response
-from jule_backend_app.app import db
-from jule_backend_app.schemas import AccountSchema, UniversitySchema
-from jule_backend_app.models import Account
+from app import db
+from schemas import AccountSchema, UniversitySchema
+from models import Account
 from werkzeug.security import generate_password_hash
 from flask_mail import Mail, Message
 from threading import Thread
 import datetime
-from jule_backend_app.config import JWT_SECRET_KEY_EMAILVERIFY
+from config import JWT_SECRET_KEY_EMAILVERIFY
 import jwt
 
 register_routes = Blueprint('register', __name__, url_prefix="/register")

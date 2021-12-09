@@ -3,9 +3,9 @@ from flask import request
 from flask.helpers import make_response
 from flask.json import jsonify
 from flask.wrappers import Response
-from jule_backend_app.schemas import AccountSchema, UniversitySchema
-from jule_backend_app.models import Account, University
-from jule_backend_app.config import JWT_SECRET_KEY
+from schemas import AccountSchema, UniversitySchema
+from models import Account, University
+from config import JWT_SECRET_KEY
 from werkzeug.security import check_password_hash
 import jwt
 import datetime

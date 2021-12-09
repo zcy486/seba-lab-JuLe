@@ -1,11 +1,11 @@
 from flask import Blueprint
 from flask import request
-from jule_backend_app.app import db
+from app import db
 from flask.json import jsonify
 from flask.wrappers import Response
-from jule_backend_app.schemas import AccountSchema, UniversitySchema
-from jule_backend_app.models import Account, University
-from jule_backend_app.config import JWT_SECRET_KEY, JWT_SECRET_KEY_EMAILVERIFY
+from schemas import AccountSchema, UniversitySchema
+from models import Account, University
+from config import JWT_SECRET_KEY, JWT_SECRET_KEY_EMAILVERIFY
 import jwt, time, datetime
 
 verify_email_routes = Blueprint('verify_email', __name__, url_prefix="/verify_email")

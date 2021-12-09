@@ -1,11 +1,11 @@
 from flask import Flask
 from flask_cors import CORS
 
-from jule_backend_app.extensions import (
+from extensions import (
     db,
     ma
 )
-from jule_backend_app.blueprints import (
+from blueprints import (
     exercises,
     tags,
     login,
