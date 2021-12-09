@@ -127,8 +127,6 @@ def rud_exercise(current_account: Account, exercise_id):
             remove_tags_from_exercise(exercise)
             # append new tags to the exercise
             add_tags_by_name(exercise, json.loads(new_tag_names))
-        if 'owner_id' in request.form:
-            exercise.owner_id = request.form['owner_id']
 
         # commit changes to db
         db.session.commit()
@@ -152,12 +150,7 @@ def rud_exercise(current_account: Account, exercise_id):
 @exercises_routes.route('/create', methods=['POST'])
 @require_authorization
 def create_exercise(current_account: Account):
-    # TODO: add owner to the exercise when user data is ready
-    owner_id = request.form['owner_id']
-    owner = Account.query.filter_by(id=owner_id).first()
-    if owner is None:
-        return abort(405, 'User does not exist')
-
+    owner = current_account
     title = request.form['title']
     explanation = request.form['explanation']
     question = request.form['question']

@@ -102,7 +102,6 @@ const NewExercisePage = () => {
         new_exercise.append('difficulty', difficulty)
         new_exercise.append('scope', scope)
         new_exercise.append('tags', JSON.stringify(tags))
-        new_exercise.append('owner_id', ((await UserService.getCurrentUser()).id).toString())
 
         ExerciseService.createExercise(new_exercise)
             .then((res) => {
