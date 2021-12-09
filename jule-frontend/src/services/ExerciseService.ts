@@ -7,7 +7,7 @@ const ExerciseService = {
     
     // applies filters to backend and returns exercises with the total page number
     applyFilters: (filters: any) => {
-        return new Promise<any>((resolve) => {
+        return new Promise<{ pages: number, exercises: Exercise[] }>((resolve) => {
             HttpService(true).post(`${baseRoute}/filters`, JSON.stringify(filters))
                 .then(resp => resolve(resp.data))
         });

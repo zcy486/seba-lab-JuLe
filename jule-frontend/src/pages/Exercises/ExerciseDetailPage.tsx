@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Box, Chip, Typography} from "@mui/material";
 import {useNavigate, useParams} from "react-router-dom";
-import TextEditor from "../components/TextEditor/TextEditor";
-import TextEditorButtonPanel from "../components/TextEditorButtonPanel/TextEditorButtonPanel";
-import ExerciseService from "../services/ExerciseService";
-import Loading from "../components/Loading";
-import CogOption from "../components/CogOption"; //TODO: make CogOption only visible to exercise's owner
+import TextEditor from "../../components/TextEditor/TextEditor";
+import TextEditorButtonPanel from "../../components/TextEditorButtonPanel/TextEditorButtonPanel";
+import ExerciseService from "../../services/ExerciseService";
+import Loading from "../../components/Loading";
+import CogOption from "../../components/CogOption"; //TODO: make CogOption only visible to exercise's owner
 
 
 const ExerciseDetailPage = () => {

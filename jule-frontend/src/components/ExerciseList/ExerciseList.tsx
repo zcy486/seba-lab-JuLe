@@ -1,16 +1,24 @@
 import React, {useState, useEffect} from "react";
-import styles from "./ExercisesPage.module.css";
+import styles from "./ExerciseList.module.css";
 import {Pagination, Typography} from "@mui/material";
 import {SelectChangeEvent} from "@mui/material/Select";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
 import ExerciseService from "../../services/ExerciseService";
 import TagService from "../../services/TagService";
-import Exercise from "../../models/Exercise";
+import Exercise, {Difficulty} from "../../models/Exercise";
 import Tag from "../../models/Tag";
-import Loading from "../../components/Loading";
+import Loading from "../Loading";
+import UserService from "../../services/UserService";
 
-const ExercisesPage = () => {
+type ExerciseListProps = {
+    showTagFilter?: boolean,
+    showStatusFilter?: boolean,
+    showDifficultyFilter?: boolean,
+    onlyCurrentOwned?: boolean
+}
+
+const ExerciseList = (props: ExerciseListProps) => {
 
     //current page of the exercises
     const [page, setPage] = useState(1);
@@ -23,7 +31,7 @@ const ExercisesPage = () => {
 
     //filters-relevant states
     //difficulty in filters
-    const [difficulty, setDifficulty] = useState('');
+    const [difficulty, setDifficulty] = useState<string>('');
     //selected tags in filters
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     //input of search box
@@ -33,8 +41,9 @@ const ExercisesPage = () => {
     //indicator of loading state
     const [loading, setLoading] = useState(true);
 
-    // get all available tags from backend
+    // states set on component loading
     useEffect(() => {
+        // get all available tags from backend
         TagService.getAll()
             .then(res => {
                 setAvailableTags(res)
@@ -46,9 +55,23 @@ const ExercisesPage = () => {
         let active = true;
         (async () => {
             let filters = {
-                difficulty: difficulty,
-                tags: selectedTags,
-                search: searchContent,
+                difficulty: undefined as number | undefined,
+                tags: undefined as string[] | undefined,
+                search: undefined as string | undefined,
+                owner_id: undefined as number | undefined
+            }
+            // filter only by current owned exercises if prop is set
+            if (difficulty !== "") {
+                filters.difficulty = parseInt(difficulty)
+            }
+            if (selectedTags.length !== 0) {
+                filters.tags = selectedTags
+            }
+            if (searchContent.length !== 0) {
+                filters.search = searchContent
+            }
+            if (props.onlyCurrentOwned) {
+                await UserService.getCurrentUser().then(res => { filters.owner_id = res.id })
             }
             const resp = await ExerciseService.applyFilters(filters)
             if (!active) {
@@ -68,20 +91,39 @@ const ExercisesPage = () => {
 
     const onChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         if (value !== page) {
-            setPage(value);
-            setLoading(true);
-            setInput(searchContent);
-            let filters = {
-                difficulty: difficulty,
-                tags: selectedTags,
-                search: searchContent,
-            }
-            //get exercises to be displayed on the new page by current filters
-            ExerciseService.getExercisesPerPage(value, filters)
-                .then(resp => {
-                    setExercises(resp)
-                    setLoading(false)
-                })
+            (async () => {
+                setPage(value);
+                setLoading(true);
+                setInput(searchContent);
+                let filters = {
+                    difficulty: undefined as number | undefined,
+                    tags: undefined as string[] | undefined,
+                    search: undefined as string | undefined,
+                    owner_id: undefined as number | undefined
+                }
+                // filter only by current owned exercises if prop is set
+                if (difficulty !== "") {
+                    filters.difficulty = parseInt(difficulty)
+                }
+                if (selectedTags.length !== 0) {
+                    filters.tags = selectedTags
+                }
+                if (searchContent.length !== 0) {
+                    filters.search = searchContent
+                }
+                if (props.onlyCurrentOwned) {
+                    await UserService.getCurrentUser().then(res => {
+                        filters.owner_id = res.id
+                    })
+                }
+
+                //get exercises to be displayed on the new page by current filters
+                await ExerciseService.getExercisesPerPage(value, filters)
+                    .then(resp => {
+                        setExercises(resp)
+                        setLoading(false)
+                    })
+            })()
         }
     };
 
@@ -109,7 +151,6 @@ const ExercisesPage = () => {
 
     return (
         <div>
-            <h1>Available Exercises</h1>
             <SearchBar
                 difficulty={difficulty}
                 onChangeDifficulty={onChangeDifficulty}
@@ -149,4 +190,4 @@ const ExercisesPage = () => {
     );
 };
 
-export default ExercisesPage;
+export default ExerciseList;

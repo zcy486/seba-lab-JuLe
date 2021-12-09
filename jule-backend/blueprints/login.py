@@ -16,16 +16,17 @@ login_routes = Blueprint('login', __name__, url_prefix="/login")
 account_schema = AccountSchema()
 university_schema = UniversitySchema()
 
-@login_routes.route('/', methods=['POST'])
+
+@login_routes.route('', methods=['POST'], strict_slashes=False)
 def index():
     data = request.get_json()
     email = data['email']
     password = data['password']
     try:
         query_account = Account.query.filter_by(email=email).first()
-        if (query_account is None):
+        if query_account is None:
             return Response(status=401) # Wrong email
-        if (check_password_hash(query_account.password, password) == False):
+        if not check_password_hash(query_account.password, password):
             return Response(status=403) # Wrong password
         if (query_account.is_verified == False):
             return Response(status=409) # Account not verified
