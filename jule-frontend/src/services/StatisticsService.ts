@@ -11,7 +11,7 @@ const StatisticsService = {
     // get all statistics for the submission of a student to an exercise
     getStatistics: (exerciseID: Number, studentID: Number) => {
         return new Promise<Statistics>((resolve) => {
-            HttpService.get(`${baseRouteStatistics}/${exerciseID}/${studentID}`)
+            HttpService(true).get(`${baseRouteStatistics}/${exerciseID}/${studentID}`)
                 .then(resp => resolve(resp.data))
         });
     },
@@ -19,7 +19,7 @@ const StatisticsService = {
     // get the information about all available statistics
     getStatisticTypes: (exerciseID: Number, studentID: Number) => {
         return new Promise<StatisticType[]>((resolve) => {
-            HttpService.get(`${baseRouteStatisticTypes}`)
+            HttpService(true).get(`${baseRouteStatisticTypes}`)
                 .then(resp => resolve(resp.data))
         });
     },
