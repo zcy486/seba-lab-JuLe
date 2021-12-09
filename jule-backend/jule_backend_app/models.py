@@ -150,3 +150,18 @@ class Statistic(db.Model):
 
     student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User')  # Statistic -> User (one-to-one)
+
+
+class Grade(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    score = db.Column(db.Enum(Score))
+
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    student = db.relationship('User', uselist=False)  # Grade -> User (one-to-one)
+
+    submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=False)
+    submission = db.relationship('Submission', uselist=False)  # Grade -> Submission (one-to-one)
+
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
+                            nullable=False)
+    exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)
