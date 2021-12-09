@@ -1,12 +1,8 @@
 from flask import Blueprint, request, jsonify, abort
 import textstat
-from jule_backend_app.app import db
-from jule_backend_app.models import Statistic
-from jule_backend_app.models import Submission
-from jule_backend_app.models import Exercise
-from jule_backend_app.models import Score
-from jule_backend_app.models import Grade
-from jule_backend_app.schemas import SubmissionSchema
+from app import db
+from models import Statistic, Submission, Exercise, Score, Grade
+from schemas import SubmissionSchema
 
 textstat.set_lang('de')
 
@@ -54,6 +50,7 @@ submission_routes = Blueprint('submission', __name__, url_prefix="/submission")
 
 # Schema used to return submission
 submission_schema = SubmissionSchema()
+
 
 # create or return all available statistics for one student and one exercise
 @submission_routes.route('/<account_id>/<exercise_id>', methods=['POST'])
