@@ -1,8 +1,61 @@
-import {pageCount, mockExercisesPerPage} from "./MockData";
+import HttpService from "./HttpService";
+import Exercise from "../models/Exercise";
+
+const baseRoute = '/exercises'
 
 const ExerciseService = {
-    getPageCount: async () => await pageCount,
-    getExercisesPerPage: async (page: number) => await mockExercisesPerPage(page),
+    
+    // applies filters to backend and returns exercises with the total page number
+    applyFilters: (filters: any) => {
+        return new Promise<any>((resolve) => {
+            HttpService(true).post(`${baseRoute}/filters`, JSON.stringify(filters))
+                .then(resp => resolve(resp.data))
+        });
+    },
+
+    // get exercises per page by filters
+    getExercisesPerPage: (page: number, filters: any) => {
+        return new Promise<Exercise[]>((resolve) => {
+            HttpService(true).post(`${baseRoute}/page/${page}`, JSON.stringify(filters))
+                .then(resp => resolve(resp.data))
+        });
+    },
+
+    // create exercise with form data
+    createExercise: (exercise: FormData) => {
+        return new Promise<Exercise>((resolve, reject) => {
+            HttpService(true).post(`${baseRoute}/create`, exercise)
+                .then(resp => resolve(resp.data))
+                .catch(err => reject(err.response));
+        });
+    },
+
+    // get exercise by id
+    getExercise: (id: string) => {
+        return new Promise<Exercise>((resolve, reject) => {
+            HttpService(true).get(`${baseRoute}/${id}`)
+                .then(resp => resolve(resp.data))
+                .catch(err => reject(err.response))
+        })
+    },
+
+    // update exercise by id with form data
+    updateExercise: (id:string, exercise: FormData) => {
+        return new Promise<Exercise>((resolve, reject) => {
+            HttpService(true).post(`${baseRoute}/${id}`, exercise)
+                .then(resp => resolve(resp.data))
+                .catch(err => reject(err.response))
+        })
+    },
+
+    // delete exercise by id
+    deleteExercise: (id:string) => {
+        return new Promise<string>((resolve,reject) => {
+            HttpService(true).delete(`${baseRoute}/${id}`)
+                .then(resp => resolve(resp.data.message))
+                .catch(err => reject(err.response))
+        })
+    }
 };
 
 export default ExerciseService;

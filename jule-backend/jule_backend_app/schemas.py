@@ -18,14 +18,21 @@ class CamelCaseSQLASchema(ma.SQLAlchemySchema):
 
 
 # Schemas
-class StatisticSchema(ma.SQLAlchemyAutoSchema):
+class StatisticSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Statistic
 
 
-class UserSchema(ma.SQLAlchemyAutoSchema):
+class AccountSchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.User
+        model = models.Account
+
+    id = ma.auto_field()
+    email = ma.auto_field()
+    name = ma.auto_field()
+    role = ma.auto_field()
+    last_login = ma.auto_field()
+    register_time = ma.auto_field()
 
 
 class UniversitySchema(CamelCaseSQLASchema):
@@ -41,19 +48,36 @@ class TagSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Tag
 
+    id = ma.auto_field()
     name = ma.auto_field()
 
 
-class ExerciseSchema(ma.SQLAlchemyAutoSchema):
+class ExerciseSchema(CamelCaseSQLASchema):
+    # a list of tags
+    tags = ma.Nested(TagSchema, many=True)
+
     class Meta:
         model = models.Exercise
 
+    id = ma.auto_field()
+    title = ma.auto_field()
+    explanation = ma.auto_field()
+    question = ma.auto_field()
+    difficulty = ma.auto_field()
+    scope = ma.auto_field()
+    sample_solution = ma.auto_field()
 
-class SubmissionSchema(ma.SQLAlchemyAutoSchema):
+
+class SubmissionSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Submission
 
 
-class GradeSchema(ma.SQLAlchemyAutoSchema):
+class GradeSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Grade
+
+
+class StatisticTyoeSchema(CamelCaseSQLASchema):
+    class Meta:
+        model = models.StatisticType
