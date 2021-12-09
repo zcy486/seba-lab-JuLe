@@ -118,3 +118,26 @@ class Grade(db.Model):
 
     # TODO: not sure if this is the right way for statistics
     statistics = db.relationship('Statistic')  # Grade -> Statistic (one-to-many)
+
+
+class StatisticType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50))
+    description = db.Column(db.String(140))
+
+
+class Statistic(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    submission_value = db.Column(db.Integer)
+
+    statistic_type_id = db.Column(db.Integer, db.ForeignKey('statistic_type.id'), nullable=False)
+    statistic_type = db.relationship('StatisticType')
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=False)
+
+    exercise = db.relationship('Exercise')  # Statistic -> Exercise (one-to-many)
+
+    submission = db.relationship('Submission')  # Statistic -> Submission (one-to-one)
+    submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=False)
+
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User')  # Statistic -> User (one-to-one)
