@@ -10,7 +10,7 @@ from flask import abort, Blueprint, jsonify
 from jule_backend_app.app import db
 from jule_backend_app.schemas import UniversitySchema
 from jule_backend_app.models import University, Account
-from jule_backend_app.jwt_signature_verification import requireAuthorization
+from jule_backend_app.jwt_signature_verification import require_authorization
 
 # University blueprint used to register blueprint in app.py
 universities_routes = Blueprint('universities', __name__, url_prefix="/universities")
@@ -21,7 +21,7 @@ universities_schema = UniversitySchema(many=True)  # For lists of universities
 
 
 # returns a list of all universities sorted by alphabetical
-@universities_routes.route('/', methods=['GET'])
+@universities_routes.route('', methods=['GET'], strict_slashes=False)
 def read_universities():
     try:
         query_universities = University.query.all()

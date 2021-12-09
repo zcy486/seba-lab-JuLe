@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from "react"
-import ActivityChart from "../components/ActivityChart/ActivityChart";
-import UserService from "../services/UserService";
-import StreakDisplay from "../components/StreakDisplay/StreakDisplay";
-import config from "../config.json"
-import ScoreGraph from "../components/ScoreGraph/ScoreGraph";
-import ExerciseCard from "../components/ExerciseCard/ExerciseCard";
-import {mockExercises} from "../services/MockData";
+import ActivityChart from "../../components/ActivityChart/ActivityChart";
+import UserService from "../../services/UserService";
+import StreakDisplay from "../../components/StreakDisplay/StreakDisplay";
+import config from "../../config.json"
+import ScoreGraph from "../../components/ScoreGraph/ScoreGraph";
+import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
+import {mockExercises} from "../../services/MockData";
 
-const ProfilePage = () => {
+const StudentProfileContent = () => {
 
     // Helper functions
     const nullDays = (dayCount: number) => {
@@ -23,7 +23,6 @@ const ProfilePage = () => {
     }
 
     // States
-    const [userName, setUserName] = useState<string>(" ")
     const [exerciseDateData, setExerciseDateData] = useState<{ date: Date; count: number }[]>(nullDays(180))
     const [hotStreak, setHotStreak] = useState<{ exerciseCount: number, dayCount: number }>({
         exerciseCount: 0,
@@ -31,9 +30,6 @@ const ProfilePage = () => {
     })
 
     // Getters
-    const getUserName = () => {
-        UserService.getName().then(val => setUserName(val))
-    }
     const getExerciseDateData = () => {
         UserService.getExerciseDateData().then(val => setExerciseDateData(val))
     }
@@ -43,7 +39,6 @@ const ProfilePage = () => {
 
     // Set states when loading the component
     useEffect(() => {
-        getUserName()
         getExerciseDateData()
         getHotStreak()
     }, [])
@@ -60,7 +55,6 @@ const ProfilePage = () => {
 
     return (
         <div>
-            <h1>{userName}</h1>
             <h2>Activity</h2>
             <div className={"centerDiv"}>
                 <ActivityChart exerciseData={exerciseDateData}/>
@@ -85,4 +79,4 @@ const ProfilePage = () => {
     )
 }
 
-export default ProfilePage
+export default StudentProfileContent

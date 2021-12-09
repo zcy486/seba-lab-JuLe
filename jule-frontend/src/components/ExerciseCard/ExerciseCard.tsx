@@ -57,7 +57,7 @@ const ExerciseCard = (props: Props) => {
                     View Statistics
                 </Button>}
                 <Button className={styles.button} variant={"contained"}
-                        onClick={() => navigate(`${props.id}`)}>
+                        onClick={() => navigate(`/exercises/${props.id}`)}>
                     View Exercise
                 </Button>
             </CardActions>

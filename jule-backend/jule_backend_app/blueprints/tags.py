@@ -4,7 +4,7 @@ from flask import abort, Blueprint, jsonify
 from jule_backend_app.app import db
 from jule_backend_app.schemas import TagSchema
 from jule_backend_app.models import Tag, Account
-from jule_backend_app.jwt_signature_verification import requireAuthorization
+from jule_backend_app.jwt_signature_verification import require_authorization
 
 # Tag blueprint used to register blueprint in app.py
 tags_routes = Blueprint('tags', __name__, url_prefix="/tags")
@@ -15,8 +15,8 @@ tags_schema = TagSchema(many=True)  # For lists of tags
 
 
 # returns a list of all tags sorted by descending use_count (popularity)
-@tags_routes.route('/', methods=['GET'])
-@requireAuthorization
+@tags_routes.route('', methods=['GET'], strict_slashes=False)
+@require_authorization
 def read_tags(current_account: Account):
     try:
         query_tags = Tag.query.order_by(Tag.use_count).all()
@@ -34,7 +34,7 @@ def read_tags(current_account: Account):
 
 # returns a single tag with matching id or throws error if no tag exists
 @tags_routes.route('/<tag_id>', methods=['GET'])
-@requireAuthorization
+@require_authorization
 def read_tag(current_account: Account, tag_id: int):
     try:
         # TODO: get specific tag from db and replace mock tag

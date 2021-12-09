@@ -31,24 +31,24 @@ def send_async_email(app, email, jwt_token):
         app.extensions['mail'].debug = 1 # default is 1
         mail.send(msg)
 
-@register_routes.route('/', methods=['POST'])
+@register_routes.route('/', methods=['POST'], strict_slashes=False)
 def index():
     data = request.get_json()
     print('received the following data: ' + str(data))
     email = data['email']
     password = data['password']
     name = data['name']
-    if ('role' not in data):
+    if 'role' not in data:
         role = 'student'
     else:
         role = request.json['role']
-    if ('universityId' not in data):
+    if 'university' not in data:
         university_id = 0
     else:
         university_id = data['universityId']
 
     email_check = Account.query.filter_by(email=email).first()
-    if (email_check is not None):
+    if email_check is not None:
         return Response(status=409) # Email exists
 
     # TODO add 406 Response for: The user input was not acceptable
