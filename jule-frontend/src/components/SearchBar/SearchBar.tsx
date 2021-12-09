@@ -2,30 +2,57 @@ import React from "react";
 import {Grid} from "@mui/material";
 import Filter from "./Filter";
 import SearchBox from "./SearchBox";
-import TagGroup from "./TagGroup";
+import TagFilter from "./TagFilter";
+import Tag from "../../models/Tag";
 
-const SearchBar = () => {
+interface Props {
+    difficulty: string;
+    onChangeDifficulty: (e: any) => void;
+    selectedTags: string[];
+    onChangeSelectedTags: (e: any) => void;
+    availableTags: Tag[];
+    input: string;
+    onChangeInput: (e: any) => void;
+    onSearch: () => void;
+}
 
-    //mock data
-    const filters = [
-        {name: "Difficulty", options: [1, 2, 3]},
-        {name: "Status", options: ["finished", "unfinished"]}
-    ];
+const SearchBar = (props: Props) => {
+
+    // TODO: replace with status outside when submission data is ready
+    const [status, setStatus] = React.useState('');
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={8}>
-                {filters.map((filter, i) => {
-                    return (
-                        <Filter key={i} name={filter.name} options={filter.options}/>
-                    )
-                })}
+                <Filter
+                    name={"Difficulty"}
+                    options={[
+                        {name: 'Easy', value: 1},
+                        {name: 'Medium', value: 2},
+                        {name: 'Hard', value: 3},
+                    ]}
+                    value={props.difficulty}
+                    onChangeValue={props.onChangeDifficulty}
+                />
+                <Filter
+                    name={"Status"}
+                    options={[
+                        {name: 'Finished', value: 1},
+                        {name: 'Not Finished', value: 2},
+                    ]}
+                    value={status}
+                    onChangeValue={(e) => setStatus(e.target.value)}
+                />
             </Grid>
             <Grid item xs={4}>
-                <SearchBox/>
+                <SearchBox input={props.input} onChangeInput={props.onChangeInput} onSearch={props.onSearch}/>
             </Grid>
-            <Grid item xs={8}>
-                <TagGroup all_tags={["tag1", "tag2", "tag3"]}/>
+            <Grid item xs={12}>
+                <TagFilter
+                    selectedTags={props.selectedTags}
+                    onChangeSelectedTags={props.onChangeSelectedTags}
+                    availableTags={props.availableTags}
+                />
             </Grid>
         </Grid>
     )

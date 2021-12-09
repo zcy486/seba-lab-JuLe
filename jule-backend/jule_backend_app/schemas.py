@@ -23,9 +23,16 @@ class StatisticSchema(CamelCaseSQLASchema):
         model = models.Statistic
 
 
-class UserSchema(CamelCaseSQLASchema):
+class AccountSchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.User
+        model = models.Account
+
+    id = ma.auto_field()
+    email = ma.auto_field()
+    name = ma.auto_field()
+    role = ma.auto_field()
+    last_login = ma.auto_field()
+    register_time = ma.auto_field()
 
 
 class UniversitySchema(CamelCaseSQLASchema):
@@ -41,6 +48,7 @@ class TagSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Tag
 
+    id = ma.auto_field()
     name = ma.auto_field()
 
 
@@ -57,6 +65,7 @@ class ExerciseSchema(CamelCaseSQLASchema):
     question = ma.auto_field()
     difficulty = ma.auto_field()
     scope = ma.auto_field()
+    sample_solution = ma.auto_field()
 
 
 class SubmissionSchema(CamelCaseSQLASchema):
@@ -67,6 +76,7 @@ class SubmissionSchema(CamelCaseSQLASchema):
 class GradeSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Grade
+
 
 class StatisticTyoeSchema(CamelCaseSQLASchema):
     class Meta:
