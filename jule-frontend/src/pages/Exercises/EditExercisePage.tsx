@@ -53,6 +53,10 @@ const EditExercisePage = () => {
                     if (err.status === 405) {
                         // TODO: report error in a standard way
                         alert('No exercise found with matching id!')
+                    } else if (err.status === 401) {
+                        alert('You are not authorized to view this exercise!')
+                    } else {
+                        alert('Unknown error!')
                     }
                 });
         }
@@ -138,6 +142,8 @@ const EditExercisePage = () => {
             .catch(err => {
                 if (err.status === 409) {
                     setError('Exercise with same title already exists.')
+                } else if (err.status === 401) {
+                    setError('You are not authorized to edit this exercise.')
                 } else {
                     setError('Unknown error.')
                 }
