@@ -36,7 +36,7 @@ def read_exercises_by_filters(current_account: Account):
 
     # filters by search text being contained in exercise title
     if 'search' in request.json:
-        query = query.filter(request.json['search'] in Exercise.title)
+        query = query.filter(Exercise.title.contains(request.json['search']))
 
     # filters by selected tags (treated as "OR")
     if 'tags' in request.json:
@@ -77,7 +77,7 @@ def read_exercises_per_page(current_account: Account, page):
 
     # filters by search text containing
     if 'search' in request.json:
-        query = query.filter(request.json['search'] in Exercise.title)
+        query = query.filter(Exercise.title.contains(request.json['search']))
 
     # filters by selected tags (treated as "OR")
     if 'tags' in request.json:
