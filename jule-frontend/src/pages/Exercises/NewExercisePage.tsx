@@ -7,7 +7,6 @@ import TextEditorButtonPanel from "../../components/TextEditorButtonPanel/TextEd
 import ExerciseService from "../../services/ExerciseService";
 import TagService from "../../services/TagService";
 import {useNavigate} from "react-router-dom";
-import UserService from "../../services/UserService";
 
 const NewExercisePage = () => {
 
@@ -113,8 +112,6 @@ const NewExercisePage = () => {
             .catch(err => {
                 if (err.status === 409) {
                     setError('Exercise with same title already exists.')
-                } else if (err.status === 405) {
-                    setError('User not exists.')
                 } else {
                     setError('Unknown error.')
                 }
@@ -122,7 +119,7 @@ const NewExercisePage = () => {
     }
 
     const handleCancel = () => {
-        // TODO: navigate to profile page (lecturer's view)
+        navigate('/profile')
     }
 
     return (

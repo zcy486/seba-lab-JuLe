@@ -3,7 +3,7 @@ import math
 
 from flask import Blueprint, request, jsonify, abort
 from extensions import db
-from models import Exercise, Account, Tag, Difficulty
+from models import Exercise, Account, Tag, Difficulty, Scope
 from schemas import ExerciseSchema
 from blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
 from jwt_signature_verification import require_authorization
@@ -24,7 +24,7 @@ def index():
     return 'Index of the exercise routes!'
 
 
-# applies filters from frontend and returns a list of exercises together with the total page number
+# applies filters from frontend and returns a list of exercises (1st page) together with the total page number
 @exercises_routes.route('/filters', methods=['POST'])
 @require_authorization
 def read_exercises_by_filters(current_account: Account):
@@ -45,6 +45,18 @@ def read_exercises_by_filters(current_account: Account):
     # filters by owner's id
     if 'owner_id' in request.json:
         query = query.filter_by(owner_id=int(request.json['owner_id']))
+
+    # filters to get exercises that are
+    # 1.public, visible to everyone
+    # 2.internal, visible to users in same university
+    # 3.draft, visible to owner of exercise
+    query = query.filter(
+        db.or_(Exercise.scope == Scope.public,
+               db.and_(Exercise.scope == Scope.internal,
+                       Exercise.owner.has(Account.university_id == current_account.university_id)),
+               db.and_(Exercise.scope == Scope.draft, Exercise.owner_id == current_account.id)
+               )
+    )
 
     pages = math.ceil(query.count() / per_page)
     # get exercises in the 1st page because it's redirected to the 1st page after applying filters
@@ -75,16 +87,20 @@ def read_exercises_per_page(current_account: Account, page):
     if 'owner_id' in request.json:
         query = query.filter_by(owner_id=request.json['owner_id'])
 
+    # filters to get exercises that are
+    # 1.public, visible to everyone
+    # 2.internal, visible to users in same university
+    # 3.draft, visible to owner of exercise
+    query = query.filter(
+        db.or_(Exercise.scope == Scope.public,
+               db.and_(Exercise.scope == Scope.internal,
+                       Exercise.owner.has(Account.university_id == current_account.university_id)),
+               db.and_(Exercise.scope == Scope.draft, Exercise.owner_id == current_account.id)
+               )
+    )
+
     exercises_per_page = query.paginate(page, per_page, error_out=False).items
     return jsonify(exercises_schema.dump(exercises_per_page))
-
-
-# returns a list of exercises published by the lecturer
-@exercises_routes.route('/<owner_id>/page/<int:page>', methods=['GET'])
-@require_authorization
-def read_published_exercises(current_account: Account, owner_id, page):
-    query = Exercise.query.filter_by(owner_id=owner_id)
-    # TODO: add filters and pagination
 
 
 # route for reading, updating, deleting a single exercise by id
@@ -97,10 +113,27 @@ def rud_exercise(current_account: Account, exercise_id):
 
     # read exercise by id
     if request.method == 'GET':
+        # if the exercise's scope is draft
+        if exercise.scope == Scope.draft:
+            # the user must be the exercise's owner
+            if current_account.id != exercise.owner_id:
+                return abort(401, 'You are not authorized to view this exercise!')
+
+        # if the exercise's scope is internal
+        if exercise.scope == Scope.internal:
+            owner = exercise.owner
+            # the user and the exercise's owner must have same university_id
+            if current_account.university_id != owner.university_id:
+                return abort(401, 'You are not authorized to view this exercise!')
+
         return jsonify(exercise_schema.dump(exercise))
 
     # update exercise by id
     elif request.method == 'POST':
+        # the user must be the exercise's owner to edit the exercise
+        if current_account.id != exercise.owner_id:
+            return abort(401, 'You are not authorized to edit this exercise!')
+
         if 'title' in request.form:
             title = request.form['title']
             # if title is changed, check duplicate title of other exercises
@@ -134,6 +167,10 @@ def rud_exercise(current_account: Account, exercise_id):
 
     # delete exercise by id
     elif request.method == 'DELETE':
+        # the user must be the exercise's owner to delete the exercise
+        if current_account.id != exercise.owner_id:
+            return abort(401, 'You are not authorized to delete this exercise!')
+
         # remove dependencies
         remove_tags_from_exercise(exercise)
 
