@@ -7,10 +7,9 @@ To add new universities, directly add them to the database
 from typing import List
 from flask import abort, Blueprint, jsonify
 
-from jule_backend_app.app import db
-from jule_backend_app.schemas import UniversitySchema
-from jule_backend_app.models import University, Account
-from jule_backend_app.jwt_signature_verification import require_authorization
+from app import db
+from schemas import UniversitySchema
+from models import University
 
 # University blueprint used to register blueprint in app.py
 universities_routes = Blueprint('universities', __name__, url_prefix="/universities")
@@ -26,8 +25,10 @@ def read_universities():
     try:
         query_universities = University.query.all()
         mock_universities: List[University] = [
-            University(id=1, name="Technische Universität München", logo_src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Logo_of_the_Technical_University_of_Munich.svg/816px-Logo_of_the_Technical_University_of_Munich.svg.png"),
-            University(id=2, name="Ludwig Maximillian Universität München", logo_src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Gruen-logo_lmu2.svg/1200px-Gruen-logo_lmu2.svg.png")
+            University(id=1, name="Technische Universität München",
+                       logo_src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Logo_of_the_Technical_University_of_Munich.svg/816px-Logo_of_the_Technical_University_of_Munich.svg.png"),
+            University(id=2, name="Ludwig Maximillian Universität München",
+                       logo_src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Gruen-logo_lmu2.svg/1200px-Gruen-logo_lmu2.svg.png")
         ]
         all_universities = query_universities
 

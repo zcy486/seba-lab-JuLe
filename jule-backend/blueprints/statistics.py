@@ -1,10 +1,9 @@
 from flask import Blueprint, request, jsonify, abort
 import textstat
-from jule_backend_app.app import db
-from jule_backend_app.models import Statistic
-from jule_backend_app.models import Exercise
+from app import db
+from models import Statistic, Exercise
 from sqlalchemy.sql import func
-from jule_backend_app.models import StatisticType
+from models import StatisticType
 
 textstat.set_lang('de')
 

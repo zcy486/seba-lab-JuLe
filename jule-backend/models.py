@@ -125,39 +125,8 @@ class Grade(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Enum(Score))
 
-    account_id = db.Column(db.Integer, db.ForeignKey('Account.id'), nullable=False)
-    account = db.relationship('Account')  # Grade -> User (many-to-one)
-
-
-class StatisticType(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50))
-    description = db.Column(db.String(140))
-
-
-class Statistic(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    submission_value = db.Column(db.Integer)
-
-    statistic_type_id = db.Column(db.Integer, db.ForeignKey('statistic_type.id'), nullable=False)
-    statistic_type = db.relationship('StatisticType')
-    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'), nullable=False)
-
-    exercise = db.relationship('Exercise')  # Statistic -> Exercise (one-to-many)
-
-    submission = db.relationship('Submission')  # Statistic -> Submission (one-to-one)
-    submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=False)
-
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User')  # Statistic -> User (one-to-one)
-
-
-class Grade(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    score = db.Column(db.Enum(Score))
-
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    student = db.relationship('User', uselist=False)  # Grade -> User (one-to-one)
+    student_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
+    student = db.relationship('Account', uselist=False)  # Grade -> Account (one-to-one)
 
     submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=False)
     submission = db.relationship('Submission', uselist=False)  # Grade -> Submission (one-to-one)

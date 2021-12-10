@@ -1,18 +1,21 @@
+import datetime
+import jwt
+import time
 from flask import Blueprint
 from flask import request
-from app import db
 from flask.json import jsonify
 from flask.wrappers import Response
-from schemas import AccountSchema, UniversitySchema
-from models import Account, University
+from app import db
 from config import JWT_SECRET_KEY, JWT_SECRET_KEY_EMAILVERIFY
-import jwt, time, datetime
+from models import Account, University
+from schemas import AccountSchema, UniversitySchema
 
 verify_email_routes = Blueprint('verify_email', __name__, url_prefix="/verify_email")
 
 # Schemas
 account_schema = AccountSchema()
 university_schema = UniversitySchema()
+
 
 @verify_email_routes.route('/', methods=['GET'])
 def index():
@@ -23,16 +26,16 @@ def index():
             jwt_token = request.headers['x-access-token']
 
         if not jwt_token:
-            return jsonify({'message' : 'Token is missing!'}), 401
+            return jsonify({'message': 'Token is missing!'}), 401
 
         try:
             data = jwt.decode(jwt_token, JWT_SECRET_KEY_EMAILVERIFY, algorithms=["HS256"])
             print(data)
             # Check for expired token
             current_date = time.time()
-            if (float(data['exp']) < current_date):
-                return jsonify({'message' : 'Token has expired!'}), 401
-            
+            if float(data['exp']) < current_date:
+                return jsonify({'message': 'Token has expired!'}), 401
+
             # Setting Account's email address to verified
             query_account = Account.query.filter_by(id=data['id']).first()
             query_account.is_verified = True
@@ -40,7 +43,9 @@ def index():
 
             # Creating new JWT Token, which can be used for authentication!
             expire_date = datetime.datetime.utcnow() + datetime.timedelta(days=1)
-            jwt_token_auth = jwt.encode({'id':query_account.id, 'email':query_account.email, 'exp':expire_date, 'is_verified':True}, JWT_SECRET_KEY)
+            jwt_token_auth = jwt.encode(
+                {'id': query_account.id, 'email': query_account.email, 'exp': expire_date, 'is_verified': True},
+                JWT_SECRET_KEY)
 
             # Building Response
             account_object = account_schema.dump(query_account)
@@ -50,7 +55,7 @@ def index():
             # Adding JWT Token to Response
             account_object['jwtToken'] = jwt_token_auth
         except:
-            return jsonify({'message' : 'Token is invalid!'}), 401
+            return jsonify({'message': 'Token is invalid!'}), 401
         return jsonify(account_object)
     except Exception as N:
         print("bad request:" + str(N))
