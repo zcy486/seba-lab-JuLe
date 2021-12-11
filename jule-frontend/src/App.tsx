@@ -10,8 +10,8 @@ import ErrorPage from "./pages/ErrorPage";
 import ExercisesPage from "./pages/Exercises/ExercisesPage/ExercisesPage";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import ImpressumPage from "./pages/ImpressumPage/ImpressumPage";
-import RegistrationPage from "./pages/RegistrationPage";
-import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage/RegisterPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
 import ContactPage from "./pages/ContactPage";
 import NewExercisePage from "./pages/Exercises/NewExercisePage";
 import VerifyEmailPage from "./pages/VerifyEmailPage/VerifyEmailPage"
@@ -39,7 +39,7 @@ const App = () => {
                     </Route>
                     <Route path={"profile"} element={<ProfilePage/>}/>
                     <Route path={"impressum"} element={<ImpressumPage/>}/>
-                    <Route path={"register"} element={<RegistrationPage/>}/>
+                    <Route path={"register"} element={<RegisterPage/>}/>
                     <Route path={"register-complete"} element={<VerifyEmailPage/>}/>
                     <Route path={"confirm-email"} element={<ConfirmEmailPage setLoggedIn={setLoggedIn}/>}/>
                     <Route path={"login"} element={<LoginPage setLoggedIn={setLoggedIn}/>}/>

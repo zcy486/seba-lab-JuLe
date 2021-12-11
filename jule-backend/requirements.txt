@@ -7,3 +7,4 @@ flask_cors
 pyjwt
 textstat
 flask-mail
+requests

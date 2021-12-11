@@ -1,0 +1,38 @@
+.registerInput {
+    width: 100%;
+    max-width: 320px;
+    box-sizing:border-box;
+}
+
+.registerButton {
+    float: right;
+}
+
+.h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.2rem;
+}
+
+.togglePassword {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 6px;
+    width: 55px;
+    text-align: left;
+}
+
+.eyeImage {
+    position: relative;
+    display: inline-block;
+    margin-right: 3px;
+    top: 2px;
+}
+
+.showPasswordContainer {
+    max-width: 320px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+}

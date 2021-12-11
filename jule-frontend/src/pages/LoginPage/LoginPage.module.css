@@ -1,0 +1,27 @@
+.loginInput {
+    width: 100%;
+    max-width: 320px;
+    box-sizing:border-box;
+}
+
+.loginButton {
+    float: right;
+}
+
+.h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.2rem;
+}
+
+.loginTable {
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 320px;
+}
+
+.forgotPasswordLink {
+    font-size: 0.7em;
+    vertical-align: bottom;
+    display: table-cell;
+    padding-top: 1rem;
+}

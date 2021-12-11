@@ -1,3 +1,4 @@
+import json, datetime, jwt, requests
 from flask import Blueprint, request, current_app, render_template
 from flask.wrappers import Response
 from app import db
@@ -6,15 +7,36 @@ from models import Account
 from werkzeug.security import generate_password_hash
 from flask_mail import Mail, Message
 from threading import Thread
-import datetime
-from config import JWT_SECRET_KEY_EMAILVERIFY
-import jwt
+from config import JWT_SECRET_KEY_EMAILVERIFY, CAPTCHA_API_SECRET_KEY
 
 register_routes = Blueprint('register', __name__, url_prefix="/register")
 
 # Schemas
 account_schema = AccountSchema()
 university_schema = UniversitySchema()
+
+@register_routes.route('/captcha/', methods=['POST'])
+def captcha():
+    captchaValue = request.get_json()['captchaValue']
+    if captchaValue == None:
+        return Response(status=406) # Captcha value is missing from client
+    
+    # Sending request to Google
+    google = 'https://www.google.com/recaptcha/api/siteverify'
+    payload = {
+        'secret': CAPTCHA_API_SECRET_KEY,
+        'response': captchaValue,
+        'remoteip': request.remote_addr,
+    }
+    response = requests.post(google, data = payload)
+    result = response.json()
+    # Verification
+    success =  result['success']
+    if (success):
+        return Response(status=200) # Captcha verification was successfull
+    
+    return Response(status=409) # Captcha verification was not successfull
+
 
 def send_async_email(app, email, jwt_token):
     with app.app_context():
@@ -42,7 +64,7 @@ def index():
         role = 'student'
     else:
         role = request.json['role']
-    if 'university' not in data:
+    if 'universityId' not in data:
         university_id = 0
     else:
         university_id = data['universityId']
