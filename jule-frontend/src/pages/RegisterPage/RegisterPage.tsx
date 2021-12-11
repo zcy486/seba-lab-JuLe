@@ -87,12 +87,12 @@ const RegisterPage = () => {
             <TextField size={"small"} className={styles.registerInput} name="password" type={showPassword ? 'text' : 'password'} onChange={e => setPassword(e.target.value)} required/>
             <h3 className={styles.h3}>Account Role:</h3>
             
-            <Select value={role} className={styles.registerSelect} name="role" onChange={onSelectRole} sx={{minWidth: '320px'}}>
+            <Select value={role} name="role" onChange={onSelectRole} sx={{width: '100%', maxWidth: '320px'}}>
                 <MenuItem value='student'>Student</MenuItem>
                 <MenuItem value='lecturer'>Lecturer</MenuItem>
             </Select>
             <h3 className={styles.h3}>University:</h3>
-            <Select value={''+universityId} name="universityId" onChange={onSelectUniversity} sx={{minWidth: '320px'}}>
+            <Select value={''+universityId} name="universityId" onChange={onSelectUniversity} sx={{width: '100%', maxWidth: '320px'}}>
                 { universities.map((element, index) => <MenuItem value={index}>{element.name}</MenuItem>) }
             </Select>
             <h3 className={styles.h3}>Captcha:</h3>
