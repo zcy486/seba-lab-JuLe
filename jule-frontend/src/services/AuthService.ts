@@ -1,7 +1,6 @@
 import HttpService, { HttpServiceVerifyEmail } from "./HttpService";
 import Auth from "../models/Auth";
 
-
 const AuthService = {
     login: async (loginData: Auth) => {
         try {
@@ -30,6 +29,14 @@ const AuthService = {
                 return response // Error message
             localStorage.setItem('jwtToken', response.data.jwtToken)
             return response
+        } catch (err: any) {
+            return err.response
+        }
+    },
+
+    verify_captcha: async (captchaValue: string) => {
+        try {
+            return await HttpService(false).post('/register/captcha/', "{\"captchaValue\":\"" + captchaValue + "\"}")
         } catch (err: any) {
             return err.response
         }
