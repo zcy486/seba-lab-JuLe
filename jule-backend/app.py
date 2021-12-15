@@ -15,7 +15,8 @@ from blueprints import (
     submission,
     grades,
     users,
-    verify_email
+    verify_email,
+    reset_password
 )
 
 
@@ -60,6 +61,7 @@ def register_blueprints(app):
     app.register_blueprint(register.register_routes)
     app.register_blueprint(statistics.statistics_routes)
     app.register_blueprint(verify_email.verify_email_routes)
+    app.register_blueprint(reset_password.reset_password_routes)
     app.register_blueprint(universities.universities_routes)
     app.register_blueprint(submission.submission_routes)
     app.register_blueprint(grades.grades_routes)

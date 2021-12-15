@@ -23,19 +23,12 @@ const LoginPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) => {
 		console.log('login button click?')
 		let loginData: Auth = { email: email, password: password }
 		AuthService.login(loginData).then((res) => {
-			if (res.status === 200) {
-				console.log('Successfully logged in')
+			if (res.status === 200)
 				handleSignIn(res.data)
-			} else if (res.status === 401) { // Wrong Email
-				alert('Email does not exist! Please try again.')
-			} else if (res.status === 403) { // Wrong Password
-				alert('Wrong Password! Please try again.')
-			} else { // Errors
-				if (res.data.message === null)
-					alert('Sorry, an unknown error has occured! Please try again.')
-				else
-					alert('The following error occured: ' + res.data.message)
-			}
+			else if (res.data !== null && res.data.message !== null) // Known Error
+				alert(res.data.message)
+			else // Unknown Error
+				alert('Sorry, an unknown error has occured! Please try again.')
 		})
 	}
 
@@ -55,7 +48,7 @@ const LoginPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) => {
 				<tbody>
 					<tr>
 						<td style={{whiteSpace:"nowrap"}}>
-							<Link className={styles.forgotPasswordLink} to={"/forgotPassword"}>Forgot password?</Link>
+							<Link className={styles.forgotPasswordLink} to={"/forgot-password"}>Forgot password?</Link>
 						</td>
 						<td>
 							<Button variant={"contained"} className={styles.loginButton} type="submit">Login</Button>{' '}

@@ -1,4 +1,4 @@
-import HttpService, { HttpServiceVerifyEmail } from "./HttpService";
+import HttpService from "./HttpService";
 import Auth from "../models/Auth";
 
 const AuthService = {
@@ -24,7 +24,7 @@ const AuthService = {
 
     verify_email: async (verifyEmailToken: string) => {
         try {
-            const response = await HttpServiceVerifyEmail(verifyEmailToken).get('/verify_email/')
+            const response = await HttpService(false, verifyEmailToken).get('/verify_email/')
             if (response.data.jwtToken === null)
                 return response // Error message
             localStorage.setItem('jwtToken', response.data.jwtToken)
@@ -36,7 +36,28 @@ const AuthService = {
 
     verify_captcha: async (captchaValue: string) => {
         try {
-            return await HttpService(false).post('/register/captcha/', "{\"captchaValue\":\"" + captchaValue + "\"}")
+            return await HttpService(false).post('/register/captcha/', JSON.stringify({captchaValue: captchaValue}))
+        } catch (err: any) {
+            return err.response
+        }
+    },
+
+    sendResetPasswordEmail: async(email: string) => {
+        try {
+            return await HttpService(false).post('/reset_password/', JSON.stringify({ email: email }))
+        } catch (err: any) {
+            return err.response
+        }
+    },
+
+    changePassword: async(resetPasswordToken: string, newPassword: string) => {
+        // Transmitting the password over HTTPS is secure enough
+        try {
+            const response = await HttpService(false, resetPasswordToken).post('/reset_password/with_token/', JSON.stringify({password: newPassword}))
+            if (response.data.jwtToken === null)
+                return response // Error message
+            localStorage.setItem('jwtToken', response.data.jwtToken)
+            return response
         } catch (err: any) {
             return err.response
         }

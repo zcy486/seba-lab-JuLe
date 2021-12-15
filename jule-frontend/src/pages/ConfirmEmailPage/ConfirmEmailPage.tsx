@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react"
-import {useLocation} from "react-router-dom";
+import {useLocation, Link} from "react-router-dom";
 import styles from "./ConfirmEmailPage.module.css";
 import Button from "@mui/material/Button";
-import {Link} from "react-router-dom";
 import jwt from 'jwt-decode';
 import User from "../../models/User";
 import AuthService from "../../services/AuthService";
@@ -10,43 +9,42 @@ import AuthService from "../../services/AuthService";
 const ConfirmEmailPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) => {
 
     const [emailVerified, setEmailVerified] = useState(false)
+    const [tokenInvalid, setTokenInvalid] = useState(false)
+    const [tokenExpired, setTokenExpired] = useState(false)
+    const [name, setName] = useState("")
     const jwtVerifyToken = new URLSearchParams(useLocation().search).get('token');
-
-    const invalidToken = (<div className={styles.confirmEmailPage}>
-        <h1>Sorry, your link is invalid!</h1>
-        <h3>Please make sure you copied the link correctly</h3>
-    </div>)
 
     useEffect(() => {
         validateVerifyTokenWithBackend()
     }, []) // needs to run only once
 
-    if (jwtVerifyToken === null)
-        return invalidToken
+    if (jwtVerifyToken === null || tokenInvalid)
+        return (<div className={styles.confirmEmailPage}>
+            <h1>Sorry, your link is invalid!</h1>
+            <h3>Please make sure you copied the link correctly</h3>
+        </div>)
+    if (tokenExpired)
+        return (<div className={styles.confirmEmailPage}>
+            <h1>Sorry, your link has expired and your account has been deleted!</h1>
+            <h3>Please repeat the registration process</h3>
+        </div>)
 
     const validateVerifyTokenWithBackend = (): void => {
         // sends the verify token to the server for verification
         AuthService.verify_email(jwtVerifyToken).then((res) => {
             if (res.status === 200) {
-                console.log('Successfully logged in')
+                // Decoding JWT Token to get Account's Name
+                const jwtVerifyTokenDecoded:User = jwt(jwtVerifyToken)
+                setName(jwtVerifyTokenDecoded.name)
+                // loggin user in
                 props.setLoggedIn(true)
                 setEmailVerified(true)
-            } else if (res.status === 401) { // Error has occured, message is attached
-                alert('The following error occured: ' + res.data.message)
-            } else { // Unknown error
-                console.log(res)
-                alert('Sorry, an unknown error has occured! Please try again.')
-            }
+            } else if (res.status === 441)
+                setTokenExpired(true)
+            else
+                setTokenInvalid(true)
         })
     }
-
-    // Decoding JWT Token
-    const jwtVerifyTokenDecoded:User = jwt(jwtVerifyToken)
-
-    if (jwtVerifyTokenDecoded === null)
-        return invalidToken
-
-    const name = jwtVerifyTokenDecoded.name
 
     if (emailVerified) {
         return (<div className={styles.confirmEmailPage}>
@@ -60,7 +58,6 @@ const ConfirmEmailPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) =
 
     return (<div className={styles.confirmEmailPage}>
         <h1>Please wait</h1>
-        <h3>Thank you for signing up, {name}.</h3>
     </div>)
 }
 

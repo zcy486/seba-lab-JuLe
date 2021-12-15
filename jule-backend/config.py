@@ -3,10 +3,27 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 JWT_SECRET_KEY = "A3C30D995A3D6A26E030D06C8B9133E11518CE07EAD70EDD8BCC7362CDE7181BF6B908039E199FFB6E1507F157DE56EE05B801639B6B5D42C13219BF5D5C95CB"
 JWT_SECRET_KEY_EMAILVERIFY = "9EC6186C78806824D35799A2747C261FB4B860E4B90794D3DB23E6CC05D376C0D6139C3878EC9387C9053DD00A9504F1099EF1E4D4533A272E3371B949632142"
+JWT_SECRET_KEY_RESETPASSWORD = "741A30878C2F3E94D17324E0B9969219D6760ABA40EADAC4EDE03156D394B1780E4795BC916CBEF4231AC06223EFEA06545BEBBDC0F4C782565B8DBF826F7CE9"
 
 MAIL_SERVER= "172.20.128.2"
 MAIL_PORT = 25
 MAIL_USE_TLS = False
 MAIL_USE_SSL = False
 
+CLIENT_URL = "http://localhost:3000/"
+EMAIL_ACCOUNT = "JuLe <no-reply@jule.de>" # Used for Email-Verification and Password-Reset
+
 CAPTCHA_API_SECRET_KEY = "6LfJGDgdAAAAAEpRdXhWcsPPnIsXu0i4ovr-R15w"
+
+# Error Messages with HTTP Status Codes
+BAD_REQUEST = {"message" : "Could not understand the request due to invalid syntax", "status_code" : 400}
+EMAIL_DOES_NOT_EXIST = {"message" : "This email address does not exist", "status_code" : 432}
+EMAIL_ALREADY_EXISTS = {"message" : "This email address is already registered", "status_code" : 433}
+EMAIL_INVALID = {"message" : "This email address is not valid", "status_code" : 434}
+EMAIL_NOT_VERIFIED = {"message" : "This email address is not verified yet", "status_code" : 435}
+PASSWORD_IS_MISSING = {"message" : "Password is missing", "status_code" : 436}
+PASSWORD_IS_WRONG = {"message" : "Password is wrong", "status_code" : 437}
+PASSWORD_REQUIREMENTS = {"message" : "Password does not meet the requirements", "status_code" : 438}
+TOKEN_IS_MISSING = {"message" : "Token is missing", "status_code" : 439}
+TOKEN_IS_INVALID = {"message" : "Token is invalid", "status_code" : 440}
+TOKEN_HAS_EXPIRED = {"message" : "Token has expired", "status_code" : 441}
