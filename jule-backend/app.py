@@ -1,5 +1,11 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_apscheduler.scheduler import BackgroundScheduler
+from models import Account
+from utils import get_expire_date_jwt_email
+from sqlalchemy import and_
+import os
+
 
 from extensions import (
     db,
@@ -34,6 +40,11 @@ def create_app(test_config=None):
     register_extensions(app)
     register_blueprints(app)
 
+    if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true': # Prevents scheduler from running twice when using DEBUG mode
+        scheduler = BackgroundScheduler()
+        scheduler.add_job(delete_unverified_accounts_task, args=[app], trigger='interval', minutes=5, timezone="UTC")
+        scheduler.start()
+
     @app.route('/')
     def index():
         # Uncomment bellow lines, to recreate database
@@ -41,7 +52,12 @@ def create_app(test_config=None):
         # db.create_all()
         return "JuLe backend active!"
 
-    return app
+    try:
+        # To keep the main thread alive
+        return app
+    except:
+        # shutdown scheduler if app occurs except 
+        scheduler.shutdown()
 
 
 def register_extensions(app):
@@ -66,3 +82,10 @@ def register_blueprints(app):
     app.register_blueprint(submission.submission_routes)
     app.register_blueprint(grades.grades_routes)
     app.register_blueprint(users.users_routes)
+
+
+def delete_unverified_accounts_task(app):
+    with app.app_context():
+        print("Now deleting Unverified Accounts older than " + str(get_expire_date_jwt_email(True)), flush=True)
+        Account.query.filter(and_(Account.is_verified == False, Account.register_time < get_expire_date_jwt_email(True))).delete()
+        db.session.commit()
