@@ -5,7 +5,6 @@ import ReCAPTCHA from "react-google-recaptcha";
 import config from "../../config.json"
 import AuthService from "../../services/AuthService";
 import Auth from "../../models/Auth";
-import { Navigate } from 'react-router-dom'
 import UniversityService from "../../services/UniversityService";
 import University from "../../models/University";
 import styles from "./RegisterPage.module.css"
@@ -40,7 +39,10 @@ const RegisterPage = () => {
     }
 
     if (navigate) {
-        return <Navigate to={"/register-complete?email=" + email} />
+        return <div>
+            <h1 style={{textAlign: 'center'}}>Please Verify your Email address to complete the registration</h1>
+            <h3 style={{textAlign: 'center'}}>an email to {email} has been sent.</h3>
+        </div>
     }
 
     function registerButtonClick(e:React.FormEvent<HTMLFormElement>) {
@@ -48,17 +50,12 @@ const RegisterPage = () => {
         if (captchaSucceeded) {
             let registrationData: Auth = { name: name, email: email, password: password, role: role, universityId: universityId }
             AuthService.register(registrationData).then((res) => {
-                if (res.status === 201) {
-                    console.log('Successfully created')
+                if (res.status === 201)
                     setNavigate(true)
-                } else if (res.status === 409) { // Email exists
-                    alert('Sorry, an Account with the Email address ' + email + ' already exists!')
-                } else if (res.status === 406) { // The user input was not acceptable
-                    alert('Sorry, the content you entered was not acceptable! Please try again.')
-                } else { // Unknown error
-                    console.log(res)
+                else if (res.data !== null && res.data.message !== null) // Known Error
+                    alert(res.data.message)
+                else // Unknown Error
                     alert('Sorry, an unknown error has occured! Please try again.')
-                }
             })
         } else {
             alert('Please fill in the captcha')
