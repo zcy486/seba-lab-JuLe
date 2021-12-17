@@ -3,37 +3,20 @@ import textstat
 from app import db
 from models import Statistic, Submission, Exercise, Score, Grade
 from schemas import SubmissionSchema
+from blueprints.statistics import calculate_statistics
 
 textstat.set_lang('de')
 
 
-# calculate all statistics for one solution
-# TODO: import this from statistics blueprint
-def calculate_statistics(text):
-    statistics = dict()
-
-    syllable_count = textstat.syllable_count(text)
-    poly_syl_count = textstat.polysyllabcount(text)
-    char_count = textstat.char_count(text)
-    lexicon_count = textstat.lexicon_count(text)
-    sentence_count = textstat.sentence_count(text)
-
-    statistics['syllable_count'] = (syllable_count, 1)
-    statistics['poly_syl_count'] = (poly_syl_count, 2)
-    statistics['char_count'] = (char_count, 3)
-    statistics['lexicon_count'] = (lexicon_count, 4)
-    statistics['sentence_count'] = (sentence_count, 5)
-
-    return statistics
-
-
 # calculate grade
 def calculate_score(exercise_id, student_stats):
-    exercise = Exercise.get(exercise_id)
+    exercise = Exercise.query.get(exercise_id)
     solution_stats = calculate_statistics(exercise.sample_solution)
 
-    stat_diffs = [abs(student_stat[0] - solution_stats[0]) / solution_stats[0]
+    stat_diffs = [abs(student_stat[0] - sample_stat[0])
                   for student_stat, sample_stat in zip(student_stats.values(), solution_stats.values())]
+
+    print(stat_diffs)
 
     if all(x <= 0.1 for x in stat_diffs):
         return Score.excellent
@@ -41,7 +24,7 @@ def calculate_score(exercise_id, student_stats):
         return Score.good
     elif all(x <= 0.4 for x in stat_diffs):
         return Score.satisfactory
-    elif all(x <= 0.6 for x in stat_diffs):
+    else:
         return Score.unsatisfactory
 
 
@@ -92,17 +75,17 @@ def add_submission(account_id, exercise_id):
                                              submission_id=new_submission.id)
                             db.session.add(stat)
                             db.session.commit()
+                            db.session.refresh(stat)
 
-                        # create new grade and add it to db
+                        # # create new grade and add it to db
                         new_grade = Grade(score=score,
                                           exercise_id=exercise_id,
-                                          account_id=account_id,
+                                          student_id=account_id,
                                           submission_id=new_submission.id)
 
                         db.session.add(new_grade)
                         db.session.commit()
                         db.session.refresh(new_grade)
-
                     else:
                         # if  submission exists, update text
                         old_submission.text = text
@@ -112,16 +95,18 @@ def add_submission(account_id, exercise_id):
                             # if  submission exists, update existing statistics
                             stat_value, stat_type_id = student_stats[stat_title]
                             stat = Statistic.query.filter_by(exercise_id=exercise_id,
-                                                             account_id=account_id,
+                                                             student_id=account_id,
                                                              statistic_type_id=stat_type_id).first()
                             stat.submission_value = stat_value
                             db.session.commit()
 
                         # if  submission exists, update existing grade score
                         grade = Grade.query.filter_by(exercise_id=exercise_id,
-                                                      account_id=account_id).first()
+                                                      student_id=account_id).first()
                         grade.score = score
                         db.session.commit()
+
+                    return jsonify(student_stats)
 
                 else:
                     return abort(400, "Parameter missing from request.")

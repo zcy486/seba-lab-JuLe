@@ -10,7 +10,6 @@ textstat.set_lang('de')
 
 # calculate all statistics for one solution
 # TODO: add statistics
-# TODO: add statistics typs to data base
 def calculate_statistics(text):
     statistics = dict()
 
@@ -20,11 +19,11 @@ def calculate_statistics(text):
     lexicon_count = textstat.lexicon_count(text)
     sentence_count = textstat.sentence_count(text)
 
-    statistics['syllable_count'] = (syllable_count, 1)
-    statistics['poly_syl_count'] = (poly_syl_count, 2)
-    statistics['char_count'] = (char_count, 3)
-    statistics['lexicon_count'] = (lexicon_count, 4)
-    statistics['sentence_count'] = (sentence_count, 5)
+    statistics['Syllable Count'] = (syllable_count, 0)
+    statistics['Polysyllable Count'] = (poly_syl_count, 1)
+    statistics['Char Count'] = (char_count, 2)
+    statistics['Lexicon Count'] = (lexicon_count, 3)
+    statistics['Sentence Count'] = (sentence_count, 4)
 
     return statistics
 
