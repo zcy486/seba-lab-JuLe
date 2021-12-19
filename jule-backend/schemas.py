@@ -31,6 +31,13 @@ class StatisticSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Statistic
 
+    id = ma.auto_field()
+    submission_value = ma.auto_field()
+    statistic_type_id = ma.auto_field()
+    exercise_id = ma.auto_field()
+    submission_id = ma.auto_field()
+    student_id = ma.auto_field()
+
 
 class AccountSchema(CamelCaseSQLASchema):
 
@@ -84,12 +91,26 @@ class SubmissionSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Submission
 
+    id = ma.auto_field()
+    text = ma.auto_field()
+    exercise_id = ma.auto_field()
+    account_id = ma.auto_field()
+
 
 class GradeSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.Grade
 
+    id = ma.auto_field()
+    student_id = ma.auto_field()
+    submission_id = ma.auto_field()
+    exercise_id = ma.auto_field()
 
-class StatisticTyoeSchema(CamelCaseSQLASchema):
+
+class StatisticTypeSchema(CamelCaseSQLASchema):
     class Meta:
         model = models.StatisticType
+
+    id = ma.auto_field()
+    title = ma.auto_field()
+    description = ma.auto_field()

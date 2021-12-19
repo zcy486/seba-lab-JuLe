@@ -3,6 +3,9 @@ import textstat
 from app import db
 from models import Statistic, Exercise
 from sqlalchemy.sql import func
+from sqlalchemy import asc
+from schemas import StatisticTypeSchema
+from schemas import StatisticSchema
 from models import StatisticType
 
 textstat.set_lang('de')
@@ -30,6 +33,10 @@ def calculate_statistics(text):
 
 statistics_routes = Blueprint('statistics', __name__)
 
+# Schemas
+statistic_type_schema = StatisticTypeSchema(many=True)
+statistic_schema = StatisticSchema(many=True)
+
 
 # return information about all existing types of statistics
 @statistics_routes.route('/statisticTypes', methods=['GET'])
@@ -37,7 +44,7 @@ def get_statistics_types():
     if request.method == 'GET':
         try:
             statistics_types = StatisticType.query.all()
-            return jsonify(statistics_types)
+            return jsonify(statistic_type_schema.dump(statistics_types))
         except Exception as N:
             print(N)
             # TODO: make except less general
@@ -45,25 +52,27 @@ def get_statistics_types():
     else:
         return abort(405)
 
-
+# return information for peer, student, and sample solution statistics for an exercise/student pair
 @statistics_routes.route('/statistics/<exercise_id>/<student_id>', methods=['GET'])
 def get_statistics(exercise_id, student_id):
     if request.method == 'GET':
         try:
-            # TODO: check how return of group by looks like reformat return
-            # get statistics from db
+            # get statistics from db/ calculate statistics
             exercise = Exercise.query.get(exercise_id)
-            student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id).all()
-            peer_stats = db.session.query(func.avg(Statistic.submission_value)).group_by(Statistic.statistic_type_id)
+            student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id).order_by(
+                asc(Statistic.statistic_type_id)).all()
+            peer_stats = db.session.query(func.avg(Statistic.submission_value), Statistic.statistic_type_id).group_by(
+                Statistic.statistic_type_id).order_by(asc(Statistic.statistic_type_id)).all()
             solution_stats = calculate_statistics(exercise.sample_solution)
 
-            # add values to dict
-            data = dict()
-            data['student_stats'] = student_stats
-            data['peer_stats'] = peer_stats
-            data['solution_stats'] = solution_stats
+            # reformat statistics to fit frontend type: title, student value,  peer value, sample solution value
+            stats = []
+            for student, peer, stat_title in zip(student_stats, peer_stats, solution_stats):
+                stats.append((stat_title, student.submission_value, float(peer[0]), solution_stats[stat_title]))
 
-            return jsonify(data)
+            return_data = {'scores': stats}
+            return jsonify(return_data)
+
         except Exception as N:
             print(N)
             # TODO: make except less general
