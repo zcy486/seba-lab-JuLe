@@ -2,11 +2,12 @@ import * as React from 'react';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ScoreListElement from "../ScoreListElement/ScoreListElement";
+import Statistics from "../../models/Statistics";
 
 
 
 type ScoreListProps = {
-    scores: [scoreTitle: string, userScore: number, peerScore: number, solutionScore: number][]
+    stats: Statistics//[scoreTitle: string, userScore: number, peerScore: number, solutionScore: number][]
 };
 
 
@@ -16,7 +17,7 @@ let ScoreList = (props: ScoreListProps) => {
         <div>
             <List>
                 <Divider />
-                {props.scores.map((scoreTuple) => (
+                {props.stats.scores.map((scoreTuple: [scoreTitle: string, userScore: number, peerScore: number, solutionScore: number]) => (
                     <ScoreListElement
                         scoreTitle={scoreTuple[0]}
                         userScore={scoreTuple[1]}
