@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify, abort
 import textstat
 from app import db
-from models import Statistic, Submission, Exercise, Score, Grade
+from models import Statistic, Submission, Exercise, Score, Grade, Account
 from schemas import SubmissionSchema
 from blueprints.statistics import calculate_statistics
+from jwt_signature_verification import require_authorization
 
 textstat.set_lang('de')
 
@@ -36,8 +37,10 @@ submission_schema = SubmissionSchema()
 
 
 # create or return all available statistics for one student and one exercise
-@submission_routes.route('/<account_id>/<exercise_id>', methods=['POST'])
-def add_submission(account_id, exercise_id):
+@submission_routes.route('/<exercise_id>', methods=['POST'])
+@require_authorization
+def add_submission(current_account: Account, exercise_id):
+    account_id = current_account.id
     if request.method == 'POST':
         try:
             params = request.json
@@ -120,8 +123,10 @@ def add_submission(account_id, exercise_id):
 
 
 # return a student's submission to a particular exercise exercise
-@submission_routes.route('/<account_id>/<exercise_id>', methods=['GET'])
-def get_submission(account_id, exercise_id):
+@submission_routes.route('/<exercise_id>', methods=['GET'])
+@require_authorization
+def get_submission(current_account: Account, exercise_id):
+    account_id = current_account.id
     if request.method == 'GET':
         try:
             # query submission for this exercise/student pair from db

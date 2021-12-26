@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify, abort
 import textstat
 from app import db
-from models import Statistic, Exercise
+from models import Statistic, Exercise, Account
 from sqlalchemy.sql import func
 from sqlalchemy import asc
 from schemas import StatisticTypeSchema
 from schemas import StatisticSchema
 from models import StatisticType
+from jwt_signature_verification import require_authorization
 
 textstat.set_lang('de')
 
@@ -40,6 +41,7 @@ statistic_schema = StatisticSchema(many=True)
 
 # return information about all existing types of statistics
 @statistics_routes.route('/statisticTypes', methods=['GET'])
+@require_authorization
 def get_statistics_types():
     if request.method == 'GET':
         try:
@@ -53,8 +55,13 @@ def get_statistics_types():
         return abort(405)
 
 # return information for peer, student, and sample solution statistics for an exercise/student pair
-@statistics_routes.route('/statistics/<exercise_id>/<student_id>', methods=['GET'])
-def get_statistics(exercise_id, student_id):
+@statistics_routes.route('/statistics/<exercise_id>', methods=['GET'])
+@require_authorization
+def get_statistics(current_account: Account, exercise_id):
+    student_id = current_account.id
+
+    print(student_id)
+
     if request.method == 'GET':
         try:
             # get statistics from db/ calculate statistics
