@@ -6,9 +6,9 @@ const baseRoute = '/submission'
 const SubmissionService = {
 
     // create submission
-    createSubmission: (userID: string, exerciseID: string, text: string) => {
+    createSubmission: (userID: string, exerciseID: string, submission: {text: string}) => {
         return new Promise<Submission>((resolve, reject) => {
-            HttpService(true).post(`${baseRoute}/${userID}/${exerciseID}`, text)
+            HttpService(true).post(`${baseRoute}/${userID}/${exerciseID}`, submission)
                 .then(resp => resolve(resp.data))
                 .catch(err => reject(err.response));
         });
