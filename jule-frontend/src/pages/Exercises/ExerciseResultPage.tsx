@@ -12,7 +12,6 @@ import Statistics from "../../models/Statistics";
 import ScoreList from "../../components/ScoreList/ScoreList";
 import ScoreListLegend from "../../components/ScoreListLegend/ScoreListLegend";
 
-
 const ExerciseResultPage = () => {
 
     const {id} = useParams()
@@ -25,7 +24,6 @@ const ExerciseResultPage = () => {
     const [submission, setSubmission] = useState<string>();
     const [results, setResults] = useState<Statistics>();
 
-
     //indicator of loading state
     const [loading, setLoading] = useState(true);
 
@@ -35,13 +33,35 @@ const ExerciseResultPage = () => {
 
     useEffect(() => {
         if (id) {
-            StatisticsService.getStatistics('2', id).then(val => setResults(val));
+            StatisticsService.getStatistics(id).then(
+                val => setResults(val)
+            ).catch(err => {
+                if (err.status === 405) {
+                    // TODO: report error in a standard way
+                    alert('We have trouble retrieving your statistics')
+                } else if (err.status === 401) {
+                    alert('You are not authorized to view this exercise!')
+                } else {
+                    alert('Unknown error.')
+                }
+            });
         }
     }, [])
 
     useEffect(() => {
         if (id) {
-            SubmissionService.getSubmission('2', id).then(val => setSubmission(val.text));
+            SubmissionService.getSubmission(id).then(
+                val => setSubmission(val.text)
+            ).catch(err => {
+                if (err.status === 405) {
+                    // TODO: report error in a standard way
+                    alert('We have trouble retrieving your submission')
+                } else if (err.status === 401) {
+                    alert('You are not authorized to view this exercise!')
+                } else {
+                    alert('Unknown error.')
+                }
+            });;;
         }
     }, [])
 

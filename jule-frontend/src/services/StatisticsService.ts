@@ -9,9 +9,9 @@ const baseRouteStatisticTypes = '/statisticTypes'
 const StatisticsService = {
 
     // get all statistics for the submission of a student to an exercise
-    getStatistics: (exerciseID: string, studentID: string) => {
+    getStatistics: (exerciseID: string) => {
         return new Promise<Statistics>((resolve) => {
-            HttpService(true).get(`${baseRouteStatistics}/${exerciseID}/${studentID}`)
+            HttpService(true).get(`${baseRouteStatistics}/${exerciseID}`)
                 .then(resp => resolve(resp.data))
         });
     },

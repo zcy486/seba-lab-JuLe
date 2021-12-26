@@ -63,8 +63,9 @@ const ExerciseDetailPage = () => {
     const onSave = () => {
         if(id) {
             let submission = {text: solution}
-            SubmissionService.createSubmission('2', id, submission).then(
-            ).catch(err => {
+            SubmissionService.createSubmission(id, submission).then(() => {
+                navigate(`/exercises/${id}/results`)
+            }).catch(err => {
                 if (err.status === 405) {
                     alert('Something went wrong, we could not save your submission!')
                 } else if (err.status === 401) {
@@ -73,7 +74,7 @@ const ExerciseDetailPage = () => {
                     alert('Unknown error.')
                 }
             });
-            navigate(`/exercises/${id}/results`)
+
         }
     }
 

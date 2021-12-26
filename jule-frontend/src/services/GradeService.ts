@@ -6,9 +6,9 @@ const baseRoute = '/grades'
 const ExerciseService = {
 
     // get the grade of a student for one exercise
-    getGrade: (exerciseID: number, studentID: number) => {
+    getGrade: (exerciseID: string) => {
         return new Promise<Grade>((resolve) => {
-            HttpService(true).get(`${baseRoute}/${exerciseID}/${studentID}`)
+            HttpService(true).get(`${baseRoute}/${exerciseID}`)
                 .then(resp => resolve(resp.data))
         });
     },
