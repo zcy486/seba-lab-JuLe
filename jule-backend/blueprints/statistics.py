@@ -1,16 +1,19 @@
 from flask import Blueprint, request, jsonify, abort
 import textstat
 from app import db
-from models import Statistic, Exercise
+from models import Statistic, Exercise, Account
 from sqlalchemy.sql import func
+from sqlalchemy import asc
+from schemas import StatisticTypeSchema
+from schemas import StatisticSchema
 from models import StatisticType
+from jwt_signature_verification import require_authorization
 
 textstat.set_lang('de')
 
 
 # calculate all statistics for one solution
 # TODO: add statistics
-# TODO: add statistics typs to data base
 def calculate_statistics(text):
     statistics = dict()
 
@@ -20,25 +23,30 @@ def calculate_statistics(text):
     lexicon_count = textstat.lexicon_count(text)
     sentence_count = textstat.sentence_count(text)
 
-    statistics['syllable_count'] = (syllable_count, 1)
-    statistics['poly_syl_count'] = (poly_syl_count, 2)
-    statistics['char_count'] = (char_count, 3)
-    statistics['lexicon_count'] = (lexicon_count, 4)
-    statistics['sentence_count'] = (sentence_count, 5)
+    statistics['Syllable Count'] = (syllable_count, 0)
+    statistics['Polysyllable Count'] = (poly_syl_count, 1)
+    statistics['Char Count'] = (char_count, 2)
+    statistics['Lexicon Count'] = (lexicon_count, 3)
+    statistics['Sentence Count'] = (sentence_count, 4)
 
     return statistics
 
 
 statistics_routes = Blueprint('statistics', __name__)
 
+# Schemas
+statistic_type_schema = StatisticTypeSchema(many=True)
+statistic_schema = StatisticSchema(many=True)
+
 
 # return information about all existing types of statistics
 @statistics_routes.route('/statisticTypes', methods=['GET'])
+@require_authorization
 def get_statistics_types():
     if request.method == 'GET':
         try:
             statistics_types = StatisticType.query.all()
-            return jsonify(statistics_types)
+            return jsonify(statistic_type_schema.dump(statistics_types))
         except Exception as N:
             print(N)
             # TODO: make except less general
@@ -46,25 +54,32 @@ def get_statistics_types():
     else:
         return abort(405)
 
+# return information for peer, student, and sample solution statistics for an exercise/student pair
+@statistics_routes.route('/statistics/<exercise_id>', methods=['GET'])
+@require_authorization
+def get_statistics(current_account: Account, exercise_id):
+    student_id = current_account.id
 
-@statistics_routes.route('/statistics/<exercise_id>/<student_id>', methods=['GET'])
-def get_statistics(exercise_id, student_id):
+    print(student_id)
+
     if request.method == 'GET':
         try:
-            # TODO: check how return of group by looks like reformat return
-            # get statistics from db
+            # get statistics from db/ calculate statistics
             exercise = Exercise.query.get(exercise_id)
-            student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id).all()
-            peer_stats = db.session.query(func.avg(Statistic.submission_value)).group_by(Statistic.statistic_type_id)
+            student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id).order_by(
+                asc(Statistic.statistic_type_id)).all()
+            peer_stats = db.session.query(func.avg(Statistic.submission_value), Statistic.statistic_type_id).group_by(
+                Statistic.statistic_type_id).order_by(asc(Statistic.statistic_type_id)).all()
             solution_stats = calculate_statistics(exercise.sample_solution)
 
-            # add values to dict
-            data = dict()
-            data['student_stats'] = student_stats
-            data['peer_stats'] = peer_stats
-            data['solution_stats'] = solution_stats
+            # reformat statistics to fit frontend type: title, student value,  peer value, sample solution value
+            stats = []
+            for student, peer, stat_title in zip(student_stats, peer_stats, solution_stats):
+                stats.append((stat_title, student.submission_value, float(peer[0]), solution_stats[stat_title]))
 
-            return jsonify(data)
+            return_data = {'scores': stats}
+            return jsonify(return_data)
+
         except Exception as N:
             print(N)
             # TODO: make except less general

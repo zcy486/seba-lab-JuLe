@@ -8,6 +8,7 @@ import UserService from "../../services/UserService";
 import Loading from "../../components/Loading";
 import CogOption from "../../components/CogOption";
 import User from "../../models/User";
+import SubmissionService from "../../services/SubmissionService";
 
 
 const ExerciseDetailPage = () => {
@@ -60,7 +61,21 @@ const ExerciseDetailPage = () => {
     }
 
     const onSave = () => {
-        // TODO: add service for submission and navigate to exercise result page!
+        if(id) {
+            let submission = {text: solution}
+            SubmissionService.createSubmission(id, submission).then(() => {
+                navigate(`/exercises/${id}/results`)
+            }).catch(err => {
+                if (err.status === 405) {
+                    alert('Something went wrong, we could not save your submission!')
+                } else if (err.status === 401) {
+                    alert('You are not authorized to view this exercise!')
+                } else {
+                    alert('Unknown error.')
+                }
+            });
+
+        }
     }
 
     const onClickEdit = () => {
