@@ -1,14 +1,13 @@
-from flask import Blueprint, Flask
-from flask import request
-from flask.helpers import make_response
+import jwt, datetime
+from flask import Blueprint, request
 from flask.json import jsonify
-from flask.wrappers import Response
+from app import db
 from schemas import AccountSchema, UniversitySchema
 from models import Account, University
-from config import JWT_SECRET_KEY
+from config import EMAIL_INVALID, EMAIL_DOES_NOT_EXIST, PASSWORD_IS_WRONG, EMAIL_NOT_VERIFIED, JWT_SECRET_KEY, BAD_REQUEST
+from utils import validate_email, get_expire_date_jwt_auth
 from werkzeug.security import check_password_hash
-import jwt
-import datetime
+
 
 login_routes = Blueprint('login', __name__, url_prefix="/login")
 
@@ -21,18 +20,28 @@ university_schema = UniversitySchema()
 def index():
     data = request.get_json()
     email = data['email']
+
+    if (validate_email(email) == False):
+        return jsonify({'message': EMAIL_INVALID['message']}), EMAIL_INVALID['status_code']
+
     password = data['password']
     try:
         query_account = Account.query.filter_by(email=email).first()
+
         if query_account is None:
-            return Response(status=401) # Wrong email
+            return jsonify({'message': EMAIL_DOES_NOT_EXIST['message']}), EMAIL_DOES_NOT_EXIST['status_code']
         if not check_password_hash(query_account.password, password):
-            return Response(status=403) # Wrong password
+            return jsonify({'message': PASSWORD_IS_WRONG['message']}), PASSWORD_IS_WRONG['status_code']
         if (query_account.is_verified == False):
-            return Response(status=409) # Account not verified
+            return jsonify({'message': EMAIL_NOT_VERIFIED['message']}), EMAIL_NOT_VERIFIED['status_code']
+
         # Generating JWT Token for User
-        expire_date = datetime.datetime.utcnow() + datetime.timedelta(days=1)
+        expire_date = get_expire_date_jwt_auth()
         jwt_token = jwt.encode({'id':query_account.id, 'email':query_account.email, 'exp':expire_date, 'is_verified':True}, JWT_SECRET_KEY)
+
+        # Updating last-login
+        query_account.last_login = datetime.datetime.utcnow()
+        db.session.commit()
 
         # Building Response
         account_object = account_schema.dump(query_account)
@@ -44,4 +53,4 @@ def index():
         return jsonify(account_object)
     except Exception as N:
         print("bad request:" + str(N))
-        return Response(status=400)
+        return jsonify({'message': BAD_REQUEST['message']}), BAD_REQUEST['status_code']

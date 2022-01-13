@@ -6,7 +6,9 @@ const httpServer = serverLocation
 
 
 // a base http request using axios
-export const HttpService = (useAuthentication: boolean) => {
+export const HttpService = (useAuthentication: boolean, customToken:string="") => {
+    if (customToken !== "")
+        return axios.create({baseURL: serverLocation, headers: {"Content-Type":"application/json", "x-access-token":customToken}})
     if (useAuthentication) {
         let jwtToken = localStorage.getItem('jwtToken')
         if (jwtToken !== null) {
@@ -17,10 +19,6 @@ export const HttpService = (useAuthentication: boolean) => {
     } else {
         return axios.create({baseURL: serverLocation, headers: {"Content-Type":"application/json"}})
     }
-}
-
-export const HttpServiceVerifyEmail = (verifyEmailToken: string) => {
-    return axios.create({baseURL: serverLocation, headers: {"Content-Type":"application/json", "x-access-token":verifyEmailToken}})
 }
 
 // TODO: decide if this should be deleted

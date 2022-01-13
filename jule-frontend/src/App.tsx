@@ -14,11 +14,13 @@ import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import ContactPage from "./pages/ContactPage";
 import NewExercisePage from "./pages/Exercises/NewExercisePage";
-import VerifyEmailPage from "./pages/VerifyEmailPage/VerifyEmailPage"
 import ExerciseDetailPage from "./pages/Exercises/ExerciseDetailPage";
 import EditExercisePage from "./pages/Exercises/EditExercisePage";
 import ConfirmEmailPage from "./pages/ConfirmEmailPage/ConfirmEmailPage";
 import ExerciseResultPage from "./pages/Exercises/ExerciseResultPage";
+import ForgotPasswordPage from './pages/ForgotPasswordPage/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage/ResetPasswordPage';
+
 
 const App = () => {
     const [loggedIn, setLoggedIn] = useState(false)
@@ -42,9 +44,10 @@ const App = () => {
                     <Route path={"profile"} element={<ProfilePage/>}/>
                     <Route path={"impressum"} element={<ImpressumPage/>}/>
                     <Route path={"register"} element={<RegisterPage/>}/>
-                    <Route path={"register-complete"} element={<VerifyEmailPage/>}/>
+                    <Route path={"reset-password"} element={<ResetPasswordPage setLoggedIn={setLoggedIn}/>}/>
                     <Route path={"confirm-email"} element={<ConfirmEmailPage setLoggedIn={setLoggedIn}/>}/>
                     <Route path={"login"} element={<LoginPage setLoggedIn={setLoggedIn}/>}/>
+                    <Route path={"forgot-password"} element={<ForgotPasswordPage/>}/>
                     <Route path={"contact-us"} element={<ContactPage/>}/>
                     <Route path={"*"} element={<ErrorPage/>}/>
                 </Routes>
