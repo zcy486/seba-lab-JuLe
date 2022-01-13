@@ -30,13 +30,13 @@ const ConfirmEmailPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) =
         </div>)
 
     const validateVerifyTokenWithBackend = (): void => {
-        // sends the verify token to the server for verification
+        // sends verify token to the server for verification
         AuthService.verify_email(jwtVerifyToken).then((res) => {
             if (res.status === 200) {
                 // Decoding JWT Token to get Account's Name
                 const jwtVerifyTokenDecoded:User = jwt(jwtVerifyToken)
                 setName(jwtVerifyTokenDecoded.name)
-                // loggin user in
+                // logging user in
                 props.setLoggedIn(true)
                 setEmailVerified(true)
             } else if (res.status === 441)

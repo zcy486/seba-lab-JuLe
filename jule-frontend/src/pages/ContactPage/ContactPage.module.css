@@ -1,0 +1,18 @@
+.contactInput {
+    width: 100%;
+    max-width: 320px;
+    box-sizing:border-box;
+}
+
+.contactButton {
+    float: right;
+}
+
+.h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.2rem;
+}
+
+.contactTextArea {
+    width: 320px;
+}

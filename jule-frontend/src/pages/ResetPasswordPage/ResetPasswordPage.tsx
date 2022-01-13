@@ -53,7 +53,7 @@ const ResetPasswordPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) 
                 } else if (res.data !== null && res.data.message !== null) // Known Error
                     alert(res.data.message)
                 else // Unknown Error
-                    alert('Sorry, an unknown error has occured! Please try again.')
+                    alert('Sorry, an unknown error has occurred! Please try again.')
             })
         } else {
             alert('Sorry, your link has expired! Please repeat the reset password process.')
@@ -65,7 +65,7 @@ const ResetPasswordPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) 
             <h1>Reset Password</h1>
             <div className={styles.showResetPasswordContainer}>
                 <h3 className={styles.h3}>Password:</h3>
-                <span className={styles.togglePassword} onClick={handleTogglePassword}>{showPassword ? <div><img className={styles.eyeImage} src={"/eye_hidden.svg"}/>Hide</div> : <div><img className={styles.eyeImage} src={"/eye.svg"}/>Show</div>}</span>
+                <span className={styles.togglePassword} onClick={handleTogglePassword}>{showPassword ? <div><img className={styles.eyeImage} src={"/eye_hidden.svg"} alt={'Hide password'}/>Hide</div> : <div><img className={styles.eyeImage} src={"/eye.svg"} alt={'Show password'}/>Show</div>}</span>
             </div>
             <TextField size={"small"} className={styles.resetPasswordInput} name="password" type={showPassword ? 'text' : 'password'} onChange={e => setPassword(e.target.value)} required/>
             <br /><br />

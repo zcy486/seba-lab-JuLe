@@ -12,7 +12,7 @@ import LandingPage from "./pages/LandingPage/LandingPage";
 import ImpressumPage from "./pages/ImpressumPage/ImpressumPage";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
-import ContactPage from "./pages/ContactPage";
+import ContactPage from "./pages/ContactPage/ContactPage";
 import NewExercisePage from "./pages/Exercises/NewExercisePage";
 import ExerciseDetailPage from "./pages/Exercises/ExerciseDetailPage";
 import EditExercisePage from "./pages/Exercises/EditExercisePage";

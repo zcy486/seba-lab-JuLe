@@ -20,7 +20,6 @@ const LoginPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) => {
 
 	function loginButtonClick(e:React.FormEvent<HTMLFormElement>) {
 		e.preventDefault()
-		console.log('login button click?')
 		let loginData: Auth = { email: email, password: password }
 		AuthService.login(loginData).then((res) => {
 			if (res.status === 200)
@@ -28,7 +27,7 @@ const LoginPage = (props: { setLoggedIn: (loggedIn: boolean) => void }) => {
 			else if (res.data !== null && res.data.message !== null) // Known Error
 				alert(res.data.message)
 			else // Unknown Error
-				alert('Sorry, an unknown error has occured! Please try again.')
+				alert('Sorry, an unknown error has occurred! Please try again.')
 		})
 	}
 
