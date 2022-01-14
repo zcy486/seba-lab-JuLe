@@ -1,13 +1,13 @@
 from flask import Blueprint, request, jsonify, abort
 import textstat
-from app import db
-from models import Statistic, Exercise, Account
+from ..app import db
+from ..models import Statistic, Exercise, Account
 from sqlalchemy.sql import func
+from ..models import StatisticType
 from sqlalchemy import asc
-from schemas import StatisticTypeSchema
-from schemas import StatisticSchema
-from models import StatisticType
-from jwt_signature_verification import require_authorization
+from ..schemas import StatisticTypeSchema, StatisticSchema
+from ..jwt_signature_verification import require_authorization
+
 
 textstat.set_lang('de')
 

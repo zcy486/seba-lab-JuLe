@@ -2,11 +2,11 @@ import json
 import math
 
 from flask import Blueprint, request, jsonify, abort
-from extensions import db
-from models import Exercise, Account, Tag, Difficulty, Scope
-from schemas import ExerciseSchema
-from blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
-from jwt_signature_verification import require_authorization
+from ..extensions import db
+from ..models import Exercise, Account, Tag, Difficulty, Scope
+from ..schemas import ExerciseSchema
+from ..blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
+from ..jwt_signature_verification import require_authorization
 
 # Exercise blueprint used to register blueprint in app.py
 exercises_routes = Blueprint('exercise', __name__, url_prefix='/exercises')

@@ -53,7 +53,7 @@ const ForgotPasswordPage = () => {
             
             <h3 className={styles.h3}>Captcha:</h3>
             <ReCAPTCHA
-                sitekey={config.recaptchaSitekey}
+                sitekey={config.recaptchaSiteKey}
                 onChange={onCaptcha}
             />
             <br />

@@ -1,10 +1,11 @@
 from flask import Blueprint, request, jsonify, abort
 import textstat
-from app import db
-from models import Statistic, Submission, Exercise, Score, Grade, Account
-from schemas import SubmissionSchema
-from blueprints.statistics import calculate_statistics
-from jwt_signature_verification import require_authorization
+from ..app import db
+from ..models import Statistic, Submission, Exercise, Score, Grade, Account
+from ..schemas import SubmissionSchema
+from ..blueprints.statistics import calculate_statistics
+from ..jwt_signature_verification import require_authorization
+
 
 textstat.set_lang('de')
 

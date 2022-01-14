@@ -1,5 +1,5 @@
-from extensions import ma
-import models
+from .extensions import ma
+from .models import *
 
 
 # Helper Schemas
@@ -20,7 +20,7 @@ class CamelCaseSQLASchema(ma.SQLAlchemySchema):
 # Schemas
 class UniversitySchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.University
+        model = University
 
     name = ma.auto_field()
     abbreviation = ma.auto_field()
@@ -29,7 +29,7 @@ class UniversitySchema(CamelCaseSQLASchema):
 
 class StatisticSchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.Statistic
+        model = Statistic
 
     id = ma.auto_field()
     submission_value = ma.auto_field()
@@ -42,7 +42,7 @@ class StatisticSchema(CamelCaseSQLASchema):
 class AccountSchema(CamelCaseSQLASchema):
 
     class Meta:
-        model = models.Account
+        model = Account
 
     id = ma.auto_field()
     email = ma.auto_field()
@@ -56,7 +56,7 @@ class AccountSchema(CamelCaseSQLASchema):
 
 class UserSchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.Account
+        model = Account
 
     id = ma.auto_field()
     name = ma.auto_field()
@@ -66,7 +66,7 @@ class UserSchema(CamelCaseSQLASchema):
 
 class TagSchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.Tag
+        model = Tag
 
     id = ma.auto_field()
     name = ma.auto_field()
@@ -74,7 +74,7 @@ class TagSchema(CamelCaseSQLASchema):
 
 class ExerciseSchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.Exercise
+        model = Exercise
 
     id = ma.auto_field()
     title = ma.auto_field()
@@ -89,7 +89,7 @@ class ExerciseSchema(CamelCaseSQLASchema):
 
 class SubmissionSchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.Submission
+        model = Submission
 
     id = ma.auto_field()
     text = ma.auto_field()
@@ -99,7 +99,7 @@ class SubmissionSchema(CamelCaseSQLASchema):
 
 class GradeSchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.Grade
+        model = Grade
 
     id = ma.auto_field()
     student_id = ma.auto_field()
@@ -109,7 +109,7 @@ class GradeSchema(CamelCaseSQLASchema):
 
 class StatisticTypeSchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.StatisticType
+        model = StatisticType
 
     id = ma.auto_field()
     title = ma.auto_field()

@@ -55,7 +55,7 @@ const RegisterPage = () => {
                 else if (res.data !== null && res.data.message !== null) // Known Error
                     alert(res.data.message)
                 else // Unknown Error
-                    alert('Sorry, an unknown error has occured! Please try again.')
+                    alert('Sorry, an unknown error has occurred! Please try again.')
             })
         } else {
             alert('Please fill in the captcha')
@@ -69,32 +69,31 @@ const RegisterPage = () => {
         })
     }
 
-
     return (<div>
         <form onSubmit={(e) => registerButtonClick(e)}>
             <h1>Register</h1>
-            <h3 className={styles.h3}>Full Name:</h3>
+            <h3 className={styles.h3}>Full Name</h3>
             <TextField size={"small"} className={styles.registerInput} name="name" type="text" onChange={e => setName(e.target.value)} required/>
-            <h3 className={styles.h3}>Email:</h3>
+            <h3 className={styles.h3}>Email</h3>
             <TextField size={"small"} className={styles.registerInput} name="email" type="email" onChange={e => setEmail(e.target.value)} required/>
             <div className={styles.showPasswordContainer}>
-                <h3 className={styles.h3}>Password:</h3>
-                <span className={styles.togglePassword} onClick={handleTogglePassword}>{showPassword ? <div><img className={styles.eyeImage} src={"/eye_hidden.svg"}/>Hide</div> : <div><img className={styles.eyeImage} src={"/eye.svg"}/>Show</div>}</span>
+                <h3 className={styles.h3}>Password</h3>
+                <span className={styles.togglePassword} onClick={handleTogglePassword}>{showPassword ? <div><img className={styles.eyeImage} src={"/eye_hidden.svg"} alt={'Hide password'}/>Hide</div> : <div><img className={styles.eyeImage} src={"/eye.svg"} alt={'Show password'}/>Show</div>}</span>
             </div>
             <TextField size={"small"} className={styles.registerInput} name="password" type={showPassword ? 'text' : 'password'} onChange={e => setPassword(e.target.value)} required/>
-            <h3 className={styles.h3}>Account Role:</h3>
+            <h3 className={styles.h3}>Account Role</h3>
             
             <Select value={role} name="role" onChange={onSelectRole} sx={{width: '100%', maxWidth: '320px'}}>
                 <MenuItem value='student'>Student</MenuItem>
                 <MenuItem value='lecturer'>Lecturer</MenuItem>
             </Select>
-            <h3 className={styles.h3}>University:</h3>
+            <h3 className={styles.h3}>University</h3>
             <Select value={''+universityId} name="universityId" onChange={onSelectUniversity} sx={{width: '100%', maxWidth: '320px'}}>
                 { universities.map((element, index) => <MenuItem value={index}>{element.name}</MenuItem>) }
             </Select>
-            <h3 className={styles.h3}>Captcha:</h3>
+            <h3 className={styles.h3}>Captcha</h3>
             <ReCAPTCHA
-                sitekey={config.recaptchaSitekey}
+                sitekey={config.recaptchaSiteKey}
                 onChange={onCaptcha}
             />
             <br />

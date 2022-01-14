@@ -61,6 +61,14 @@ const AuthService = {
         } catch (err: any) {
             return err.response
         }
+    },
+
+    contact: async(name: string, email: string, message: string) => {
+        try {
+            return await HttpService(false).post('/contact/', JSON.stringify({name: name, email: email, message: message}))
+        } catch (err: any) {
+            return err.response
+        }
     }
 }
 

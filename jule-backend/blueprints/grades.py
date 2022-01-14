@@ -1,10 +1,8 @@
 import textstat
 from flask import Blueprint, request, jsonify, abort
-
-from jwt_signature_verification import require_authorization
-from models import Grade, Account
-from schemas import GradeSchema
-
+from ..models import Grade, Account
+from ..schemas import GradeSchema
+from ..jwt_signature_verification import require_authorization
 
 grades_routes = Blueprint('grades', __name__, url_prefix="/grades")
 
