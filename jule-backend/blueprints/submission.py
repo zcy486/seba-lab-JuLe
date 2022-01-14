@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify, abort
 import textstat
-from app import db
-from models import Statistic, Submission, Exercise, Score, Grade
-from schemas import SubmissionSchema
+from ..app import db
+from ..models import Statistic, Submission, Exercise, Score, Grade
+from ..schemas import SubmissionSchema
 
 textstat.set_lang('de')
 

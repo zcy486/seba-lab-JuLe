@@ -7,9 +7,9 @@ To add new universities, directly add them to the database
 from typing import List
 from flask import abort, Blueprint, jsonify
 
-from app import db
-from schemas import UniversitySchema
-from models import University
+from ..app import db
+from ..schemas import UniversitySchema
+from ..models import University
 
 # University blueprint used to register blueprint in app.py
 universities_routes = Blueprint('universities', __name__, url_prefix="/universities")

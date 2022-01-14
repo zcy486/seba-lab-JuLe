@@ -1,7 +1,7 @@
 import textstat
 from flask import Blueprint, request, jsonify, abort
-from models import Grade
-from schemas import GradeSchema
+from ..models import Grade
+from ..schemas import GradeSchema
 
 
 grades_routes = Blueprint('grades', __name__, url_prefix="/grades")

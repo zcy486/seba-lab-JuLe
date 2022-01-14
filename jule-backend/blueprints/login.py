@@ -1,13 +1,15 @@
-import jwt, datetime
+import datetime
+import jwt
 from flask import Blueprint, request
 from flask.json import jsonify
-from app import db
-from schemas import AccountSchema, UniversitySchema
-from models import Account, University
-from config import EMAIL_INVALID, EMAIL_DOES_NOT_EXIST, PASSWORD_IS_WRONG, EMAIL_NOT_VERIFIED, JWT_SECRET_KEY, BAD_REQUEST
-from utils import validate_email, get_expire_date_jwt_auth
 from werkzeug.security import check_password_hash
 
+from ..app import db
+from ..config import EMAIL_INVALID, EMAIL_DOES_NOT_EXIST, PASSWORD_IS_WRONG, EMAIL_NOT_VERIFIED, JWT_SECRET_KEY, \
+    BAD_REQUEST
+from ..models import Account, University
+from ..schemas import AccountSchema, UniversitySchema
+from ..utils import validate_email, get_expire_date_jwt_auth
 
 login_routes = Blueprint('login', __name__, url_prefix="/login")
 
@@ -21,7 +23,7 @@ def index():
     data = request.get_json()
     email = data['email']
 
-    if (validate_email(email) == False):
+    if validate_email(email) is False:
         return jsonify({'message': EMAIL_INVALID['message']}), EMAIL_INVALID['status_code']
 
     password = data['password']
@@ -32,12 +34,14 @@ def index():
             return jsonify({'message': EMAIL_DOES_NOT_EXIST['message']}), EMAIL_DOES_NOT_EXIST['status_code']
         if not check_password_hash(query_account.password, password):
             return jsonify({'message': PASSWORD_IS_WRONG['message']}), PASSWORD_IS_WRONG['status_code']
-        if (query_account.is_verified == False):
+        if query_account.is_verified is False:
             return jsonify({'message': EMAIL_NOT_VERIFIED['message']}), EMAIL_NOT_VERIFIED['status_code']
 
         # Generating JWT Token for User
         expire_date = get_expire_date_jwt_auth()
-        jwt_token = jwt.encode({'id':query_account.id, 'email':query_account.email, 'exp':expire_date, 'is_verified':True}, JWT_SECRET_KEY)
+        jwt_token = jwt.encode(
+            {'id': query_account.id, 'email': query_account.email, 'exp': expire_date, 'is_verified': True},
+            JWT_SECRET_KEY)
 
         # Updating last-login
         query_account.last_login = datetime.datetime.utcnow()

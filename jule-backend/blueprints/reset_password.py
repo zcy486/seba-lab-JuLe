@@ -1,15 +1,20 @@
-import datetime, jwt, time
+import datetime
+import jwt
+import time
+from threading import Thread
+
 from flask import Blueprint, request, render_template, current_app
 from flask.json import jsonify
-from app import db
-from config import PASSWORD_IS_MISSING, TOKEN_IS_MISSING, JWT_SECRET_KEY_RESETPASSWORD, TOKEN_HAS_EXPIRED, JWT_SECRET_KEY, TOKEN_IS_INVALID, BAD_REQUEST, EMAIL_INVALID, EMAIL_DOES_NOT_EXIST, EMAIL_NOT_VERIFIED, CLIENT_URL, EMAIL_ACCOUNT, PASSWORD_REQUIREMENTS
-from utils import validate_email, validate_password, get_expire_date_jwt_auth, get_expire_date_jwt_email
-from werkzeug.security import generate_password_hash
-from models import Account, University
 from flask_mail import Mail, Message
-from threading import Thread
-from schemas import AccountSchema, UniversitySchema
+from werkzeug.security import generate_password_hash
 
+from ..app import db
+from ..config import PASSWORD_IS_MISSING, TOKEN_IS_MISSING, JWT_SECRET_KEY_RESET_PASSWORD, TOKEN_HAS_EXPIRED, \
+    JWT_SECRET_KEY, TOKEN_IS_INVALID, BAD_REQUEST, EMAIL_INVALID, EMAIL_DOES_NOT_EXIST, EMAIL_NOT_VERIFIED, \
+    EMAIL_ACCOUNT, PASSWORD_REQUIREMENTS, CLIENT_URL
+from ..models import Account, University
+from ..schemas import AccountSchema, UniversitySchema
+from ..utils import validate_email, validate_password, get_expire_date_jwt_auth, get_expire_date_jwt_email
 
 reset_password_routes = Blueprint('reset_password', __name__, url_prefix="/reset_password")
 
@@ -17,33 +22,37 @@ reset_password_routes = Blueprint('reset_password', __name__, url_prefix="/reset
 account_schema = AccountSchema()
 university_schema = UniversitySchema()
 
+
 def send_async_email(app, email, name, jwt_token):
     with app.app_context():
         print('now sending reset_password mail async')
         link = CLIENT_URL + 'reset-password?token=' + jwt_token
-        msg = Message(  subject = 'Reset your JuLe password',
-                        recipients = [email],
-                        sender = EMAIL_ACCOUNT,
-                        # line below is for clients, which can not display html
-                        body = 'Hi ' + name + ', You recently requested to reset your JuLe account password. If you did not make this request, just ignore this email. Otherwise, please click the link to reset your password: ' + link,
-                        html = render_template('reset_email.html', client_url = CLIENT_URL, link = link, name = name, year = datetime.datetime.now().year))
+        msg = Message(subject='Reset your JuLe password',
+                      recipients=[email],
+                      sender=EMAIL_ACCOUNT,
+                      # line below is for clients, which can not display html
+                      body='Hi ' + name + ', You recently requested to reset your JuLe account password. '
+                                          'If you did not make this request, just ignore this email. Otherwise, '
+                                          'please click the link to reset your password: ' + link,
+                      html=render_template('reset_email.html', client_url=CLIENT_URL, link=link, name=name,
+                                           year=datetime.datetime.now().year))
         mail = Mail(app)
         # set below to 0 to disable log messages when sending mail
-        app.extensions['mail'].debug = 1 # default is 1
+        app.extensions['mail'].debug = 1  # default is 1
         mail.send(msg)
 
 
 @reset_password_routes.route('/with_token/', methods=['POST'])
-def withToken():
+def with_token():
     try:
         data = request.get_json()
         print('received the following data: ' + str(data))
         password = data['password']
 
-        if (password == None):
+        if password is None:
             return jsonify({'message': PASSWORD_IS_MISSING['message']}), PASSWORD_IS_MISSING['status_code']
 
-        if (validate_password(password) == False):
+        if validate_password(password) is False:
             return jsonify({'message': PASSWORD_REQUIREMENTS['message']}), PASSWORD_REQUIREMENTS['status_code']
 
         jwt_reset_token = None
@@ -55,7 +64,8 @@ def withToken():
             return jsonify({'message': TOKEN_IS_MISSING['message']}), TOKEN_IS_MISSING['status_code']
 
         try:
-            data = jwt.decode(jwt_reset_token, JWT_SECRET_KEY_RESETPASSWORD, algorithms=["HS256"], options={'verify_exp': False})
+            data = jwt.decode(jwt_reset_token, JWT_SECRET_KEY_RESET_PASSWORD, algorithms=["HS256"],
+                              options={'verify_exp': False})
             print(data)
             # Check for expired token
             current_date = time.time()
@@ -70,7 +80,8 @@ def withToken():
             # Creating new JWT Token, used for authentication
             expire_date = get_expire_date_jwt_auth()
             jwt_token_auth = jwt.encode(
-                {'id': query_account.id, 'email': query_account.email, 'exp': expire_date, 'is_verified': query_account.is_verified},
+                {'id': query_account.id, 'email': query_account.email, 'exp': expire_date,
+                 'is_verified': query_account.is_verified},
                 JWT_SECRET_KEY)
 
             # Building Response
@@ -80,12 +91,13 @@ def withToken():
             account_object['university'] = university_response
             # Adding JWT Token to Response
             account_object['jwtToken'] = jwt_token_auth
-        except:
+        except jwt.exceptions.InvalidTokenError:
             return jsonify({'message': TOKEN_IS_INVALID['message']}), TOKEN_IS_INVALID['status_code']
-        return jsonify(account_object) # Password has been changed
+        return jsonify(account_object)  # Password has been changed
     except Exception as N:
         print("bad request:" + str(N))
         return jsonify({'message': BAD_REQUEST['message']}), BAD_REQUEST['status_code']
+
 
 @reset_password_routes.route('/', methods=['POST'])
 def index():
@@ -94,27 +106,30 @@ def index():
         print('received the following data: ' + str(data))
         email = data['email']
 
-        if (validate_email(email) == False):
+        if validate_email(email) is False:
             return jsonify({'message': EMAIL_INVALID['message']}), EMAIL_INVALID['status_code']
-        
+
         # Getting user Account via Email address
         query_account = Account.query.filter_by(email=email).first()
 
-        if (query_account == None):
+        if query_account is None:
             return jsonify({'message': EMAIL_DOES_NOT_EXIST['message']}), EMAIL_DOES_NOT_EXIST['status_code']
 
-        if (query_account.is_verified == False):
+        if query_account.is_verified is False:
             return jsonify({'message': EMAIL_NOT_VERIFIED['message']}), EMAIL_NOT_VERIFIED['status_code']
 
         # Generating JWT Token used for Resetting Password
         expire_date = get_expire_date_jwt_email()
-        jwt_token = jwt.encode({'id':query_account.id, 'name':query_account.name, 'email':email, 'exp':expire_date, 'is_verified':query_account.is_verified}, JWT_SECRET_KEY_RESETPASSWORD)
+        jwt_token = jwt.encode({'id': query_account.id, 'name': query_account.name, 'email': email, 'exp': expire_date,
+                                'is_verified': query_account.is_verified}, JWT_SECRET_KEY_RESET_PASSWORD)
 
-        # Sending email (in seperate thread)
-        thr = Thread(target=send_async_email, args=[current_app._get_current_object(), email, query_account.name, jwt_token])
+        # Sending email (in separate thread)
+        # noinspection PyProtectedMember
+        thr = Thread(target=send_async_email,
+                     args=[current_app._get_current_object(), email, query_account.name, jwt_token])
         thr.start()
 
-        return jsonify({'message': 'email sent'}), 201 # Email has been sent
+        return jsonify({'message': 'email sent'}), 201  # Email has been sent
     except Exception as N:
         print("bad request:" + str(N))
         return jsonify({'message': BAD_REQUEST['message']}), BAD_REQUEST['status_code']

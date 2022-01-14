@@ -1,17 +1,17 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_apscheduler.scheduler import BackgroundScheduler
-from models import Account
-from utils import get_expire_date_jwt_email
+from .models import Account
+from .utils import get_expire_date_jwt_email
 from sqlalchemy import and_
 import os
 
 
-from extensions import (
+from .extensions import (
     db,
     ma
 )
-from blueprints import (
+from .blueprints import (
     exercises,
     tags,
     login,
@@ -40,7 +40,9 @@ def create_app(test_config=None):
     register_extensions(app)
     register_blueprints(app)
 
-    if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true': # Prevents scheduler from running twice when using DEBUG mode
+    scheduler = None
+    # Prevents scheduler from running twice when using DEBUG mode
+    if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
         scheduler = BackgroundScheduler()
         scheduler.add_job(delete_unverified_accounts_task, args=[app], trigger='interval', minutes=5, timezone="UTC")
         scheduler.start()
@@ -55,9 +57,11 @@ def create_app(test_config=None):
     try:
         # To keep the main thread alive
         return app
-    except:
-        # shutdown scheduler if app occurs except 
-        scheduler.shutdown()
+    except Exception as N:
+        # shutdown scheduler if app occurs except
+        print(str(N), flush=True)
+        if scheduler is not None:
+            scheduler.shutdown()
 
 
 def register_extensions(app):
@@ -87,5 +91,6 @@ def register_blueprints(app):
 def delete_unverified_accounts_task(app):
     with app.app_context():
         print("Now deleting Unverified Accounts older than " + str(get_expire_date_jwt_email(True)), flush=True)
-        Account.query.filter(and_(Account.is_verified == False, Account.register_time < get_expire_date_jwt_email(True))).delete()
+        Account.query.filter(and_(Account.is_verified is False,
+                                  Account.register_time < get_expire_date_jwt_email(True))).delete()
         db.session.commit()
