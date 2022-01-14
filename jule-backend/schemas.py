@@ -109,7 +109,7 @@ class GradeSchema(CamelCaseSQLASchema):
 
 class StatisticTypeSchema(CamelCaseSQLASchema):
     class Meta:
-        model = models.StatisticType
+        model = StatisticType
 
     id = ma.auto_field()
     title = ma.auto_field()

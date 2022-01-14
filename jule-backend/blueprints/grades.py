@@ -4,8 +4,6 @@ from ..models import Grade, Account
 from ..schemas import GradeSchema
 from ..jwt_signature_verification import require_authorization
 
-
-
 grades_routes = Blueprint('grades', __name__, url_prefix="/grades")
 
 # Schema used to return grade
