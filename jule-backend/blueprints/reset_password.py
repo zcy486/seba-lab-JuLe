@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash
 from ..app import db
 from ..config import PASSWORD_IS_MISSING, TOKEN_IS_MISSING, JWT_SECRET_KEY_RESET_PASSWORD, TOKEN_HAS_EXPIRED, \
     JWT_SECRET_KEY, TOKEN_IS_INVALID, BAD_REQUEST, EMAIL_INVALID, EMAIL_DOES_NOT_EXIST, EMAIL_NOT_VERIFIED, \
-    EMAIL_ACCOUNT, PASSWORD_REQUIREMENTS, CLIENT_URL
+    NO_REPLY_EMAIL_ACCOUNT, PASSWORD_REQUIREMENTS, CLIENT_URL
 from ..models import Account, University
 from ..schemas import AccountSchema, UniversitySchema
 from ..utils import validate_email, validate_password, get_expire_date_jwt_auth, get_expire_date_jwt_email
@@ -29,7 +29,7 @@ def send_async_email(app, email, name, jwt_token):
         link = CLIENT_URL + 'reset-password?token=' + jwt_token
         msg = Message(subject='Reset your JuLe password',
                       recipients=[email],
-                      sender=EMAIL_ACCOUNT,
+                      sender=NO_REPLY_EMAIL_ACCOUNT,
                       # line below is for clients, which can not display html
                       body='Hi ' + name + ', You recently requested to reset your JuLe account password. '
                                           'If you did not make this request, just ignore this email. Otherwise, '

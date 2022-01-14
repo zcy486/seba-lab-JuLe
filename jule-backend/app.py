@@ -22,7 +22,8 @@ from .blueprints import (
     grades,
     users,
     verify_email,
-    reset_password
+    reset_password,
+    contact
 )
 
 
@@ -86,11 +87,12 @@ def register_blueprints(app):
     app.register_blueprint(submission.submission_routes)
     app.register_blueprint(grades.grades_routes)
     app.register_blueprint(users.users_routes)
+    app.register_blueprint(contact.contact_routes)
 
 
 def delete_unverified_accounts_task(app):
     with app.app_context():
         print("Now deleting Unverified Accounts older than " + str(get_expire_date_jwt_email(True)), flush=True)
-        Account.query.filter(and_(Account.is_verified is False,
+        Account.query.filter(and_(Account.is_verified == False,  # noqa
                                   Account.register_time < get_expire_date_jwt_email(True))).delete()
         db.session.commit()

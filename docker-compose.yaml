@@ -11,7 +11,7 @@ services:
         ipv4_address: 172.20.128.1
     image: postgres:14-alpine
     ports:
-      - 5432:5432
+      - "5432:5432"
     restart: unless-stopped
 
     environment:
@@ -25,10 +25,13 @@ services:
         ipv4_address: 172.20.128.2
     image: namshi/smtp
     ports:
-      - 25:25
+      - "25:25"
+    volumes:
+      - ./dkim/config:/etc/exim4/_docker_additional_macros:ro
+      - ./dkim/domain.key:/etc/exim4/domain.key:ro
     restart: unless-stopped
     environment:
-      - MAILNAME=jule.de
+      - MAILNAME=jule.tk
 
   api:
     networks:
@@ -40,8 +43,8 @@ services:
     image: jule-api
     volumes:
       - ./jule-backend:/jule-backend
-    ports:
-      - 5000:5000
+    #ports:
+    #  - "5000:5000"
     restart: unless-stopped
 
   client:
@@ -54,6 +57,20 @@ services:
     image: jule-client
     volumes:
       - ./jule-frontend:/jule-frontend
+    #ports:
+    #  - "3000:3000"
+    restart: unless-stopped
+
+  nginx: # (load balancer)
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.5
+    image: nginx:alpine
     ports:
-      - 3000:3000
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./jule-load-balancer/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./jule-load-balancer/fullchain.pem:/etc/nginx/fullchain.pem:ro
+      - ./jule-load-balancer/privkey.pem:/etc/nginx/privkey.pem:ro
     restart: unless-stopped

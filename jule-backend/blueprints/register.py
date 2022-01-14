@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash
 
 from ..app import db
 from ..config import CAPTCHA_API_SECRET_KEY, EMAIL_INVALID, EMAIL_ALREADY_EXISTS, JWT_SECRET_KEY_EMAIL_VERIFY, \
-    CLIENT_URL, EMAIL_ACCOUNT, BAD_REQUEST, PASSWORD_REQUIREMENTS
+    CLIENT_URL, NO_REPLY_EMAIL_ACCOUNT, BAD_REQUEST, PASSWORD_REQUIREMENTS
 from ..models import Account
 from ..schemas import AccountSchema, UniversitySchema
 from ..utils import validate_email, validate_password, get_expire_date_jwt_email
@@ -51,7 +51,7 @@ def send_async_email(app, email, jwt_token):
         link = CLIENT_URL + 'confirm-email?token=' + jwt_token
         msg = Message(subject='Please Verify Your Email Address',
                       recipients=[email],
-                      sender=EMAIL_ACCOUNT,
+                      sender=NO_REPLY_EMAIL_ACCOUNT,
                       # line below is for clients, which can not display html
                       body='In order to start using your JuLe account, you need to confirm your email address: '
                            + link + ' If you did not sign up for this account you can ignore this email '
