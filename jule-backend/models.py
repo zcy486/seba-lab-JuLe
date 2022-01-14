@@ -134,3 +134,32 @@ class Grade(db.Model):
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
                             nullable=False)
     exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)
+
+
+class Discussion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    creation_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+
+    poster_id = db.Column(db.Integer, db.ForeignKey('account.id'),
+                          nullable=False)  # Discussion -> Account (many-to-one)
+    poster = db.relationship('Account')  # Discussion -> Account (many-to-one)
+
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
+                            nullable=False)  # Discussion -> Exercise (many-to-one)
+    exercise = db.relationship('Exercise')  # Discussion -> Exercise (many-to-one)
+
+    comments = db.relationship('Comment')  # Discussion -> Comment (one-to-many)
+    votes = db.Column(db.Integer, nullable=False, default=0)
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    creation_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+
+    poster_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)  # Comment -> Account (many-to-one)
+    poster = db.relationship('Account')  # Comment -> Account (many-to-one)
+
+    discussion_id = db.Column(db.Integer, db.ForeignKey('discussion.id'),
+                              nullable=False)  # Discussion -> Comment (one-to-many)
