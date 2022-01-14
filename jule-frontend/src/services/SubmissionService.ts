@@ -6,18 +6,18 @@ const baseRoute = '/submission'
 const SubmissionService = {
 
     // create submission
-    createSubmission: (userID: number, exerciseID: number, text: string) => {
+    createSubmission: (exerciseID: string, submission: {text: string}) => {
         return new Promise<Submission>((resolve, reject) => {
-            HttpService(true).post(`${baseRoute}/${userID}/${exerciseID}`, text)
+            HttpService(true).post(`${baseRoute}/${exerciseID}`, submission)
                 .then(resp => resolve(resp.data))
                 .catch(err => reject(err.response));
         });
     },
 
     // get submission by exercise id
-    getSubmission: (userID: number, exerciseID: number) => {
+    getSubmission: (exerciseID: string) => {
         return new Promise<Submission>((resolve, reject) => {
-            HttpService(true).get(`${baseRoute}/${userID}/${exerciseID}`)
+            HttpService(true).get(`${baseRoute}/${exerciseID}`)
                 .then(resp => resolve(resp.data))
                 .catch(err => reject(err.response))
         })
