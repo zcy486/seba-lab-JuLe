@@ -1,8 +1,8 @@
 from extensions import db
 from flask import Blueprint, request, jsonify, abort
-from models import Account, Comment, Discussion, Exercise
-from schemas import DiscussionSchema
-from jwt_signature_verification import require_authorization
+from ..models import Account, Comment, Discussion, Exercise
+from ..schemas import DiscussionSchema
+from ..jwt_signature_verification import require_authorization
 
 # Discussion blueprint used to register blueprint in app.py
 discussions_routes = Blueprint('discussion', __name__, url_prefix='/discussions')
