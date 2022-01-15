@@ -6,7 +6,7 @@ type Discussion = {
     text: string,
     poster: User,
     creationTime: string,
-    comments: Comment
+    comments: Comment[],
     votes: number,
 }
 
