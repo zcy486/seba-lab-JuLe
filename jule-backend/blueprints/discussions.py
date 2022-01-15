@@ -1,5 +1,5 @@
-from extensions import db
 from flask import Blueprint, request, jsonify, abort
+from ..extensions import db
 from ..models import Account, Comment, Discussion, Exercise
 from ..schemas import DiscussionSchema
 from ..jwt_signature_verification import require_authorization
