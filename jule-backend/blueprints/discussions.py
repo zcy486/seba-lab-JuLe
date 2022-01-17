@@ -77,8 +77,8 @@ def update_delete_discussion(current_account: Account, discussion_id):
     if discussion is None:
         return abort(405, 'No discussion found with matching id')
 
+    # update text of the discussion
     if request.method == 'POST':
-        # update text of the discussion
         if 'text' in request.json:
             text = request.json['text']
             discussion.text = text
@@ -90,15 +90,16 @@ def update_delete_discussion(current_account: Account, discussion_id):
         else:
             return abort(400, "Parameter missing from request.")
 
+    # delete discussion
     elif request.method == 'DELETE':
-        # delete discussion
-        related_comments = discussion.comments
-        discussion.comments = []
-
         # delete related comments
-        for comment in related_comments:
+        for comment in discussion.comments:
+            # delete related associations
+            AccountVotesComment.query.filter_by(comment_id=comment.id).delete()
             db.session.delete(comment)
 
+        # delete related associations
+        AccountVotesDiscussion.query.filter_by(discussion_id=discussion_id).delete()
         db.session.delete(discussion)
         db.session.commit()
 
@@ -140,6 +141,8 @@ def delete_comment(current_account: Account, discussion_id, comment_id):
     if comment is None:
         return abort(405, 'No comment found with matching id')
 
+    # delete related associations
+    AccountVotesComment.query.filter_by(comment_id=comment_id).delete()
     db.session.delete(comment)
     db.session.commit()
 
