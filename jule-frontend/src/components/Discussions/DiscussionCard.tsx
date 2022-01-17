@@ -6,6 +6,9 @@ import Discussion from "../../models/Discussion";
 import User from "../../models/User";
 import DiscussionService from "../../services/DiscussionService";
 import CommentCard from "./CommentCard";
+import {Editor} from 'react-draft-wysiwyg';
+import {EditorState, ContentState} from 'draft-js';
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 interface Props {
     currentUser: User,
@@ -19,9 +22,15 @@ const DiscussionCard = (props: Props) => {
     // states for editing discussion
     const [input, setInput] = useState<string>('')
     const [editMode, setEditMode] = useState<boolean>(false)
+    const [editorState, setEditorState] = useState(() =>
+        EditorState.createWithContent(ContentState.createFromText(''))
+    )
     // states for adding new comment
     const [newComment, setNewComment] = useState<string>('')
     const [commentMode, setCommentMode] = useState<boolean>(false)
+    const [newCommentState, setNewCommentState] = useState(() =>
+        EditorState.createWithContent(ContentState.createFromText(''))
+    )
     // the discussion to be rendered
     const [discussion, setDiscussion] = useState<Discussion>(props.discussion)
 
@@ -46,20 +55,24 @@ const DiscussionCard = (props: Props) => {
 
     // ====handlers for editing discussion====
     const handleEditDiscussion = () => {
-        // set current discussion text as input value
-        setInput(discussion.text)
+        // set current discussion text as content of editor (input value)
+        setEditorState(() =>
+            EditorState.createWithContent(ContentState.createFromText(discussion.text)))
         setEditMode(true)
     }
 
-    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInput(e.target.value)
-    }
+    useEffect(() => {
+        let currentText = editorState.getCurrentContent().getPlainText()
+        setInput(currentText)
+    }, [editorState])
 
     const handleCancelInput = () => {
         setEditMode(false)
     }
 
     const handleSaveInput = () => {
+        if (!input) return
+
         DiscussionService.updateDiscussionText(discussion.id, input)
             .then(res => {
                 setDiscussion(res)
@@ -80,20 +93,24 @@ const DiscussionCard = (props: Props) => {
         setCommentMode(true)
     }
 
-    const handleInputComment = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewComment(e.target.value)
-    }
+    useEffect(() => {
+        let currentText = newCommentState.getCurrentContent().getPlainText()
+        setNewComment(currentText)
+    }, [newCommentState])
 
     const handleCancelComment = () => {
         setCommentMode(false)
     }
 
     const handleAddComment = () => {
+        if (!newComment) return
+
         DiscussionService.addNewComment(discussion.id, newComment)
             .then(res => {
                 setDiscussion(res)
                 setCommentMode(false)
-                setNewComment('')
+                setNewCommentState(() =>
+                    EditorState.createWithContent(ContentState.createFromText('')))
             })
     }
 
@@ -127,14 +144,9 @@ const DiscussionCard = (props: Props) => {
                     {editMode ?
                         (
                             <>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    maxRows={4}
-                                    value={input}
-                                    onChange={handleInput}
-                                    size={"small"}
-                                />
+                                <div style={{border: "1px solid black", padding: '2px', minHeight: '200px'}}>
+                                    <Editor editorState={editorState} onEditorStateChange={setEditorState}/>
+                                </div>
                                 <Grid container justifyContent="flex-end">
                                     <Button size={"small"} onClick={handleCancelInput}>Cancel</Button>
                                     <Button size={"small"} onClick={handleSaveInput}>Save</Button>
@@ -161,15 +173,9 @@ const DiscussionCard = (props: Props) => {
                     {commentMode ?
                         (
                             <>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    maxRows={4}
-                                    value={newComment}
-                                    onChange={handleInputComment}
-                                    size={"small"}
-                                    placeholder={"Add a new comment here..."}
-                                />
+                                <div style={{border: "1px solid black", padding: '2px', minHeight: '200px'}}>
+                                    <Editor editorState={newCommentState} onEditorStateChange={setNewCommentState}/>
+                                </div>
                                 <Grid container justifyContent="flex-end">
                                     <Button size={"small"} onClick={handleCancelComment}>Cancel</Button>
                                     <Button size={"small"} onClick={handleAddComment}>Add</Button>

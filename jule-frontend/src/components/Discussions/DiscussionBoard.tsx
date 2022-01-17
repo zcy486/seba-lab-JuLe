@@ -1,11 +1,14 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {Button, Divider, Grid, TextField, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
+import {Button, Divider, Grid, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import DiscussionService from "../../services/DiscussionService";
 import HttpService from "../../services/HttpService";
 import axios, {Canceler} from "axios";
 import DiscussionCard from "./DiscussionCard";
 import Discussion from "../../models/Discussion";
 import User from "../../models/User";
+import {Editor} from 'react-draft-wysiwyg';
+import {EditorState, ContentState} from 'draft-js';
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 interface Props {
     exerciseId: string
@@ -14,7 +17,10 @@ interface Props {
 
 const DiscussionBoard = (props: Props) => {
 
-    const [input, setInput] = useState('')
+    const [editorState, setEditorState] = useState(() =>
+        EditorState.createWithContent(ContentState.createFromText(''))
+    )
+    const [input, setInput] = useState<string>('')
     const [order, setOrder] = useState<number>(3)
     const [page, setPage] = useState<number>(1)
     const [loading, setLoading] = useState(true)
@@ -35,18 +41,15 @@ const DiscussionBoard = (props: Props) => {
         if (node) observer.current.observe(node)
     }, [loading, hasMore])
 
-    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInput(e.target.value)
-    }
-
     const onCreate = () => {
+        if (!input) return
+
         const new_discussion = {
             text: input,
             exerciseId: props.exerciseId
         }
         DiscussionService.createDiscussion(new_discussion)
             .then(res => {
-                setInput('')
                 window.location.reload()
             })
     }
@@ -86,20 +89,19 @@ const DiscussionBoard = (props: Props) => {
         return () => cancel()
     }, [order, page])
 
+    useEffect(() => {
+        let currentText = editorState.getCurrentContent().getPlainText()
+        setInput(currentText)
+    }, [editorState])
+
     return (
         <>
             <h1>Discussions</h1>
             <Divider/>
             <Typography variant={'h6'}>Start a new discussion</Typography>
-            <TextField
-                fullWidth
-                multiline
-                maxRows={4}
-                value={input}
-                onChange={handleInput}
-                size={"small"}
-                placeholder={'Start a new discussion here...'}
-            />
+            <div style={{border: "1px solid black", padding: '2px', minHeight: '200px'}}>
+                <Editor editorState={editorState} onEditorStateChange={setEditorState}/>
+            </div>
             <Grid container justifyContent="flex-end">
                 <Button onClick={onCreate}>Post</Button>
             </Grid>
