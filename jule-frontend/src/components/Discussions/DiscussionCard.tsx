@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Avatar, Grid, Divider, Paper, Typography, Button, TextField, IconButton} from "@mui/material";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Discussion from "../../models/Discussion";
 import User from "../../models/User";
 import DiscussionService from "../../services/DiscussionService";
+import CommentCard from "./CommentCard";
 
 interface Props {
     currentUser: User,
@@ -12,18 +13,39 @@ interface Props {
 }
 
 const DiscussionCard = (props: Props) => {
-
-    const [input, setInput] = useState<string>('')
+    // states for voting discussion
     const [voted, setVoted] = useState<boolean>(false)
+    const [disableVote, setDisableVote] = useState<boolean>(true)
+    // states for editing discussion
+    const [input, setInput] = useState<string>('')
     const [editMode, setEditMode] = useState<boolean>(false)
+    // states for adding new comment
+    const [newComment, setNewComment] = useState<string>('')
+    const [commentMode, setCommentMode] = useState<boolean>(false)
+    // the discussion to be rendered
     const [discussion, setDiscussion] = useState<Discussion>(props.discussion)
 
-    const handleClickVote = () => {
-        setVoted(!voted)
-        //TODO: voting feature
+    useEffect(() => {
+        // check if user has already voted the discussion
+        // and set voted in advance
+        DiscussionService.fetchDiscussionVoted(discussion.id)
+            .then(res => {
+                setVoted(res)
+                setDisableVote(false)
+            })
+    }, [])
+
+    // ====handlers for voting discussion====
+    const handleVoteDiscussion = () => {
+        DiscussionService.voteDiscussion(discussion.id)
+            .then(res => {
+                setDiscussion(res)
+                setVoted(!voted)
+            })
     }
 
-    const handleClickEdit = () => {
+    // ====handlers for editing discussion====
+    const handleEditDiscussion = () => {
         // set current discussion text as input value
         setInput(discussion.text)
         setEditMode(true)
@@ -33,11 +55,11 @@ const DiscussionCard = (props: Props) => {
         setInput(e.target.value)
     }
 
-    const handleClickCancel = () => {
+    const handleCancelInput = () => {
         setEditMode(false)
     }
 
-    const handleClickSave = () => {
+    const handleSaveInput = () => {
         DiscussionService.updateDiscussionText(discussion.id, input)
             .then(res => {
                 setDiscussion(res)
@@ -45,15 +67,47 @@ const DiscussionCard = (props: Props) => {
             })
     }
 
-    const handleClickDelete = () => {
+    // ====handlers for deleting discussion====
+    const handleDeleteDiscussion = () => {
         DiscussionService.deleteDiscussion(discussion.id)
             .then(res => {
                 window.location.reload()
             })
     }
 
+    // ====handlers for adding new comment====
     const handleClickNewComment = () => {
-        //TODO: enable comments to the discussion
+        setCommentMode(true)
+    }
+
+    const handleInputComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewComment(e.target.value)
+    }
+
+    const handleCancelComment = () => {
+        setCommentMode(false)
+    }
+
+    const handleAddComment = () => {
+        DiscussionService.addNewComment(discussion.id, newComment)
+            .then(res => {
+                setDiscussion(res)
+                setCommentMode(false)
+                setNewComment('')
+            })
+    }
+
+    // ====handlers for voting and deleting comment====
+    const handleVoteComment = async (commentId: number) => {
+        const res = await DiscussionService.voteComment(discussion.id, commentId)
+        setDiscussion(res)
+    }
+
+    const handleDeleteComment = (commentId: number) => {
+        DiscussionService.deleteComment(discussion.id, commentId)
+            .then(res => {
+                setDiscussion(res)
+            })
     }
 
     return (
@@ -63,9 +117,9 @@ const DiscussionCard = (props: Props) => {
                     <Avatar sx={{width: 30, height: 30, bgcolor: '#8bc34a'}} variant={'rounded'}>S</Avatar> :
                     <Avatar sx={{width: 30, height: 30, bgcolor: '#ffcd38'}} variant={'rounded'}>L</Avatar>
                 }
-                <Typography variant={'overline'}>
-                    {discussion.poster.name} from {discussion.poster.university.name}
-                </Typography>
+                <Typography sx={{fontSize: 14}} variant={'overline'}
+                            color={'primary'}>{discussion.poster.name}</Typography>
+                <Typography sx={{fontSize: 14}}>&nbsp;from&nbsp;{discussion.poster.university.name}</Typography>
             </Grid>
             <Divider/>
             <Grid container direction="column" pl={2}>
@@ -82,31 +136,63 @@ const DiscussionCard = (props: Props) => {
                                     size={"small"}
                                 />
                                 <Grid container justifyContent="flex-end">
-                                    <Button size={"small"} onClick={handleClickCancel}>Cancel</Button>
-                                    <Button size={"small"} onClick={handleClickSave}>Save</Button>
+                                    <Button size={"small"} onClick={handleCancelInput}>Cancel</Button>
+                                    <Button size={"small"} onClick={handleSaveInput}>Save</Button>
                                 </Grid>
                             </>
                         ) : (
-                            <Typography variant={'body1'}>{discussion.text}</Typography>
+                            <Typography style={{overflowWrap: "break-word"}}
+                                        variant={'body1'}>{discussion.text}</Typography>
                         )
                     }
                 </Grid>
+                {discussion.comments.map(comment => {
+                    return <CommentCard
+                        key={comment.id}
+                        comment={comment}
+                        currentUser={props.currentUser}
+                        discussionId={discussion.id}
+                        handleVoteComment={handleVoteComment}
+                        handleDeleteComment={handleDeleteComment}
+                    />
+                })}
                 <Divider/>
-                <Grid item>
-                    <Button size={'small'}>Add a new comment</Button>
+                <Grid container>
+                    {commentMode ?
+                        (
+                            <>
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    maxRows={4}
+                                    value={newComment}
+                                    onChange={handleInputComment}
+                                    size={"small"}
+                                    placeholder={"Add a new comment here..."}
+                                />
+                                <Grid container justifyContent="flex-end">
+                                    <Button size={"small"} onClick={handleCancelComment}>Cancel</Button>
+                                    <Button size={"small"} onClick={handleAddComment}>Add</Button>
+                                </Grid>
+                            </>
+                        ) : (
+                            <Button size={'small'} onClick={handleClickNewComment}>Add a new comment</Button>
+                        )
+                    }
                 </Grid>
             </Grid>
             <Divider/>
             <Grid container pl={2} pr={2} alignItems={'center'}>
-                <Button size={'small'} onClick={handleClickVote}>{voted ? 'undo useful' : 'useful'}</Button>
+                <Button size={'small'} disabled={disableVote}
+                        onClick={handleVoteDiscussion}>{voted ? 'undo useful' : 'useful'}</Button>
                 <Divider orientation="vertical" variant="middle" flexItem/>
                 <Typography sx={{ml: '5px'}} variant={'caption'}>{discussion.votes}</Typography>
                 {props.currentUser.id === discussion.poster.id &&
                     <>
-                        <IconButton sx={{ml: 2}} onClick={handleClickEdit}>
+                        <IconButton sx={{ml: 2}} onClick={handleEditDiscussion}>
                             <EditIcon sx={{fontSize: 18}}/>
                         </IconButton>
-                        <IconButton onClick={handleClickDelete}>
+                        <IconButton onClick={handleDeleteDiscussion}>
                             <DeleteForeverIcon sx={{fontSize: 18}}/>
                         </IconButton>
                     </>

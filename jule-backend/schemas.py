@@ -124,6 +124,7 @@ class CommentSchema(CamelCaseSQLASchema):
     text = ma.auto_field()
     poster = ma.Nested(UserSchema)
     creation_time = ma.auto_field()
+    votes = ma.auto_field()
 
 
 class DiscussionSchema(CamelCaseSQLASchema):

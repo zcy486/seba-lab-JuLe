@@ -5,6 +5,7 @@ type Comment = {
     text: string,
     poster: User,
     creationTime: string,
+    votes: number,
 }
 
 export default Comment

@@ -149,7 +149,7 @@ class Discussion(db.Model):
                             nullable=False)  # Discussion -> Exercise (many-to-one)
     exercise = db.relationship('Exercise')  # Discussion -> Exercise (many-to-one)
 
-    comments = db.relationship('Comment')  # Discussion -> Comment (one-to-many)
+    comments = db.relationship('Comment', order_by='Comment.votes.desc()')  # Discussion -> Comment (one-to-many)
     votes = db.Column(db.Integer, nullable=False, default=0)
 
 
@@ -163,3 +163,17 @@ class Comment(db.Model):
 
     discussion_id = db.Column(db.Integer, db.ForeignKey('discussion.id'),
                               nullable=False)  # Discussion -> Comment (one-to-many)
+
+    votes = db.Column(db.Integer, nullable=False, default=0)
+
+
+# Association class between Account and Discussion
+class AccountVotesDiscussion(db.Model):
+    account_id = db.Column(db.ForeignKey('account.id'), primary_key=True, nullable=False)
+    discussion_id = db.Column(db.ForeignKey('discussion.id'), primary_key=True, nullable=False)
+
+
+# Association class between Account and Comment
+class AccountVotesComment(db.Model):
+    account_id = db.Column(db.ForeignKey('account.id'), primary_key=True, nullable=False)
+    comment_id = db.Column(db.ForeignKey('comment.id'), primary_key=True, nullable=False)
