@@ -1,4 +1,4 @@
-DEVELOPMENT_MODE = True # If True, sets up DB with mock data
+LOAD_MOCK_DATA = True # If True, sets up DB with mock data
 
 SQLALCHEMY_DATABASE_URI = "postgresql://postgres:UY6pWbv2KW8E8zxV@172.20.128.1/jule"  # noqa
 SQLALCHEMY_TRACK_MODIFICATIONS = False

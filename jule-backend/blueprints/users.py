@@ -15,20 +15,3 @@ user_schema = UserSchema()
 @require_authorization
 def get_user_from_jwt(current_account: Account):
     return user_schema.dump(current_account)  # returns the current account associated to the jwt provided in header
-
-
-@users_routes.route('', methods=['GET'], strict_slashes=False)
-def read_universities():
-    account_schema = AccountSchema(many=True)
-
-    try:
-        query_universities = Account.query.all()
-        all_universities = query_universities
-
-    except Exception as N:
-        print(N)
-        # TODO: make except less general
-        return abort(405)
-
-    else:
-        return jsonify(account_schema.dump(all_universities))

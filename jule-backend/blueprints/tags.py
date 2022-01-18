@@ -20,7 +20,6 @@ tags_schema = TagSchema(many=True)  # For lists of tags
 def read_tags(current_account: Account):
     try:
         query_tags = Tag.query.order_by(Tag.use_count).all()
-        mock_tags: List[Tag] = [Tag(id=1, name="one", use_count=1), Tag(id=2, name="two", use_count=2)]
         all_tags = query_tags
 
     except Exception as N:
