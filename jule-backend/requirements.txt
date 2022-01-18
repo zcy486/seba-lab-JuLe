@@ -9,3 +9,4 @@ textstat
 flask-mail
 requests
 flask_apscheduler
+spacy
