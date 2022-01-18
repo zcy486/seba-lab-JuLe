@@ -1,12 +1,12 @@
 import json
 import math
-
 from flask import Blueprint, request, jsonify, abort
 from ..extensions import db
 from ..models import Exercise, Account, Tag, Difficulty, Scope
 from ..schemas import ExerciseSchema
 from ..blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
 from ..jwt_signature_verification import require_authorization
+import spacy
 
 # Exercise blueprint used to register blueprint in app.py
 exercises_routes = Blueprint('exercise', __name__, url_prefix='/exercises')
@@ -17,6 +17,7 @@ exercises_schema = ExerciseSchema(many=True)  # For list of exercises
 
 per_page = 5  # number of exercises displayed per page
 
+nlp = spacy.load("de_core_news_sm")
 
 # index route, not in use
 @exercises_routes.route('/', strict_slashes=False)
@@ -147,6 +148,7 @@ def rud_exercise(current_account: Account, exercise_id):
             exercise.explanation = request.form['explanation']
         if 'question' in request.form:
             exercise.question = request.form['question']
+            exercise.ner_tags = get_ner_tags(request.form['question'])
         if 'difficulty' in request.form:
             exercise.difficulty = int(request.form['difficulty'])
         if 'scope' in request.form:
@@ -205,6 +207,8 @@ def create_exercise(current_account: Account):
         # if exercise with same title already exists
         return abort(409, 'exercise with same title already exists')
 
+    ner_tags = get_ner_tags(question)
+
     # create new exercise
     new_exercise = Exercise(
         owner=owner,
@@ -214,6 +218,7 @@ def create_exercise(current_account: Account):
         difficulty=int(difficulty),
         scope=int(scope),
         sample_solution=sample_solution,
+        ner_tags=ner_tags
     )
 
     # append tags to the exercise
@@ -246,3 +251,14 @@ def remove_tags_from_exercise(exercise):
     exercise.tags = []
     for old_tag in old_tags:
         decrement_tag_use(old_tag.id)
+
+def get_ner_tags(text):
+
+    # process exercise using spacy module
+    doc = nlp(text)
+
+    # get lists of start, end, explanation of ner tag
+    ents = [(e.start_char, e.end_char, spacy.explain(e.label_)) for e in doc.ents]
+
+    return ents
+
