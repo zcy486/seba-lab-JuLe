@@ -26,7 +26,8 @@ from .blueprints import (
     users,
     verify_email,
     reset_password,
-    contact
+    contact,
+    discussions,
 )
 
 
@@ -96,6 +97,7 @@ def register_blueprints(app):
     app.register_blueprint(grades.grades_routes)
     app.register_blueprint(users.users_routes)
     app.register_blueprint(contact.contact_routes)
+    app.register_blueprint(discussions.discussions_routes)
 
 
 # Deletes old user accounts that did not verify their email
