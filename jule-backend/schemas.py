@@ -13,6 +13,7 @@ class CamelCaseSQLASchema(ma.SQLAlchemySchema):
     Converts dumped data keys into camelCase and incoming data keys into snake_case
     https://marshmallow.readthedocs.io/en/latest/examples.html#inflection-camel-casing-keys
     """
+
     def on_bind_field(self, field_name, field_obj):
         field_obj.data_key = camelcase(field_name or field_obj.data_key)
 
@@ -40,7 +41,6 @@ class StatisticSchema(CamelCaseSQLASchema):
 
 
 class AccountSchema(CamelCaseSQLASchema):
-
     class Meta:
         model = Account
 
@@ -114,3 +114,26 @@ class StatisticTypeSchema(CamelCaseSQLASchema):
     id = ma.auto_field()
     title = ma.auto_field()
     description = ma.auto_field()
+
+
+class CommentSchema(CamelCaseSQLASchema):
+    class Meta:
+        model = Comment
+
+    id = ma.auto_field()
+    text = ma.auto_field()
+    poster = ma.Nested(UserSchema)
+    creation_time = ma.auto_field()
+    votes = ma.auto_field()
+
+
+class DiscussionSchema(CamelCaseSQLASchema):
+    class Meta:
+        model = Discussion
+
+    id = ma.auto_field()
+    text = ma.auto_field()
+    poster = ma.Nested(UserSchema)
+    creation_time = ma.auto_field()
+    comments = ma.Nested(CommentSchema, many=True)  # list of comments
+    votes = ma.auto_field()
