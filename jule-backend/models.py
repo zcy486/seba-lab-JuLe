@@ -102,6 +102,8 @@ class Exercise(db.Model):
     scope = db.Column(db.Enum(Scope), nullable=False)
     sample_solution = db.Column(db.Text, nullable=False)
 
+    ner_tags = db.Column(db.Text, nullable=True)
+
     tags = db.relationship('Tag', secondary=tags_helper)  # Exercise -> Tag (many-to-many)
 
     owner_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)  # Exercise -> Account (many-to-one)
