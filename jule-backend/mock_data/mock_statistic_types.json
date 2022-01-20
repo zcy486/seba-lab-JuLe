@@ -1,0 +1,26 @@
+[{
+        "id": 0,
+        "title": "Syllable Count",
+        "description": "Syllable count description"
+    },
+    {
+        "id": 1,
+        "title": "Polysyllable Count",
+        "description": "Polysyllable count description"
+    },
+    {
+        "id": 2,
+        "title": "Char Count",
+        "description": "Char count description"
+    },
+    {
+        "id": 3,
+        "title": "Lexicon Count",
+        "description": "Lexicon count description"
+    },
+    {
+        "id": 4,
+        "title": "Sentence Count",
+        "description": "Sentence count description"
+    }
+]

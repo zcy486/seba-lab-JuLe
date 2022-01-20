@@ -22,6 +22,7 @@ class CamelCaseSQLASchema(ma.SQLAlchemySchema):
 class UniversitySchema(CamelCaseSQLASchema):
     class Meta:
         model = University
+        load_instance = True
 
     name = ma.auto_field()
     abbreviation = ma.auto_field()
@@ -43,6 +44,7 @@ class StatisticSchema(CamelCaseSQLASchema):
 class AccountSchema(CamelCaseSQLASchema):
     class Meta:
         model = Account
+        load_instance = True
 
     id = ma.auto_field()
     email = ma.auto_field()
@@ -51,7 +53,9 @@ class AccountSchema(CamelCaseSQLASchema):
     last_login = ma.auto_field()
     register_time = ma.auto_field()
     university = ma.Nested(UniversitySchema)
+    university_id = ma.auto_field()
     is_verified = ma.auto_field()
+    password = ma.auto_field()
 
 
 class UserSchema(CamelCaseSQLASchema):
