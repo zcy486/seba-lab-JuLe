@@ -3,10 +3,16 @@ import math
 
 from flask import Blueprint, request, jsonify, abort
 from ..extensions import db
-from ..models import Exercise, Account, Tag, Difficulty, Scope
+from ..models import Exercise, Account, Tag, Difficulty, Scope, tags_helper
 from ..schemas import ExerciseSchema
 from ..blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
 from ..jwt_signature_verification import require_authorization
+from sklearn.neighbors import NearestNeighbors
+from sklearn.feature_extraction.text import TfidfVectorizer
+import pandas as pd
+import sys
+
+current_module = sys.modules[__name__]
 
 # Exercise blueprint used to register blueprint in app.py
 exercises_routes = Blueprint('exercise', __name__, url_prefix='/exercises')
@@ -15,7 +21,11 @@ exercises_routes = Blueprint('exercise', __name__, url_prefix='/exercises')
 exercise_schema = ExerciseSchema()  # For single exercise
 exercises_schema = ExerciseSchema(many=True)  # For list of exercises
 
-per_page = 5  # number of exercises displayed per page
+per_page = 5  # number of exercises displayed per page´
+
+current_module.similar_exercises_engine = None  # global variable for exercise recommendation engine
+current_module.features = None
+current_module.exercise_matrix = None
 
 
 # index route, not in use
@@ -176,6 +186,10 @@ def rud_exercise(current_account: Account, exercise_id):
 
         db.session.delete(exercise)
         db.session.commit()
+
+        # rebuild the exercise recommendation engine
+        build_similar_exercises_engine()
+
         return jsonify({'message': 'successfully deleted'}), 200
 
     else:
@@ -222,7 +236,36 @@ def create_exercise(current_account: Account):
     db.session.add(new_exercise)
     db.session.commit()
 
+    # rebuild the exercise recommendation engine
+    build_similar_exercises_engine()
+
     return jsonify(exercise_schema.dump(new_exercise))
+
+
+# determines the k most similar exercises
+@exercises_routes.route('/similar/<exercise_id>', methods=['GET'])
+#@require_authorization
+def similar_exercises(exercise_id):
+    if current_module.similar_exercises_engine is None:
+        build_similar_exercises_engine()
+
+    # determine how many exercises to return
+    k = min(max(len(current_module.exercise_matrix), 4), 4)
+
+    # determine the most similar exercises according to the cosine distance of the TF-IDF vectors
+    distances, indices = current_module.similar_exercises_engine.kneighbors(current_module.features[int(exercise_id)-1],
+                                                                            n_neighbors=k)
+
+    # retrieving the exercises
+    sim_exercises = current_module.exercise_matrix[current_module.exercise_matrix.index.isin(indices[0][1:])].copy()
+
+    sim_exercises_dict = dict()
+
+    sim_exercises_dict['ids'] = list(sim_exercises['id'])
+
+    sim_exercises_dict['titles'] = list(sim_exercises['title'])
+
+    return sim_exercises_dict
 
 
 # helper function not exposed to REST API
@@ -246,3 +289,50 @@ def remove_tags_from_exercise(exercise):
     exercise.tags = []
     for old_tag in old_tags:
         decrement_tag_use(old_tag.id)
+
+
+# function to build the recommendation engine for similar exercises
+# builds the TF-IDF vectors for all exercises
+def build_similar_exercises_engine():
+    # query relevant exercise information from db
+    exercises_info = db.session.query(Exercise.id, Exercise.title, Exercise.explanation, Exercise.question,
+                                      Exercise.sample_solution,
+                                      Exercise.difficulty).filter(Exercise.scope == 'public').all()
+
+    exercises_info_df = pd.DataFrame(exercises_info,
+                                     columns=['id', 'title', 'explanation', 'question', 'solution', 'difficulty'])
+
+    # replace enum with actual strings
+    exercises_info_df['difficulty'].replace(1, 'easy', inplace=True)
+    exercises_info_df['difficulty'].replace(2, 'medium', inplace=True)
+    exercises_info_df['difficulty'].replace(3, 'hard', inplace=True)
+
+    # from a string of all available tags for each exercise
+    exercise_tags = db.session.query(tags_helper.c.exercise_id, Tag.name).filter(
+        (Tag.id == tags_helper.c.tag_id)).all()
+    tags = dict()
+    for id, tag in exercise_tags:
+        if id in tags:
+            tags[id] += ' ' + tag
+        else:
+            tags[id] = tag
+    exercise_tags_df = pd.DataFrame(list(tags.items()), columns=['id', 'tags'])
+    exercises_info_df = exercises_info_df.merge(exercise_tags_df, left_on='id', right_on='id')
+
+    # concatenate all available strings for exercises
+    feature_matrix = exercises_info_df['id'].copy()
+    feature_matrix['exercise_info'] = exercises_info_df['explanation'] + exercises_info_df['question'] + \
+                                      exercises_info_df['solution'] + exercises_info_df['difficulty'] + \
+                                      exercises_info_df['tags']
+
+    # vectorize the information (one string for each exercise) using TF-IDF
+    tfidf = TfidfVectorizer()
+    features = tfidf.fit_transform(feature_matrix['exercise_info'])
+
+    # fit a knn model which can be used to get the most similar exercises
+    model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
+    model_knn.fit(features)
+
+    current_module.exercise_matrix = exercises_info_df
+    current_module.features = features
+    current_module.similar_exercises_engine = model_knn
