@@ -9,6 +9,7 @@ import Loading from "../../components/Loading";
 import CogOption from "../../components/CogOption";
 import User from "../../models/User";
 import SubmissionService from "../../services/SubmissionService";
+import SimilarExercises from "../../components/SimilarExercises/SimilarExercises";
 
 
 const ExerciseDetailPage = () => {
@@ -23,6 +24,8 @@ const ExerciseDetailPage = () => {
     const [explanation, setExplanation] = useState('');
     const [question, setQuestion] = useState('');
     const [solution, setSolution] = useState('');
+    const [simExercisesIds, setSimExercisesIds] = useState<number[]>([]);
+    const [simExercisesTitles, setSimExercisesTitles] = useState<string[]>([]);
 
     //indicator of loading state
     const [loading, setLoading] = useState(true);
@@ -30,6 +33,26 @@ const ExerciseDetailPage = () => {
     useEffect(() => {
         UserService.getCurrentUser().then(val => setUser(val));
     }, [])
+
+    useEffect(() => {
+        if (id) {
+            // fetch exercise details
+            ExerciseService.getSimilarExercises(id)
+                .then(resp => {
+                    setSimExercisesIds(resp.ids)
+                    setSimExercisesTitles(resp.titles)
+                })
+                .catch(err => {
+                    if (err.status === 405) {
+                        alert('No exercise found with matching id!')
+                    } else if (err.status === 401) {
+                        alert('You are not authorized to view this exercise!')
+                    } else {
+                        alert('Unknown error.')
+                    }
+                });
+        }
+    }, [id]);
 
     useEffect(() => {
         if (id) {
@@ -55,6 +78,7 @@ const ExerciseDetailPage = () => {
                 });
         }
     }, [id]);
+
 
     const onCancel = () => {
         navigate('/exercises')
@@ -124,6 +148,9 @@ const ExerciseDetailPage = () => {
                         {user && ownerId && user.id === ownerId && //make cog option only visible to the owner
                             <CogOption onClickEdit={onClickEdit} onClickDelete={onClickDelete} exerciseTitle={title}/>
                         }
+
+                        <SimilarExercises ids={simExercisesIds} titles={simExercisesTitles}/>
+
                     </div>
                 )
             }
