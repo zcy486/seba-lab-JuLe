@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,7 +10,7 @@ import {Link, useNavigate} from "react-router-dom";
 let NavigationBar = (props: {loggedIn: boolean, setLoggedIn:(loggedIn: boolean)=>void}) => {
 
     useEffect(()=> {
-        console.log(props.loggedIn)
+        //console.log(props.loggedIn)
         if (localStorage.getItem('jwtToken') === null)
             props.setLoggedIn(false)
         else

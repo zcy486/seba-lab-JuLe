@@ -23,7 +23,7 @@ const ProfilePage = () => {
     /* Conditional components */
 
     const ProfileContent = () => {
-        console.log(`Wow look here: ${Role.Lecturer.valueOf()}`)
+        //console.log(`Wow look here: ${Role.Lecturer.valueOf()}`)
         if (user?.role.valueOf() === Role.Student.valueOf()){
             return <StudentProfileContent />
         } else if (user?.role.valueOf() === Role.Lecturer.valueOf()){

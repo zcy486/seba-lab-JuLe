@@ -2,11 +2,9 @@ import React, {useEffect, useState} from "react";
 import {Box, Chip, Typography} from "@mui/material";
 import {useNavigate, useParams} from "react-router-dom";
 import ExerciseService from "../../services/ExerciseService";
-import UserService from "../../services/UserService";
 import StatisticsService from "../../services/StatisticsService";
 import SubmissionService from "../../services/SubmissionService";
 import Loading from "../../components/Loading";
-import User from "../../models/User";
 import Button from "@mui/material/Button";
 import Statistics from "../../models/Statistics";
 import ScoreList from "../../components/ScoreList/ScoreList";
@@ -17,7 +15,6 @@ const ExerciseResultPage = () => {
     const {id} = useParams()
     const navigate = useNavigate()
 
-    const [user, setUser] = useState<User>(); // current logged-in user
     const [title, setTitle] = useState('');
     const [tags, setTags] = useState<string[]>([]);
     const [solution, setSolution] = useState<string>();
@@ -26,10 +23,6 @@ const ExerciseResultPage = () => {
 
     //indicator of loading state
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        UserService.getCurrentUser().then(val => setUser(val));
-    }, [])
 
     useEffect(() => {
         if (id) {
@@ -46,7 +39,7 @@ const ExerciseResultPage = () => {
                 }
             });
         }
-    }, [])
+    }, [id])
 
     useEffect(() => {
         if (id) {
@@ -61,9 +54,9 @@ const ExerciseResultPage = () => {
                 } else {
                     alert('Unknown error.')
                 }
-            });;;
+            });
         }
-    }, [])
+    }, [id])
 
     useEffect(() => {
         if (id) {
@@ -116,7 +109,8 @@ const ExerciseResultPage = () => {
                         <Typography variant={'h5'} sx={{mt: 3}}>Your Solution</Typography>
                         <Typography variant={'body1'}>{submission}</Typography>
 
-                        <Button className="text-editor-button" variant="contained" onClick={onEdit} >Edit Submission</Button>
+                        <Button className="text-editor-button" variant="contained" onClick={onEdit}>Edit
+                            Submission</Button>
 
                     </div>
                 )
