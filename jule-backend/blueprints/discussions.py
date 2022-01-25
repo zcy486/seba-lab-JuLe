@@ -1,7 +1,7 @@
 import json
 from flask import Blueprint, request, jsonify, abort
 from ..extensions import db
-from ..models import Account, Comment, Discussion, Exercise, AccountVotesDiscussion, AccountVotesComment
+from ..models import Account, Comment, Discussion, Exercise
 from ..schemas import DiscussionSchema
 from ..jwt_signature_verification import require_authorization
 
@@ -92,14 +92,6 @@ def update_delete_discussion(current_account: Account, discussion_id):
 
     # delete discussion
     elif request.method == 'DELETE':
-        # delete related comments
-        for comment in discussion.comments:
-            # delete related associations
-            AccountVotesComment.query.filter_by(comment_id=comment.id).delete()
-            db.session.delete(comment)
-
-        # delete related associations
-        AccountVotesDiscussion.query.filter_by(discussion_id=discussion_id).delete()
         db.session.delete(discussion)
         db.session.commit()
 
@@ -141,8 +133,6 @@ def delete_comment(current_account: Account, discussion_id, comment_id):
     if comment is None:
         return abort(405, 'No comment found with matching id')
 
-    # delete related associations
-    AccountVotesComment.query.filter_by(comment_id=comment_id).delete()
     db.session.delete(comment)
     db.session.commit()
 
@@ -156,23 +146,21 @@ def vote_discussion(current_account: Account, discussion_id):
     if discussion is None:
         return abort(405, 'No discussion found with matching id')
 
-    vote = AccountVotesDiscussion.query.filter_by(account_id=current_account.id,
-                                                  discussion_id=discussion_id).first()
+    vote_exists = current_account in discussion.votes_by
 
     if request.method == 'GET':
         # returns whether current user has voted for the discussion
-        return json.dumps(vote is not None)
+        return json.dumps(vote_exists)
 
     elif request.method == 'POST':
-        if vote is None:
-            vote = AccountVotesDiscussion(account_id=current_account.id, discussion_id=discussion_id)
+        if not vote_exists:
+            discussion.votes_by.append(current_account)
             discussion.votes += 1
-            db.session.add(vote)
 
         # if vote already exists, cancel vote
         else:
+            discussion.votes_by.remove(current_account)
             discussion.votes -= 1
-            db.session.delete(vote)
 
         db.session.commit()
         return jsonify(discussion_schema.dump(discussion))
@@ -193,22 +181,21 @@ def vote_comment(current_account: Account, discussion_id, comment_id):
     if comment is None:
         return abort(405, 'No comment found with matching id')
 
-    vote = AccountVotesComment.query.filter_by(account_id=current_account.id, comment_id=comment_id).first()
+    vote_exists = current_account in comment.votes_by
 
     if request.method == 'GET':
         # returns whether current user has vote for the comment
-        return json.dumps(vote is not None)
+        return json.dumps(vote_exists)
 
     elif request.method == 'POST':
-        if vote is None:
-            vote = AccountVotesComment(account_id=current_account.id, comment_id=comment_id)
+        if not vote_exists:
+            comment.votes_by.append(current_account)
             comment.votes += 1
-            db.session.add(vote)
 
         # if vote already exists, cancel vote
         else:
+            comment.votes_by.remove(current_account)
             comment.votes -= 1
-            db.session.delete(vote)
 
         db.session.commit()
         return jsonify(discussion_schema.dump(discussion))
