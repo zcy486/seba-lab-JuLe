@@ -28,7 +28,7 @@ const CommentCard = (props: Props) => {
                 setVoted(res)
                 setDisableVote(false)
             })
-    }, [])
+    }, [props.discussionId, props.comment.id])
 
     const handleVoteComment = async () => {
         await props.handleVoteComment(props.comment.id)
