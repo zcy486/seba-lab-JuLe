@@ -138,6 +138,19 @@ class Grade(db.Model):
     exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)
 
 
+# Association table between Account and Discussion
+account_votes_discussion = db.Table('account_votes_discussion',
+                                    db.Column('account_id', db.ForeignKey('account.id'), primary_key=True),
+                                    db.Column('discussion_id', db.ForeignKey('discussion.id'), primary_key=True)
+                                    )
+
+# Association table between Account and Comment
+account_votes_comment = db.Table('account_votes_comment',
+                                 db.Column('account_id', db.ForeignKey('account.id'), primary_key=True),
+                                 db.Column('comment_id', db.ForeignKey('comment.id'), primary_key=True)
+                                 )
+
+
 class Discussion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
@@ -149,10 +162,13 @@ class Discussion(db.Model):
 
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
                             nullable=False)  # Discussion -> Exercise (many-to-one)
-    exercise = db.relationship('Exercise')  # Discussion -> Exercise (many-to-one)
+    exercise = db.relationship('Exercise', backref=db.backref('discussions',
+                                                              cascade='all, delete'))  # Discussion -> Exercise (many-to-one)
 
-    comments = db.relationship('Comment', order_by='Comment.votes.desc()')  # Discussion -> Comment (one-to-many)
+    comments = db.relationship('Comment', cascade='all, delete',
+                               order_by='Comment.votes.desc()')  # Discussion -> Comment (one-to-many)
     votes = db.Column(db.Integer, nullable=False, default=0)
+    votes_by = db.relationship('Account', secondary=account_votes_discussion)
 
 
 class Comment(db.Model):
@@ -167,15 +183,4 @@ class Comment(db.Model):
                               nullable=False)  # Discussion -> Comment (one-to-many)
 
     votes = db.Column(db.Integer, nullable=False, default=0)
-
-
-# Association class between Account and Discussion
-class AccountVotesDiscussion(db.Model):
-    account_id = db.Column(db.ForeignKey('account.id'), primary_key=True, nullable=False)
-    discussion_id = db.Column(db.ForeignKey('discussion.id'), primary_key=True, nullable=False)
-
-
-# Association class between Account and Comment
-class AccountVotesComment(db.Model):
-    account_id = db.Column(db.ForeignKey('account.id'), primary_key=True, nullable=False)
-    comment_id = db.Column(db.ForeignKey('comment.id'), primary_key=True, nullable=False)
+    votes_by = db.relationship('Account', secondary=account_votes_comment)

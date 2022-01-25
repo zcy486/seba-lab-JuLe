@@ -31,7 +31,7 @@ const NewExercisePage = () => {
         })();
     }, [])
 
-    const handleChangeTitle = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value)
         setError('')
     }

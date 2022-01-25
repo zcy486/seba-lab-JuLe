@@ -87,7 +87,7 @@ const DiscussionBoard = (props: Props) => {
             setError(true)
         })
         return () => cancel()
-    }, [order, page])
+    }, [order, page, props.exerciseId])
 
     useEffect(() => {
         let currentText = editorState.getCurrentContent().getPlainText()

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Avatar, Grid, Divider, Paper, Typography, Button, TextField, IconButton} from "@mui/material";
+import {Avatar, Grid, Divider, Paper, Typography, Button, IconButton} from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Discussion from "../../models/Discussion";
@@ -42,7 +42,7 @@ const DiscussionCard = (props: Props) => {
                 setVoted(res)
                 setDisableVote(false)
             })
-    }, [])
+    }, [discussion.id])
 
     // ====handlers for voting discussion====
     const handleVoteDiscussion = () => {

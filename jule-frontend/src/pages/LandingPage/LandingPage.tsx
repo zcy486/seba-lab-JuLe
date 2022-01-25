@@ -14,7 +14,7 @@ const LandingPage = () => {
         <div className={styles.landingPage}>
             <h1>Welcome to JuLe</h1>
             <div className={styles.sideBySide}>
-                <img src={"/relaxing.png"} className={styles.image}/>
+                <img src={"/relaxing.png"} className={styles.image} alt={"Relaxing"}/>
                 <div className={styles.stack}>
                     <p>
                         Improving your legal writing one exercise at a time with industry leading analytical Natural
