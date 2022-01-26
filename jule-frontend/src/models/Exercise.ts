@@ -13,11 +13,19 @@ export enum Scope {
     public = 3
 }
 
+export type NerTag = {
+    label: string, 
+    start: number, 
+    end: number, 
+    explanation: string
+}
+
 type Exercise = {
     id: number,
     title: string,
     explanation: string,
     question: string,
+    nerTags?: NerTag[]
     difficulty: Difficulty,
     scope: Scope,
     sampleSolution: string,

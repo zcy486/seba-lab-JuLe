@@ -10,6 +10,8 @@ import CogOption from "../../components/CogOption";
 import User from "../../models/User";
 import SubmissionService from "../../services/SubmissionService";
 import DiscussionBoard from "../../components/Discussions/DiscussionBoard";
+import TextHighlightDisplay from "../../components/TextHighlightDisplay/TextHighlightDisplay";
+import { NerTag } from "../../models/Exercise";
 
 
 const ExerciseDetailPage = () => {
@@ -24,6 +26,7 @@ const ExerciseDetailPage = () => {
     const [explanation, setExplanation] = useState('');
     const [question, setQuestion] = useState('');
     const [solution, setSolution] = useState('');
+    const [nerTags, setNerTags] = useState<NerTag[] | undefined>([]);
 
     //indicator of loading state
     const [loading, setLoading] = useState(true);
@@ -42,6 +45,7 @@ const ExerciseDetailPage = () => {
                     setTags(resp.tags.map((tag) => tag.name))
                     setExplanation(resp.explanation)
                     setQuestion(resp.question)
+                    setNerTags(resp.nerTags)
                     setLoading(false)
                 })
                 .catch(err => {
@@ -117,6 +121,8 @@ const ExerciseDetailPage = () => {
 
                         <Typography variant={'h6'} sx={{mt: 3}}>Question</Typography>
                         <Typography variant={'body1'}>{question}</Typography>
+
+                        <TextHighlightDisplay text={question} highlights={nerTags}/>
 
                         <Typography variant={'h6'} sx={{mt: 3}}>Your Solution</Typography>
                         <TextEditor text={solution} setText={(text) => setSolution(text)}/>

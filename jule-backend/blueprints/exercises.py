@@ -258,7 +258,7 @@ def get_ner_tags(text):
     doc = nlp(text)
 
     # get lists of start, end, explanation of ner tag
-    ents = [(e.text, e.start_char, e.end_char, spacy.explain(e.label_)) for e in doc.ents]
+    ents = [(e.label , e.start_char, e.end_char, spacy.explain(e.label_)) for e in doc.ents]
 
     return ents
 
