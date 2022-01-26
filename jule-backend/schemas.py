@@ -129,6 +129,7 @@ class CommentSchema(CamelCaseSQLASchema):
     poster = ma.Nested(UserSchema)
     creation_time = ma.auto_field()
     votes = ma.auto_field()
+    anonymous = ma.auto_field()
 
 
 class DiscussionSchema(CamelCaseSQLASchema):
@@ -141,3 +142,4 @@ class DiscussionSchema(CamelCaseSQLASchema):
     creation_time = ma.auto_field()
     comments = ma.Nested(CommentSchema, many=True)  # list of comments
     votes = ma.auto_field()
+    anonymous = ma.auto_field()

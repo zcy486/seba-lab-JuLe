@@ -6,6 +6,7 @@ type Comment = {
     poster: User,
     creationTime: string,
     votes: number,
+    anonymous: boolean,
 }
 
 export default Comment

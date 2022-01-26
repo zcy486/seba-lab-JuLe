@@ -8,6 +8,7 @@ type Discussion = {
     creationTime: string,
     comments: Comment[],
     votes: number,
+    anonymous: boolean,
 }
 
 export default Discussion

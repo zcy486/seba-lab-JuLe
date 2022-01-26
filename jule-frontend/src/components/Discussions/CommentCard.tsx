@@ -51,13 +51,30 @@ const CommentCard = (props: Props) => {
                     <Divider orientation="vertical" variant="middle" flexItem/>
                     <Typography sx={{ml: '5px'}} variant={'caption'}>{props.comment.votes}</Typography>
                     <Typography sx={{fontSize: 12, ml: 'auto'}}>—&nbsp;</Typography>
-                    {props.comment.poster.role === 1 ?
-                        <Avatar sx={{height: 20, width: 20, bgcolor: '#8bc34a'}} variant={'rounded'}>S</Avatar> :
-                        <Avatar sx={{height: 20, width: 20, bgcolor: '#ffcd38'}} variant={'rounded'}>L</Avatar>
+                    {props.comment.anonymous ?
+                        (
+                            <>
+                                <Avatar sx={{height: 20, width: 20}} variant={'rounded'}/>
+                                <Typography sx={{fontSize: 12}} variant={'overline'} color={'primary'}>
+                                    &nbsp;Anonymous
+                                </Typography>
+                            </>
+
+                        ) : (
+                            <>
+                                {props.comment.poster.role === 1 ?
+                                    <Avatar sx={{height: 20, width: 20, bgcolor: '#8bc34a'}}
+                                            variant={'rounded'}>S</Avatar> :
+                                    <Avatar sx={{height: 20, width: 20, bgcolor: '#ffcd38'}}
+                                            variant={'rounded'}>L</Avatar>
+                                }
+                                <Typography sx={{fontSize: 12}} variant={'overline'}
+                                            color={'primary'}>&nbsp;{props.comment.poster.name}</Typography>
+                                <Typography sx={{fontSize: 12}}
+                                            variant={'body2'}>&nbsp;at&nbsp;{props.comment.creationTime}</Typography>
+                            </>
+                        )
                     }
-                    <Typography sx={{fontSize: 12}} variant={'overline'}
-                                color={'primary'}>{props.comment.poster.name}&nbsp;</Typography>
-                    <Typography sx={{fontSize: 12}} variant={'body2'}>at&nbsp;{props.comment.creationTime}</Typography>
                     {props.currentUser.id === props.comment.poster.id &&
                         <IconButton onClick={handleDeleteComment}>
                             <DeleteForeverIcon sx={{fontSize: 18}}/>
