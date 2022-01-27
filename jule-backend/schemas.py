@@ -76,6 +76,16 @@ class TagSchema(CamelCaseSQLASchema):
     name = ma.auto_field()
 
 
+class NerTagSchema(CamelCaseSQLASchema):
+    class Meta:
+        model = NerTag
+
+    label = ma.auto_field()
+    start = ma.auto_field()
+    end = ma.auto_field()
+    explanation = ma.auto_field()
+
+
 class ExerciseSchema(CamelCaseSQLASchema):
     class Meta:
         model = Exercise
@@ -84,7 +94,7 @@ class ExerciseSchema(CamelCaseSQLASchema):
     title = ma.auto_field()
     explanation = ma.auto_field()
     question = ma.auto_field()
-    ner_tags = ma.auto_field()
+    ner_tags = ma.Nested(NerTagSchema, many=True)
     difficulty = ma.auto_field()
     scope = ma.auto_field()
     sample_solution = ma.auto_field()

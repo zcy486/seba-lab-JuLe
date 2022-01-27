@@ -18,6 +18,8 @@ const TextHighlightDisplay = (props: TextHighlightDisplayProps) => {
     const [isHighlightOn, setIsHighlightOn] = useState(false);
 
     const highlightedText = (text: string, highlights: NerTag[]) => {
+        console.log("here are my highlights: " + highlights)
+
         let combinedText: JSX.Element[] = []
 
         // set the first index before a highlight
@@ -32,7 +34,7 @@ const TextHighlightDisplay = (props: TextHighlightDisplayProps) => {
 
             // add highlighted text
             const highlightedText = text.slice(highlight.start, highlight.end)
-            combinedText.push(<span style={{ backgroundColor: TagColorMapping[highlight.label], padding: "1rem" }}>{highlightedText}</span>)
+            combinedText.push(<span style={{ backgroundColor: TagColorMapping[highlight.label], padding: "2px" }}>{highlightedText}</span>)
 
             currentCharIndex = highlight.end
         }
@@ -60,7 +62,7 @@ const TextHighlightDisplay = (props: TextHighlightDisplayProps) => {
 
     return (
         <>
-            {displayedText}
+            {displayedText()}
             {props.highlights ?
                 <FormGroup>
                     <FormControlLabel control={<Switch checked={isHighlightOn} onChange={toggleHighlight} />} label="Text Highlighting" />

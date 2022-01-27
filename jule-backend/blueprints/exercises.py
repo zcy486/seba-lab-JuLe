@@ -1,8 +1,9 @@
 import json
 import math
+from typing import Any
 from flask import Blueprint, request, jsonify, abort
 from ..extensions import db
-from ..models import Exercise, Account, Tag, Difficulty, Scope
+from ..models import Exercise, Account, NerTag, Tag, Difficulty, Scope
 from ..schemas import ExerciseSchema
 from ..blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
 from ..jwt_signature_verification import require_authorization
@@ -165,6 +166,11 @@ def rud_exercise(current_account: Account, exercise_id):
 
         # commit changes to db
         db.session.commit()
+
+        # update ner tags
+        ner_tags = get_ner_tags(exercise.question)
+        update_ner_tags(exercise, ner_tags)
+
         return jsonify(exercise_schema.dump(exercise))
 
     # delete exercise by id
@@ -207,7 +213,7 @@ def create_exercise(current_account: Account):
         # if exercise with same title already exists
         return abort(409, 'exercise with same title already exists')
 
-    ner_tags = get_ner_tags(question)
+    
 
     # create new exercise
     new_exercise = Exercise(
@@ -218,7 +224,6 @@ def create_exercise(current_account: Account):
         difficulty=int(difficulty),
         scope=int(scope),
         sample_solution=sample_solution,
-        ner_tags=ner_tags
     )
 
     # append tags to the exercise
@@ -226,6 +231,11 @@ def create_exercise(current_account: Account):
 
     db.session.add(new_exercise)
     db.session.commit()
+    db.session.refresh(new_exercise)
+
+    # add ner tags
+    ner_tags = get_ner_tags(question)
+    update_ner_tags(new_exercise, ner_tags)
 
     return jsonify(exercise_schema.dump(new_exercise))
 
@@ -258,7 +268,41 @@ def get_ner_tags(text):
     doc = nlp(text)
 
     # get lists of start, end, explanation of ner tag
-    ents = [(e.label , e.start_char, e.end_char, spacy.explain(e.label_)) for e in doc.ents]
+    ents = [{"label": e.label_ , "start": e.start_char, "end": e.end_char, "explanation": spacy.explain(e.label_)} for e in doc.ents]
 
     return ents
 
+def update_ner_tags(exercise: Exercise, ner_tags: list[dict[str, Any]]):
+    delete_ner_tags(exercise)
+    for ner_tag in ner_tags:
+        create_ner_tag(exercise, ner_tag)
+
+def delete_ner_tags(exercise: Exercise):
+    try:
+        db.session.query(exercise_id=exercise.id).delete()
+
+    except Exception as N:
+        print(N)
+        # TODO: make except less general
+
+
+def create_ner_tag(exercise: Exercise, ner_tag: dict[str, Any]) -> NerTag:
+    try:
+        new_ner_tag = NerTag(
+            label=ner_tag["label"], 
+            start=ner_tag["start"],
+            end=ner_tag["end"],
+            explanation=ner_tag["explanation"],
+            exercise_id=exercise.id
+            )
+        db.session.add(new_ner_tag)
+        db.session.commit()
+        db.session.refresh(new_ner_tag)
+        ner_tag: NerTag = new_ner_tag
+
+    except Exception as N:
+        print(N)
+        # TODO: make except less general
+
+    else:
+        return ner_tag
