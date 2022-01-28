@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Avatar, Grid, Divider, Paper, Typography, Button, IconButton} from "@mui/material";
+import {Avatar, Grid, Divider, Paper, Typography, Button, IconButton, ToggleButton} from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Discussion from "../../models/Discussion";
@@ -31,6 +31,7 @@ const DiscussionCard = (props: Props) => {
     const [newCommentState, setNewCommentState] = useState(() =>
         EditorState.createWithContent(ContentState.createFromText(''))
     )
+    const [anonymous, setAnonymous] = useState<boolean>(false)
     // the discussion to be rendered
     const [discussion, setDiscussion] = useState<Discussion>(props.discussion)
 
@@ -105,7 +106,7 @@ const DiscussionCard = (props: Props) => {
     const handleAddComment = () => {
         if (!newComment) return
 
-        DiscussionService.addNewComment(discussion.id, newComment)
+        DiscussionService.addNewComment(discussion.id, newComment, anonymous)
             .then(res => {
                 setDiscussion(res)
                 setCommentMode(false)
@@ -130,13 +131,29 @@ const DiscussionCard = (props: Props) => {
     return (
         <Paper sx={{pt: 2, pb: 2, mb: 4, flexDirection: 'column'}} elevation={3}>
             <Grid container alignItems="center" pl={2}>
-                {discussion.poster.role === 1 ?
-                    <Avatar sx={{width: 30, height: 30, bgcolor: '#8bc34a'}} variant={'rounded'}>S</Avatar> :
-                    <Avatar sx={{width: 30, height: 30, bgcolor: '#ffcd38'}} variant={'rounded'}>L</Avatar>
+                {discussion.anonymous ?
+                    (
+                        <>
+                            <Avatar sx={{width: 30, height: 30}} variant={'rounded'}/>
+                            <Typography sx={{fontSize: 14}} variant={'overline'} color={'primary'}>
+                                &nbsp;Anonymous
+                            </Typography>
+                        </>
+
+                    ) : (
+                        <>
+                            {discussion.poster.role === 1 ?
+                                <Avatar sx={{width: 30, height: 30, bgcolor: '#8bc34a'}}
+                                        variant={'rounded'}>S</Avatar> :
+                                <Avatar sx={{width: 30, height: 30, bgcolor: '#ffcd38'}} variant={'rounded'}>L</Avatar>
+                            }
+                            <Typography sx={{fontSize: 14}} variant={'overline'}
+                                        color={'primary'}>&nbsp;{discussion.poster.name}</Typography>
+                            <Typography
+                                sx={{fontSize: 14}}>&nbsp;from&nbsp;{discussion.poster.university.name}</Typography>
+                        </>
+                    )
                 }
-                <Typography sx={{fontSize: 14}} variant={'overline'}
-                            color={'primary'}>{discussion.poster.name}</Typography>
-                <Typography sx={{fontSize: 14}}>&nbsp;from&nbsp;{discussion.poster.university.name}</Typography>
             </Grid>
             <Divider/>
             <Grid container direction="column" pl={2}>
@@ -147,7 +164,7 @@ const DiscussionCard = (props: Props) => {
                                 <div style={{border: "1px solid black", padding: '2px', minHeight: '200px'}}>
                                     <Editor editorState={editorState} onEditorStateChange={setEditorState}/>
                                 </div>
-                                <Grid container justifyContent="flex-end">
+                                <Grid container mb={2} justifyContent="flex-end">
                                     <Button size={"small"} onClick={handleCancelInput}>Cancel</Button>
                                     <Button size={"small"} onClick={handleSaveInput}>Save</Button>
                                 </Grid>
@@ -176,9 +193,13 @@ const DiscussionCard = (props: Props) => {
                                 <div style={{border: "1px solid black", padding: '2px', minHeight: '200px'}}>
                                     <Editor editorState={newCommentState} onEditorStateChange={setNewCommentState}/>
                                 </div>
-                                <Grid container justifyContent="flex-end">
+                                <Grid container mb={2} justifyContent="flex-end">
                                     <Button size={"small"} onClick={handleCancelComment}>Cancel</Button>
-                                    <Button size={"small"} onClick={handleAddComment}>Add</Button>
+                                    <ToggleButton size={'small'} value={'anonymous'} selected={anonymous}
+                                                  onChange={() => setAnonymous(!anonymous)}>
+                                        Anonymous
+                                    </ToggleButton>
+                                    <Button size={"small"} onClick={handleAddComment}>POST</Button>
                                 </Grid>
                             </>
                         ) : (

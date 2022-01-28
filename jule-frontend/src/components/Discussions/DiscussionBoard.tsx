@@ -21,6 +21,7 @@ const DiscussionBoard = (props: Props) => {
         EditorState.createWithContent(ContentState.createFromText(''))
     )
     const [input, setInput] = useState<string>('')
+    const [anonymous, setAnonymous] = useState<boolean>(false)
     const [order, setOrder] = useState<number>(3)
     const [page, setPage] = useState<number>(1)
     const [loading, setLoading] = useState(true)
@@ -46,7 +47,8 @@ const DiscussionBoard = (props: Props) => {
 
         const new_discussion = {
             text: input,
-            exerciseId: props.exerciseId
+            exerciseId: props.exerciseId,
+            anonymous: anonymous
         }
         DiscussionService.createDiscussion(new_discussion)
             .then(res => {
@@ -102,8 +104,12 @@ const DiscussionBoard = (props: Props) => {
             <div style={{border: "1px solid black", padding: '2px', minHeight: '200px'}}>
                 <Editor editorState={editorState} onEditorStateChange={setEditorState}/>
             </div>
-            <Grid container justifyContent="flex-end">
-                <Button onClick={onCreate}>Post</Button>
+            <Grid container mb={2} justifyContent="flex-end">
+                <ToggleButton size={'small'} value={'anonymous'} selected={anonymous}
+                              onChange={() => setAnonymous(!anonymous)}>
+                    Anonymous
+                </ToggleButton>
+                <Button size={'small'} onClick={onCreate}>Post</Button>
             </Grid>
             <Divider/>
             <Grid container justifyContent="flex-end">
