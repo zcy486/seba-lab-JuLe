@@ -120,7 +120,6 @@ const ExerciseDetailPage = () => {
                         <Typography variant={'body1'}>{explanation}</Typography>
 
                         <Typography variant={'h6'} sx={{mt: 3}}>Question</Typography>
-                        <Typography variant={'body1'}>{question}</Typography>
 
                         <TextHighlightDisplay text={question} highlights={nerTags}/>
 
