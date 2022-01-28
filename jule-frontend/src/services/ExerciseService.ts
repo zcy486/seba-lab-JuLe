@@ -55,6 +55,15 @@ const ExerciseService = {
                 .then(resp => resolve(resp.data.message))
                 .catch(err => reject(err.response))
         })
+    },
+
+    // get similar exercises
+    getSimilarExercises: (id:string) => {
+        return new Promise<{ ids: number[], titles: string[] }>((resolve, reject) => {
+            HttpService(true).get(`${baseRoute}/similar/${id}`)
+                .then(resp => resolve(resp.data))
+                .catch(err => reject(err.response))
+        })
     }
 };
 

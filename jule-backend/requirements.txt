@@ -9,4 +9,7 @@ textstat
 flask-mail
 requests
 flask_apscheduler
+sklearn
+pandas
+numpy
 spacy
