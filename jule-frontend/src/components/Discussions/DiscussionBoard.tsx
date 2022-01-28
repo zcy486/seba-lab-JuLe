@@ -52,8 +52,13 @@ const DiscussionBoard = (props: Props) => {
         }
         DiscussionService.createDiscussion(new_discussion)
             .then(res => {
-                window.location.reload()
+                reloadDiscussions()
             })
+    }
+
+    const reloadDiscussions = () => {
+        setDiscussions([])
+        setPage(0)
     }
 
     const sortByOrder = (event: React.MouseEvent<HTMLElement>, newOrder: number) => {
@@ -67,6 +72,11 @@ const DiscussionBoard = (props: Props) => {
     }, [order])
 
     useEffect(() => {
+        if (page === 0) {
+            //reset page to 1 for reloading after post a new discussion
+            setPage(1)
+            return
+        }
         setLoading(true)
         setError(false)
         let cancel: Canceler
@@ -130,6 +140,7 @@ const DiscussionBoard = (props: Props) => {
                             <DiscussionCard
                                 discussion={discussion}
                                 currentUser={props.currentUser}
+                                reloadDiscussions={reloadDiscussions}
                             />
                         </div>
                     ) : (
@@ -137,6 +148,7 @@ const DiscussionBoard = (props: Props) => {
                             <DiscussionCard
                                 discussion={discussion}
                                 currentUser={props.currentUser}
+                                reloadDiscussions={reloadDiscussions}
                             />
                         </div>
                     )

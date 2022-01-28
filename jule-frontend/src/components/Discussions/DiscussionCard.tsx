@@ -13,6 +13,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 interface Props {
     currentUser: User,
     discussion: Discussion,
+    reloadDiscussions: () => void,
 }
 
 const DiscussionCard = (props: Props) => {
@@ -85,7 +86,7 @@ const DiscussionCard = (props: Props) => {
     const handleDeleteDiscussion = () => {
         DiscussionService.deleteDiscussion(discussion.id)
             .then(res => {
-                window.location.reload()
+                props.reloadDiscussions()
             })
     }
 
