@@ -89,7 +89,7 @@ const ScoreGraph = (props: ScoreGraphProps) => {
                     <Tooltip content={<CustomTooltip/>}/>
                     <Bar dataKey="score">
                         {data.map((entry, index) => (
-                            <Cell fill={getColor(entry.score)}/>
+                            <Cell key={index} fill={getColor(entry.score)}/>
                         ))}
                     </Bar>
                 </BarChart>

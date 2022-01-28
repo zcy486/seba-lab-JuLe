@@ -6,7 +6,7 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import ExerciseCard from "../../components/ExerciseCard/ExerciseCard";
 import ExerciseService from "../../services/ExerciseService";
 import TagService from "../../services/TagService";
-import Exercise, {Difficulty} from "../../models/Exercise";
+import Exercise from "../../models/Exercise";
 import Tag from "../../models/Tag";
 import Loading from "../Loading";
 import UserService from "../../services/UserService";
@@ -71,7 +71,9 @@ const ExerciseList = (props: ExerciseListProps) => {
                 filters.search = searchContent
             }
             if (props.onlyCurrentOwned) {
-                await UserService.getCurrentUser().then(res => { filters.owner_id = res.id })
+                await UserService.getCurrentUser().then(res => {
+                    filters.owner_id = res.id
+                })
             }
             const resp = await ExerciseService.applyFilters(filters)
             if (!active) {
@@ -87,7 +89,7 @@ const ExerciseList = (props: ExerciseListProps) => {
         return () => {
             active = false;
         };
-    }, [difficulty, selectedTags, searchContent]);
+    }, [difficulty, selectedTags, searchContent, props.onlyCurrentOwned]);
 
     const onChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         if (value !== page) {

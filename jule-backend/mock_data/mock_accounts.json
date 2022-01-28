@@ -1,0 +1,78 @@
+[{
+        "id": 0,
+        "email": "adam@jule.tk",
+        "password": "adamspassword",
+        "name": "Adam Lehrling",
+        "role": 1,
+        "lastLogin": 0,
+        "registerTime": 0,
+        "isVerified": true,
+        "universityId": 1
+    },
+    {
+        "id": 1,
+        "email": "bea@jule.tk",
+        "password": "beaspassword",
+        "name": "Bea Learner",
+        "role": 1,
+        "lastLogin": 0,
+        "registerTime": 0,
+        "isVerified": true,
+        "universityId": 1
+    },
+    {
+        "id": 2,
+        "email": "charlie@jule.tk",
+        "password": "charliespassword",
+        "name": "Charlie Studymore",
+        "role": 1,
+        "lastLogin": 0,
+        "registerTime": 0,
+        "isVerified": true,
+        "universityId": 2
+    },
+    {
+        "id": 3,
+        "email": "dennis@jule.tk",
+        "password": "dennisspassword",
+        "name": "Dennis Readsalot",
+        "role": 1,
+        "lastLogin": 0,
+        "registerTime": 0,
+        "isVerified": true,
+        "universityId": 2
+    },
+    {
+        "id": 4,
+        "email": "emil@jule.tk",
+        "password": "emilspassword",
+        "name": "Dr. Emil Researchin",
+        "role": 2,
+        "lastLogin": 0,
+        "registerTime": 0,
+        "isVerified": true,
+        "universityId": 1
+    },
+    {
+        "id": 5,
+        "email": "franziska@jule.tk",
+        "password": "franziskaspassword",
+        "name": "Dr. Franziska Teachalot",
+        "role": 2,
+        "lastLogin": 0,
+        "registerTime": 0,
+        "isVerified": true,
+        "universityId": 2
+    },
+    {
+        "id": 6,
+        "email": "gianis@jule.tk",
+        "password": "gianisspassword",
+        "name": "Gianis Notverified",
+        "role": 1,
+        "lastLogin": 0,
+        "registerTime": 0,
+        "isVerified": false,
+        "universityId": 1
+    }
+]

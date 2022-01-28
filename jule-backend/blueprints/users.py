@@ -1,8 +1,8 @@
-from flask import Blueprint
+from flask import abort, Blueprint, jsonify
 
 from ..jwt_signature_verification import require_authorization
 from ..models import Account
-from ..schemas import UserSchema
+from ..schemas import AccountSchema, UserSchema
 
 # Account blueprint used to register blueprint in app.py
 users_routes = Blueprint('users', __name__, url_prefix="/users")

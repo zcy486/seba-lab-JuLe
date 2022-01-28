@@ -62,7 +62,7 @@ const EditExercisePage = () => {
         }
     }, [id]);
 
-    const onChangeTitle = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value)
         setError('')
     }

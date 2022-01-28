@@ -10,6 +10,7 @@ import CogOption from "../../components/CogOption";
 import User from "../../models/User";
 import SubmissionService from "../../services/SubmissionService";
 import SimilarExercises from "../../components/SimilarExercises/SimilarExercises";
+import DiscussionBoard from "../../components/Discussions/DiscussionBoard";
 
 
 const ExerciseDetailPage = () => {
@@ -85,7 +86,7 @@ const ExerciseDetailPage = () => {
     }
 
     const onSave = () => {
-        if(id) {
+        if (id) {
             let submission = {text: solution}
             SubmissionService.createSubmission(id, submission).then(() => {
                 navigate(`/exercises/${id}/results`)
@@ -146,11 +147,12 @@ const ExerciseDetailPage = () => {
 
                         <TextEditorButtonPanel saveText={onSave} onCancel={onCancel}/>
                         {user && ownerId && user.id === ownerId && //make cog option only visible to the owner
-                            <CogOption onClickEdit={onClickEdit} onClickDelete={onClickDelete} exerciseTitle={title}/>
+                        <CogOption onClickEdit={onClickEdit} onClickDelete={onClickDelete} exerciseTitle={title}/>
                         }
 
                         <SimilarExercises ids={simExercisesIds} titles={simExercisesTitles}/>
 
+                        <DiscussionBoard exerciseId={id!} currentUser={user!}/>
                     </div>
                 )
             }

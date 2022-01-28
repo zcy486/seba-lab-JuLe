@@ -134,3 +134,53 @@ class Grade(db.Model):
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
                             nullable=False)
     exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)
+
+
+# Association table between Account and Discussion
+account_votes_discussion = db.Table('account_votes_discussion',
+                                    db.Column('account_id', db.ForeignKey('account.id'), primary_key=True),
+                                    db.Column('discussion_id', db.ForeignKey('discussion.id'), primary_key=True)
+                                    )
+
+# Association table between Account and Comment
+account_votes_comment = db.Table('account_votes_comment',
+                                 db.Column('account_id', db.ForeignKey('account.id'), primary_key=True),
+                                 db.Column('comment_id', db.ForeignKey('comment.id'), primary_key=True)
+                                 )
+
+
+class Discussion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    creation_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+
+    poster_id = db.Column(db.Integer, db.ForeignKey('account.id'),
+                          nullable=False)  # Discussion -> Account (many-to-one)
+    poster = db.relationship('Account')  # Discussion -> Account (many-to-one)
+
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
+                            nullable=False)  # Discussion -> Exercise (many-to-one)
+    exercise = db.relationship('Exercise', backref=db.backref('discussions',
+                                                              cascade='all, delete'))  # Discussion -> Exercise (many-to-one)
+
+    comments = db.relationship('Comment', cascade='all, delete',
+                               order_by='Comment.votes.desc()')  # Discussion -> Comment (one-to-many)
+    votes = db.Column(db.Integer, nullable=False, default=0)
+    votes_by = db.relationship('Account', secondary=account_votes_discussion)
+    anonymous = db.Column(db.Boolean, nullable=False)
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    creation_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+
+    poster_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)  # Comment -> Account (many-to-one)
+    poster = db.relationship('Account')  # Comment -> Account (many-to-one)
+
+    discussion_id = db.Column(db.Integer, db.ForeignKey('discussion.id'),
+                              nullable=False)  # Discussion -> Comment (one-to-many)
+
+    votes = db.Column(db.Integer, nullable=False, default=0)
+    votes_by = db.relationship('Account', secondary=account_votes_comment)
+    anonymous = db.Column(db.Boolean, nullable=False)

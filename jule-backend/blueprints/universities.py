@@ -24,12 +24,6 @@ universities_schema = UniversitySchema(many=True)  # For lists of universities
 def read_universities():
     try:
         query_universities = University.query.all()
-        mock_universities: List[University] = [
-            University(id=1, name="Technische Universität München",
-                       logo_src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Logo_of_the_Technical_University_of_Munich.svg/816px-Logo_of_the_Technical_University_of_Munich.svg.png"),
-            University(id=2, name="Ludwig Maximillian Universität München",
-                       logo_src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Gruen-logo_lmu2.svg/1200px-Gruen-logo_lmu2.svg.png")
-        ]
         all_universities = query_universities
 
     except Exception as N:
