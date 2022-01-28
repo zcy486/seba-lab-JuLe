@@ -48,10 +48,11 @@ const DiscussionService = {
         })
     },
 
-    addNewComment: (discussionId: number, text: string) => {
+    addNewComment: (discussionId: number, text: string, anonymous: boolean) => {
         return new Promise<Discussion>((resolve, reject) => {
             HttpService(true).post(`${baseRoute}/${discussionId}/new_comment`, JSON.stringify({
-                text: text
+                text: text,
+                anonymous: anonymous
             }))
                 .then(resp => resolve(resp.data))
                 .catch(err => reject(err.response))

@@ -18,15 +18,16 @@ per_page = 5  # number of discussions displayed per loading
 @discussions_routes.route('/create', methods=['POST'])
 @require_authorization
 def create_discussion(current_account: Account):
-    if 'text' in request.json and 'exerciseId' in request.json:
+    if 'text' in request.json and 'exerciseId' in request.json and 'anonymous' in request.json:
         text = request.json['text']
         exercise_id = request.json['exerciseId']
+        anonymous = request.json['anonymous']
         exercise = Exercise.query.filter_by(id=exercise_id).first()
         if exercise is None:
             return abort(405, 'Exercise no longer exists!')
 
         poster = current_account
-        new_discussion = Discussion(text=text, poster=poster, exercise=exercise)
+        new_discussion = Discussion(text=text, poster=poster, exercise=exercise, anonymous=anonymous)
 
         db.session.add(new_discussion)
         db.session.commit()
@@ -108,9 +109,10 @@ def add_new_comment(current_account: Account, discussion_id):
     if discussion is None:
         return abort(405, 'No discussion found with matching id')
 
-    if 'text' in request.json:
+    if 'text' in request.json and 'anonymous' in request.json:
         comment_text = request.json['text']
-        new_comment = Comment(text=comment_text, poster=current_account)
+        anonymous = request.json['anonymous']
+        new_comment = Comment(text=comment_text, poster=current_account, anonymous=anonymous)
         discussion.comments.append(new_comment)
 
         db.session.add(new_comment)

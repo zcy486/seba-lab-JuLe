@@ -179,6 +179,7 @@ class Discussion(db.Model):
                                order_by='Comment.votes.desc()')  # Discussion -> Comment (one-to-many)
     votes = db.Column(db.Integer, nullable=False, default=0)
     votes_by = db.relationship('Account', secondary=account_votes_discussion)
+    anonymous = db.Column(db.Boolean, nullable=False)
 
 
 class Comment(db.Model):
@@ -194,3 +195,4 @@ class Comment(db.Model):
 
     votes = db.Column(db.Integer, nullable=False, default=0)
     votes_by = db.relationship('Account', secondary=account_votes_comment)
+    anonymous = db.Column(db.Boolean, nullable=False)

@@ -21,6 +21,7 @@ const DiscussionBoard = (props: Props) => {
         EditorState.createWithContent(ContentState.createFromText(''))
     )
     const [input, setInput] = useState<string>('')
+    const [anonymous, setAnonymous] = useState<boolean>(false)
     const [order, setOrder] = useState<number>(3)
     const [page, setPage] = useState<number>(1)
     const [loading, setLoading] = useState(true)
@@ -46,12 +47,18 @@ const DiscussionBoard = (props: Props) => {
 
         const new_discussion = {
             text: input,
-            exerciseId: props.exerciseId
+            exerciseId: props.exerciseId,
+            anonymous: anonymous
         }
         DiscussionService.createDiscussion(new_discussion)
             .then(res => {
-                window.location.reload()
+                reloadDiscussions()
             })
+    }
+
+    const reloadDiscussions = () => {
+        setDiscussions([])
+        setPage(0)
     }
 
     const sortByOrder = (event: React.MouseEvent<HTMLElement>, newOrder: number) => {
@@ -65,6 +72,11 @@ const DiscussionBoard = (props: Props) => {
     }, [order])
 
     useEffect(() => {
+        if (page === 0) {
+            //reset page to 1 for reloading after post a new discussion
+            setPage(1)
+            return
+        }
         setLoading(true)
         setError(false)
         let cancel: Canceler
@@ -102,8 +114,12 @@ const DiscussionBoard = (props: Props) => {
             <div style={{border: "1px solid black", padding: '2px', minHeight: '200px'}}>
                 <Editor editorState={editorState} onEditorStateChange={setEditorState}/>
             </div>
-            <Grid container justifyContent="flex-end">
-                <Button onClick={onCreate}>Post</Button>
+            <Grid container mb={2} justifyContent="flex-end">
+                <ToggleButton size={'small'} value={'anonymous'} selected={anonymous}
+                              onChange={() => setAnonymous(!anonymous)}>
+                    Anonymous
+                </ToggleButton>
+                <Button size={'small'} onClick={onCreate}>Post</Button>
             </Grid>
             <Divider/>
             <Grid container justifyContent="flex-end">
@@ -124,6 +140,7 @@ const DiscussionBoard = (props: Props) => {
                             <DiscussionCard
                                 discussion={discussion}
                                 currentUser={props.currentUser}
+                                reloadDiscussions={reloadDiscussions}
                             />
                         </div>
                     ) : (
@@ -131,6 +148,7 @@ const DiscussionBoard = (props: Props) => {
                             <DiscussionCard
                                 discussion={discussion}
                                 currentUser={props.currentUser}
+                                reloadDiscussions={reloadDiscussions}
                             />
                         </div>
                     )
