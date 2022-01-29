@@ -1,12 +1,13 @@
 import json
 import math
-
+from typing import Any
 from flask import Blueprint, request, jsonify, abort
 from ..extensions import db
-from ..models import Exercise, Account, Tag, Difficulty, Scope, tags_helper
+from ..models import Exercise, Account, Tag, Difficulty, Scope, tags_helper, NerTag
 from ..schemas import ExerciseSchema
 from ..blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
 from ..jwt_signature_verification import require_authorization
+import spacy
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
@@ -26,6 +27,8 @@ per_page = 5  # number of exercises displayed per page´
 current_module.similar_exercises_engine = None  # global variable for exercise recommendation engine
 current_module.features = None
 current_module.exercise_matrix = None
+
+nlp = spacy.load("de_core_news_sm")
 
 
 # index route, not in use
@@ -157,6 +160,7 @@ def rud_exercise(current_account: Account, exercise_id):
             exercise.explanation = request.form['explanation']
         if 'question' in request.form:
             exercise.question = request.form['question']
+            exercise.ner_tags = get_ner_tags(request.form['question'])
         if 'difficulty' in request.form:
             exercise.difficulty = int(request.form['difficulty'])
         if 'scope' in request.form:
@@ -173,6 +177,11 @@ def rud_exercise(current_account: Account, exercise_id):
 
         # commit changes to db
         db.session.commit()
+
+        # update ner tags
+        ner_tags = get_ner_tags(exercise.question)
+        update_ner_tags(exercise, ner_tags)
+
         return jsonify(exercise_schema.dump(exercise))
 
     # delete exercise by id
@@ -219,6 +228,8 @@ def create_exercise(current_account: Account):
         # if exercise with same title already exists
         return abort(409, 'exercise with same title already exists')
 
+    
+
     # create new exercise
     new_exercise = Exercise(
         owner=owner,
@@ -235,6 +246,11 @@ def create_exercise(current_account: Account):
 
     db.session.add(new_exercise)
     db.session.commit()
+    db.session.refresh(new_exercise)
+
+    # add ner tags
+    ner_tags = get_ner_tags(question)
+    update_ner_tags(new_exercise, ner_tags)
 
     # rebuild the exercise recommendation engine
     build_similar_exercises_engine()
@@ -336,3 +352,48 @@ def build_similar_exercises_engine():
     current_module.exercise_matrix = exercises_info_df
     current_module.features = features
     current_module.similar_exercises_engine = model_knn
+
+def get_ner_tags(text):
+
+    # process exercise using spacy module
+    doc = nlp(text)
+
+    # get lists of start, end, explanation of ner tag
+    ents = [{"label": e.label_ , "start": e.start_char, "end": e.end_char, "explanation": spacy.explain(e.label_)} for e in doc.ents]
+
+    return ents
+
+def update_ner_tags(exercise: Exercise, ner_tags: list[dict[str, Any]]):
+    delete_ner_tags(exercise)
+    for ner_tag in ner_tags:
+        create_ner_tag(exercise, ner_tag)
+
+def delete_ner_tags(exercise: Exercise):
+    try:
+        db.session.query(exercise_id=exercise.id).delete()
+
+    except Exception as N:
+        print(N)
+        # TODO: make except less general
+
+
+def create_ner_tag(exercise: Exercise, ner_tag: dict[str, Any]) -> NerTag:
+    try:
+        new_ner_tag = NerTag(
+            label=ner_tag["label"], 
+            start=ner_tag["start"],
+            end=ner_tag["end"],
+            explanation=ner_tag["explanation"],
+            exercise_id=exercise.id
+            )
+        db.session.add(new_ner_tag)
+        db.session.commit()
+        db.session.refresh(new_ner_tag)
+        ner_tag: NerTag = new_ner_tag
+
+    except Exception as N:
+        print(N)
+        # TODO: make except less general
+
+    else:
+        return ner_tag

@@ -6,8 +6,12 @@ ENV FLASK_APP=app:create_app
 
 ENV FLASK_ENV=development
 
-COPY ./jule-backend/requirements.txt .
+COPY ./jule-backend/requirements.txt ./
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    python -m spacy download de_core_news_sm
+
+COPY . .
 
 CMD ["python", "-m", "flask", "run", "--host", "0.0.0.0"]

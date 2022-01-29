@@ -93,6 +93,16 @@ tags_helper = db.Table('tags_helper',
                        )
 
 
+class NerTag(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    label = db.Column(db.String(15))
+    start = db.Column(db.Integer)
+    end = db.Column(db.Integer)
+    explanation = db.Column(db.Text, nullable=True)
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id', ondelete="CASCADE"), nullable=False)  # NerTag -> Exercise (many-to-one)
+    exercise = db.relationship('Exercise')  # NerTag -> Exercise (many-to-one)
+
+
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(50), unique=True, nullable=False)
@@ -101,6 +111,8 @@ class Exercise(db.Model):
     difficulty = db.Column(db.Enum(Difficulty), nullable=False)
     scope = db.Column(db.Enum(Scope), nullable=False)
     sample_solution = db.Column(db.Text, nullable=False)
+
+    ner_tags = db.relationship('NerTag', back_populates="exercise", cascade="all, delete", passive_deletes=True) # Exercise -> NerTag (one-to-many)
 
     tags = db.relationship('Tag', secondary=tags_helper)  # Exercise -> Tag (many-to-many)
 
