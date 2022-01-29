@@ -1,8 +1,8 @@
 import React from "react";
 import styles from "./ExerciseCard.module.css";
-import {Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Typography} from "@mui/material";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Typography } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const MockUni = "/images/university.svg";
 
@@ -25,11 +25,10 @@ const ExerciseCard = (props: Props) => {
         <Card className={styles.exerciseCard}>
             <CardHeader
                 avatar={
-                    <Avatar
-                        alt={"Uni-Logo"}
+                    <img
+                        alt="Uni-Logo"
                         src={props.uniLogo ? props.uniLogo : MockUni}
-                        sx={{width: 50, height: 50}}
-                        variant={"rounded"}
+                        className={styles.universityLogo}
                     />
                 }
                 title={
@@ -38,13 +37,13 @@ const ExerciseCard = (props: Props) => {
                         {props.title}
                     </Typography>
                 }
-                subheader={props.exerciseTags.map((val, i) => (<Chip key={i} label={val}/>))}
+                subheader={props.exerciseTags.map((val, i) => (<Chip key={i} label={val} />))}
             >
 
             </CardHeader>
 
             {props.finished && <CardContent className={styles.additional}>
-                <DoneIcon color={"success"} fontSize={"large"}/>
+                <DoneIcon color={"success"} fontSize={"large"} />
             </CardContent>}
             {props.scope && <CardContent className={styles.additional}>
                 <Typography>
@@ -53,11 +52,11 @@ const ExerciseCard = (props: Props) => {
             </CardContent>}
             <CardActions className={styles.actionsArea}>
                 {props.viewStatistics && <Button className={styles.button}
-                                                 variant={"contained"}>
+                    variant={"contained"}>
                     View Statistics
                 </Button>}
                 <Button className={styles.button} variant={"contained"}
-                        onClick={() => navigate(`/exercises/${props.id}`)}>
+                    onClick={() => navigate(`/exercises/${props.id}`)}>
                     View Exercise
                 </Button>
             </CardActions>
