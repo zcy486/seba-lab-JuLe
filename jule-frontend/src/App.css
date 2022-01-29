@@ -1,4 +1,4 @@
 .content {
     /* TODO: fix this height once all components are in so that footer properly sticks to bottom */
-    min-height: calc(100vh - 4rem);
+    flex: 1 0 auto;
 }

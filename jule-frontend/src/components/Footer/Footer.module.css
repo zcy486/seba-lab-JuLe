@@ -9,3 +9,7 @@
 .footerBox a {
     text-decoration: none;
 }
+
+.footer {
+    flex-shrink: 0;
+}
