@@ -14,6 +14,9 @@ from .extensions import (
     db,
     ma
 )
+
+from .recommendation_email import send_recommendation_emails_task
+
 from .blueprints import (
     exercises,
     tags,
@@ -51,6 +54,7 @@ def create_app(test_config=None):
         scheduler = BackgroundScheduler()
         scheduler.add_job(delete_unverified_accounts_task, args=[
                           app], trigger='interval', minutes=5, timezone="UTC")
+        scheduler.add_job(send_recommendation_emails_task, args=[app], trigger='interval', days=7, timezone="UTC")
         scheduler.start()
 
     # if in development mode, inserts mock data into DB
@@ -61,7 +65,10 @@ def create_app(test_config=None):
     def index():
         # Uncomment bellow lines, to recreate database
         # db.drop_all()
-        db.create_all()
+        # db.create_all()
+
+        # Uncomment to send recommendation emails
+        # send_recommendation_emails_task(app)
         return "JuLe backend active!"
 
     try:

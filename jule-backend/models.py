@@ -63,6 +63,7 @@ class Account(db.Model):
     last_login = db.Column(db.DateTime(timezone=True))
     register_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
     is_verified = db.Column(db.Boolean, nullable=False, default=False)
+    email_opt_out = db.Column(db.Boolean, nullable=False, default=False)
 
     university_id = db.Column(db.Integer, db.ForeignKey('university.id'),
                               nullable=False)  # Account -> University (many-to-one)
