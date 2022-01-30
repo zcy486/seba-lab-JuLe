@@ -31,6 +31,7 @@ from .blueprints import (
     reset_password,
     contact,
     discussions,
+    opt_out_email
 )
 
 
@@ -105,6 +106,7 @@ def register_blueprints(app):
     app.register_blueprint(users.users_routes)
     app.register_blueprint(contact.contact_routes)
     app.register_blueprint(discussions.discussions_routes)
+    app.register_blueprint(opt_out_email.opt_out_email_routes)
 
 
 # Deletes old user accounts that did not verify their email
