@@ -177,6 +177,7 @@ const ExerciseList = (props: ExerciseListProps) => {
                                     id={exercise.id}
                                     title={exercise.title}
                                     exerciseTags={exercise.tags.map((tag) => tag.name)}
+                                    uniLogo={exercise.owner.university.logoSrc}
                                     //there are some optional properties
                                     //check ExerciseCard
                                 />
