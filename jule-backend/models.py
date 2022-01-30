@@ -124,6 +124,8 @@ class Submission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
 
+    submission_time = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercise.id'),
                             nullable=False)  # Submission -> Exercise (many-to-one)
     exercise = db.relationship('Exercise')  # Submission -> Exercise (many-to-one)

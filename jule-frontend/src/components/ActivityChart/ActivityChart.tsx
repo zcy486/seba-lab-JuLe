@@ -21,7 +21,7 @@ const ActivityChart = (props: ActivityChartProps) => {
         return {
             level: levelFromCount(rawElem.count),
             count: rawElem.count,
-            date: rawElem.date.toISOString().split('T')[0]
+            date: new Date(rawElem.date).toISOString().split('T')[0]
         }
     })
 

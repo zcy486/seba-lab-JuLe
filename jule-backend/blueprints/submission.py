@@ -1,13 +1,18 @@
+from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify, abort
+from sqlalchemy import and_
 import textstat
 from ..app import db
 from ..models import Statistic, Submission, Exercise, Score, Grade, Account
 from ..schemas import SubmissionSchema
 from ..blueprints.statistics import calculate_statistics
 from ..jwt_signature_verification import require_authorization
+import json
 
 
 textstat.set_lang('de')
+
+submissions_schema = SubmissionSchema(many=True)  # For lists of submissions
 
 
 # calculate grade
@@ -140,4 +145,57 @@ def get_submission(current_account: Account, exercise_id):
             # TODO: make except less general
             return abort(405)
     else:
+        return abort(405)
+
+
+# return the current user's hotstreak data
+@submission_routes.route('/hotstreak', methods=['GET'])
+@require_authorization
+def get_hotstreak(current_account: Account):
+
+    # print("getting hotstreak")
+
+    account_id = current_account.id
+
+    days_to_show = 180
+
+    date_3_months_ago = datetime.today() - timedelta(days= days_to_show)
+
+    try:
+        recent_submissions = Submission.query.filter(and_(Submission.submission_time >= date_3_months_ago, Submission.account_id == account_id)).all()
+
+        # print("recent submissions: " + json.dumps(submissions_schema.dump(recent_submissions)))
+
+        # TODO optimize code and delete print statements
+
+        def to_date(submission: Submission):
+            return submission.submission_time.date()
+
+        date_list = list(map(to_date, recent_submissions))
+
+        # print("date list: " + str(date_list))
+
+        empty_date_list = []
+
+        for i in range(1, days_to_show + 1):
+            empty_date_list.append((date_3_months_ago + timedelta(i)).date())
+
+        # print("empty date list: " + str(empty_date_list))
+
+        counted_date_list = []
+
+        for date in empty_date_list:
+
+            # print("date: " + date.strftime("%Y-%m-%d"))
+
+            counted_date_list.append({"date": date,"count": date_list.count(date)})
+
+        # print("counted_date_list: " + str(counted_date_list))
+
+        return jsonify(counted_date_list)
+
+
+    except Exception as N:
+        print(N)
+        # TODO: make except less general
         return abort(405)
