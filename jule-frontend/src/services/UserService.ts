@@ -1,4 +1,3 @@
-import {fetchUserName, MockUserExerciseDateData, MockUserName} from "./MockData";
 import HttpService from "./HttpService";
 import User from "../models/User";
 
