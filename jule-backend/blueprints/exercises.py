@@ -3,7 +3,7 @@ import math
 from typing import Any
 from flask import Blueprint, request, jsonify, abort
 from ..extensions import db
-from ..models import Exercise, Account, Tag, Difficulty, Scope, tags_helper, NerTag
+from ..models import Exercise, Account, Tag, Difficulty, Scope, tags_helper, NerTag, Submission
 from ..schemas import ExerciseSchema
 from ..blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
 from ..jwt_signature_verification import require_authorization
@@ -114,6 +114,14 @@ def read_exercises_per_page(current_account: Account, page):
 
     exercises_per_page = query.paginate(page, per_page, error_out=False).items
     return jsonify(exercises_schema.dump(exercises_per_page))
+
+
+# returns whether current user has submitted the exercise
+@exercises_routes.route('/<exercise_id>/submitted', methods=['GET'])
+@require_authorization
+def check_if_submitted(current_account: Account, exercise_id):
+    submitted = Submission.query.filter_by(exercise_id=exercise_id, account_id=current_account.id).first() is not None
+    return json.dumps(submitted)
 
 
 # route for reading, updating, deleting a single exercise by id
