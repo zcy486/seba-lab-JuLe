@@ -20,6 +20,7 @@ import ConfirmEmailPage from "./pages/ConfirmEmailPage/ConfirmEmailPage";
 import ExerciseResultPage from "./pages/Exercises/ExerciseResultPage";
 import ForgotPasswordPage from './pages/ForgotPasswordPage/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage/ResetPasswordPage';
+import EmailOptOutPage from './pages/EmailOptOutPage/EmailOptOutPage'
 
 
 const App = () => {
@@ -50,6 +51,7 @@ const App = () => {
                         <Route path={"login"} element={<LoginPage setLoggedIn={setLoggedIn}/>}/>
                         <Route path={"forgot-password"} element={<ForgotPasswordPage/>}/>
                         <Route path={"contact-us"} element={<ContactPage/>}/>
+                        <Route path={"email-opt-out"} element={<EmailOptOutPage/>}/>
                         <Route path={"*"} element={<ErrorPage/>}/>
                     </Routes>
                 </Container>

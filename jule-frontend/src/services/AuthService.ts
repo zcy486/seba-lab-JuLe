@@ -69,6 +69,14 @@ const AuthService = {
         } catch (err: any) {
             return err.response
         }
+    },
+
+    optOutEmailRecommendation: async(optOutEmailSetting: string) => {
+        try {
+            return await HttpService(true).post('/set_opt_out_email/', JSON.stringify({option: optOutEmailSetting}))
+        } catch (err: any) {
+            return err.response
+        }
     }
 }
 
