@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./ExerciseCard.module.css";
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Typography } from "@mui/material";
+import { Button, Card, CardActions, CardContent, CardHeader, Chip, Typography } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
 import { useNavigate } from "react-router-dom";
 
