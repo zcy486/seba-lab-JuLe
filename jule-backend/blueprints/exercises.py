@@ -160,7 +160,6 @@ def rud_exercise(current_account: Account, exercise_id):
             exercise.explanation = request.form['explanation']
         if 'question' in request.form:
             exercise.question = request.form['question']
-            exercise.ner_tags = get_ner_tags(request.form['question'])
         if 'difficulty' in request.form:
             exercise.difficulty = int(request.form['difficulty'])
         if 'scope' in request.form:
@@ -370,7 +369,7 @@ def update_ner_tags(exercise: Exercise, ner_tags: list[dict[str, Any]]):
 
 def delete_ner_tags(exercise: Exercise):
     try:
-        db.session.query(exercise_id=exercise.id).delete()
+        db.session.query(NerTag).filter_by(exercise_id=exercise.id).delete()
 
     except Exception as N:
         print(N)
