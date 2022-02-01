@@ -32,6 +32,8 @@ const ExerciseList = (props: ExerciseListProps) => {
     //filters-relevant states
     //difficulty in filters
     const [difficulty, setDifficulty] = useState<string>('');
+    //finished status in filters
+    const [status, setStatus] = useState<string>('');
     //selected tags in filters
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     //input of search box
@@ -56,13 +58,16 @@ const ExerciseList = (props: ExerciseListProps) => {
         (async () => {
             let filters = {
                 difficulty: undefined as number | undefined,
+                status: undefined as number | undefined,
                 tags: undefined as string[] | undefined,
                 search: undefined as string | undefined,
                 owner_id: undefined as number | undefined
             }
-            // filter only by current owned exercises if prop is set
             if (difficulty !== "") {
                 filters.difficulty = parseInt(difficulty)
+            }
+            if (status !== "") {
+                filters.status = parseInt(status)
             }
             if (selectedTags.length !== 0) {
                 filters.tags = selectedTags
@@ -70,6 +75,7 @@ const ExerciseList = (props: ExerciseListProps) => {
             if (searchContent.length !== 0) {
                 filters.search = searchContent
             }
+            // filter only by current owned exercises if prop is set
             if (props.onlyCurrentOwned) {
                 await UserService.getCurrentUser().then(res => {
                     filters.owner_id = res.id
@@ -89,7 +95,7 @@ const ExerciseList = (props: ExerciseListProps) => {
         return () => {
             active = false;
         };
-    }, [difficulty, selectedTags, searchContent, props.onlyCurrentOwned]);
+    }, [difficulty, status, selectedTags, searchContent, props.onlyCurrentOwned]);
 
     const onChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         if (value !== page) {
@@ -99,13 +105,16 @@ const ExerciseList = (props: ExerciseListProps) => {
                 setInput(searchContent);
                 let filters = {
                     difficulty: undefined as number | undefined,
+                    status: undefined as number | undefined,
                     tags: undefined as string[] | undefined,
                     search: undefined as string | undefined,
                     owner_id: undefined as number | undefined
                 }
-                // filter only by current owned exercises if prop is set
                 if (difficulty !== "") {
                     filters.difficulty = parseInt(difficulty)
+                }
+                if (status !== "") {
+                    filters.status = parseInt(status)
                 }
                 if (selectedTags.length !== 0) {
                     filters.tags = selectedTags
@@ -113,6 +122,7 @@ const ExerciseList = (props: ExerciseListProps) => {
                 if (searchContent.length !== 0) {
                     filters.search = searchContent
                 }
+                // filter only by current owned exercises if prop is set
                 if (props.onlyCurrentOwned) {
                     await UserService.getCurrentUser().then(res => {
                         filters.owner_id = res.id
@@ -131,6 +141,11 @@ const ExerciseList = (props: ExerciseListProps) => {
 
     const onChangeDifficulty = (event: SelectChangeEvent) => {
         setDifficulty(event.target.value);
+        setLoading(true)
+    }
+
+    const onChangeStatus = (event: SelectChangeEvent) => {
+        setStatus(event.target.value);
         setLoading(true)
     }
 
@@ -156,6 +171,8 @@ const ExerciseList = (props: ExerciseListProps) => {
             <SearchBar
                 difficulty={difficulty}
                 onChangeDifficulty={onChangeDifficulty}
+                status={status}
+                onChangeStatus={onChangeStatus}
                 selectedTags={selectedTags}
                 onChangeSelectedTags={onChangeSelectedTags}
                 availableTags={availableTags}

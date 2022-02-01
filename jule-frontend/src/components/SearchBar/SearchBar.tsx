@@ -8,6 +8,8 @@ import Tag from "../../models/Tag";
 interface Props {
     difficulty: string;
     onChangeDifficulty: (e: any) => void;
+    status: string;
+    onChangeStatus: (e: any) => void;
     selectedTags: string[];
     onChangeSelectedTags: (e: any) => void;
     availableTags: Tag[];
@@ -17,9 +19,6 @@ interface Props {
 }
 
 const SearchBar = (props: Props) => {
-
-    // TODO: replace with status outside when submission data is ready
-    const [status, setStatus] = React.useState('');
 
     return (
         <Grid container spacing={2}>
@@ -40,8 +39,8 @@ const SearchBar = (props: Props) => {
                         {name: 'Finished', value: 1},
                         {name: 'Not Finished', value: 2},
                     ]}
-                    value={status}
-                    onChangeValue={(e) => setStatus(e.target.value)}
+                    value={props.status}
+                    onChangeValue={props.onChangeStatus}
                 />
             </Grid>
             <Grid item xs={4}>

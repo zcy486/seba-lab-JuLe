@@ -4,7 +4,7 @@ import Exercise from "../models/Exercise";
 const baseRoute = '/exercises'
 
 const ExerciseService = {
-    
+
     // applies filters to backend and returns exercises with the total page number
     applyFilters: (filters: any) => {
         return new Promise<{ pages: number, exercises: Exercise[] }>((resolve) => {
@@ -19,6 +19,14 @@ const ExerciseService = {
             HttpService(true).post(`${baseRoute}/page/${page}`, JSON.stringify(filters))
                 .then(resp => resolve(resp.data))
         });
+    },
+
+    // checks whether the exercise is submitted, returns boolean
+    checkIfSubmitted: (exerciseId: number) => {
+        return new Promise<boolean>((resolve) => {
+            HttpService(true).get(`${baseRoute}/${exerciseId}/submitted`)
+                .then(resp => resolve(resp.data))
+        })
     },
 
     // create exercise with form data
@@ -40,7 +48,7 @@ const ExerciseService = {
     },
 
     // update exercise by id with form data
-    updateExercise: (id:string, exercise: FormData) => {
+    updateExercise: (id: string, exercise: FormData) => {
         return new Promise<Exercise>((resolve, reject) => {
             HttpService(true).post(`${baseRoute}/${id}`, exercise)
                 .then(resp => resolve(resp.data))
@@ -49,8 +57,8 @@ const ExerciseService = {
     },
 
     // delete exercise by id
-    deleteExercise: (id:string) => {
-        return new Promise<string>((resolve,reject) => {
+    deleteExercise: (id: string) => {
+        return new Promise<string>((resolve, reject) => {
             HttpService(true).delete(`${baseRoute}/${id}`)
                 .then(resp => resolve(resp.data.message))
                 .catch(err => reject(err.response))
@@ -58,7 +66,7 @@ const ExerciseService = {
     },
 
     // get similar exercises
-    getSimilarExercises: (id:string) => {
+    getSimilarExercises: (id: string) => {
         return new Promise<{ ids: number[], titles: string[] }>((resolve, reject) => {
             HttpService(true).get(`${baseRoute}/similar/${id}`)
                 .then(resp => resolve(resp.data))
