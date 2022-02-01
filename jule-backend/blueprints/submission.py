@@ -199,3 +199,22 @@ def get_hotstreak(current_account: Account):
         print(N)
         # TODO: make except less general
         return abort(405)
+
+
+# return the current user's submissions sorted by most recent
+@submission_routes.route('/all', methods=['GET'])
+@require_authorization
+def get_submissions(current_account: Account):
+
+    account_id = current_account.id
+
+    try:
+        submissions = Submission.query.filter(Submission.account_id == account_id).order_by(Submission.submission_time.desc()).all()
+
+        return jsonify(submissions_schema.dump(submissions))
+
+    except Exception as N:
+        print(N)
+        # TODO: make except less general
+        return abort(405)
+

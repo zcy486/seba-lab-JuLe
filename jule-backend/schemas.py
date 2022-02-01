@@ -120,6 +120,7 @@ class GradeSchema(CamelCaseSQLASchema):
     student_id = ma.auto_field()
     submission_id = ma.auto_field()
     exercise_id = ma.auto_field()
+    score = ma.auto_field()
 
 
 class StatisticTypeSchema(CamelCaseSQLASchema):

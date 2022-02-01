@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react"
 import UserService from "../../services/UserService";
-import StudentProfileContent from "./StudentProfileContent";
+import StudentProfileContent from "./StudentProfileContent/StudentProfileContent";
 import LecturerProfileContent from "./LectureProfileContent/LecturerProfileContent";
 import User, {Role} from "../../models/User";
 import Loading from "../../components/Loading";
