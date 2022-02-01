@@ -71,6 +71,16 @@ def read_exercises_by_filters(current_account: Account):
                )
     )
 
+    if 'status' in request.json:
+        submitted_status = request.json['status']
+        if submitted_status == 1:
+            query = query.join(Submission).filter(Submission.account_id == current_account.id)
+        elif submitted_status == 2:
+            sq = query.join(Submission).filter(Submission.account_id == current_account.id).with_entities(Exercise.id)
+            query = query.filter(~Exercise.id.in_(sq))
+        else:
+            return abort(400, "Parameter values are not correct.")
+
     pages = math.ceil(query.count() / per_page)
     # get exercises in the 1st page because it's redirected to the 1st page after applying filters
     exercises_first_page = query.paginate(1, per_page, error_out=False).items
@@ -111,6 +121,16 @@ def read_exercises_per_page(current_account: Account, page):
                db.and_(Exercise.scope == Scope.draft, Exercise.owner_id == current_account.id)
                )
     )
+
+    if 'status' in request.json:
+        submitted_status = request.json['status']
+        if submitted_status == 1:
+            query = query.join(Submission).filter(Submission.account_id == current_account.id)
+        elif submitted_status == 2:
+            sq = query.join(Submission).filter(Submission.account_id == current_account.id).with_entities(Exercise.id)
+            query = query.filter(~Exercise.id.in_(sq))
+        else:
+            return abort(400, "Parameter values are not correct.")
 
     exercises_per_page = query.paginate(page, per_page, error_out=False).items
     return jsonify(exercises_schema.dump(exercises_per_page))
