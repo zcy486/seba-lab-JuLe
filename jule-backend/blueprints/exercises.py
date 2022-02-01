@@ -43,6 +43,10 @@ def index():
 def read_exercises_by_filters(current_account: Account):
     query = db.session.query(Exercise)
 
+    # filters by owner's id
+    if 'owner_id' in request.json:
+        query = query.filter_by(owner_id=int(request.json['owner_id']))
+
     # filters by difficulty
     if 'difficulty' in request.json:
         query = query.filter_by(difficulty=Difficulty(request.json['difficulty']))
@@ -54,10 +58,6 @@ def read_exercises_by_filters(current_account: Account):
     # filters by selected tags (treated as "OR")
     if 'tags' in request.json:
         query = query.filter(db.or_(*[Exercise.tags.any(Tag.id == tag_id) for tag_id in request.json['tags']]))
-
-    # filters by owner's id
-    if 'owner_id' in request.json:
-        query = query.filter_by(owner_id=int(request.json['owner_id']))
 
     # filters to get exercises that are
     # 1.public, visible to everyone
@@ -71,6 +71,7 @@ def read_exercises_by_filters(current_account: Account):
                )
     )
 
+    # filters by submitted status (finished or not finished)
     if 'status' in request.json:
         submitted_status = request.json['status']
         if submitted_status == 1:
@@ -94,6 +95,10 @@ def read_exercises_by_filters(current_account: Account):
 def read_exercises_per_page(current_account: Account, page):
     query = db.session.query(Exercise)
 
+    # filters by owner's id
+    if 'owner_id' in request.json:
+        query = query.filter_by(owner_id=request.json['owner_id'])
+
     # filters by difficulty
     if 'difficulty' in request.json:
         query = query.filter_by(difficulty=Difficulty(request.json['difficulty']))
@@ -105,10 +110,6 @@ def read_exercises_per_page(current_account: Account, page):
     # filters by selected tags (treated as "OR")
     if 'tags' in request.json:
         query = query.filter(db.or_(*[Exercise.tags.any(Tag.id == tag_id) for tag_id in request.json['tags']]))
-
-    # filters by difficulty
-    if 'owner_id' in request.json:
-        query = query.filter_by(owner_id=request.json['owner_id'])
 
     # filters to get exercises that are
     # 1.public, visible to everyone
@@ -122,6 +123,7 @@ def read_exercises_per_page(current_account: Account, page):
                )
     )
 
+    # filters by submitted status (finished or not finished)
     if 'status' in request.json:
         submitted_status = request.json['status']
         if submitted_status == 1:
@@ -255,8 +257,6 @@ def create_exercise(current_account: Account):
         # if exercise with same title already exists
         return abort(409, 'exercise with same title already exists')
 
-    
-
     # create new exercise
     new_exercise = Exercise(
         owner=owner,
@@ -287,7 +287,7 @@ def create_exercise(current_account: Account):
 
 # determines the k most similar exercises
 @exercises_routes.route('/similar/<exercise_id>', methods=['GET'])
-#@require_authorization
+# @require_authorization
 def similar_exercises(exercise_id):
     if current_module.similar_exercises_engine is None:
         build_similar_exercises_engine()
@@ -296,8 +296,9 @@ def similar_exercises(exercise_id):
     k = min(max(len(current_module.exercise_matrix), 4), 4)
 
     # determine the most similar exercises according to the cosine distance of the TF-IDF vectors
-    distances, indices = current_module.similar_exercises_engine.kneighbors(current_module.features[int(exercise_id)-1],
-                                                                            n_neighbors=k)
+    distances, indices = current_module.similar_exercises_engine.kneighbors(
+        current_module.features[int(exercise_id) - 1],
+        n_neighbors=k)
 
     # retrieving the exercises
     sim_exercises = current_module.exercise_matrix[current_module.exercise_matrix.index.isin(indices[0][1:])].copy()
@@ -380,20 +381,23 @@ def build_similar_exercises_engine():
     current_module.features = features
     current_module.similar_exercises_engine = model_knn
 
-def get_ner_tags(text):
 
+def get_ner_tags(text):
     # process exercise using spacy module
     doc = nlp(text)
 
     # get lists of start, end, explanation of ner tag
-    ents = [{"label": e.label_ , "start": e.start_char, "end": e.end_char, "explanation": spacy.explain(e.label_)} for e in doc.ents]
+    ents = [{"label": e.label_, "start": e.start_char, "end": e.end_char, "explanation": spacy.explain(e.label_)} for e
+            in doc.ents]
 
     return ents
+
 
 def update_ner_tags(exercise: Exercise, ner_tags: list[dict[str, Any]]):
     delete_ner_tags(exercise)
     for ner_tag in ner_tags:
         create_ner_tag(exercise, ner_tag)
+
 
 def delete_ner_tags(exercise: Exercise):
     try:
@@ -407,12 +411,12 @@ def delete_ner_tags(exercise: Exercise):
 def create_ner_tag(exercise: Exercise, ner_tag: dict[str, Any]) -> NerTag:
     try:
         new_ner_tag = NerTag(
-            label=ner_tag["label"], 
+            label=ner_tag["label"],
             start=ner_tag["start"],
             end=ner_tag["end"],
             explanation=ner_tag["explanation"],
             exercise_id=exercise.id
-            )
+        )
         db.session.add(new_ner_tag)
         db.session.commit()
         db.session.refresh(new_ner_tag)
