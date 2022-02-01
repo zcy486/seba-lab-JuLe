@@ -22,6 +22,7 @@ CLIENT_URL = "https://jule.tk/"
 NO_REPLY_EMAIL_ACCOUNT = "JuLe <no-reply@jule.tk>"  # Used for Email-Verification and Password-Reset
 CONTACT_EMAIL_ACCOUNT = "JuLe Contact Form <contact-us@jule.tk>"  # Used for sending Contact Emails (contact-us form)
 ADMIN_EMAIL_ACCOUNT = "alexander.maslew@gmail.com"  # Used for receiving Contact Emails
+EMAIL_RECOMMENDATION_LIMIT = 5  # Limits the amount of exercises in a recommendation email
 
 CAPTCHA_API_SECRET_KEY = "6LfJGDgdAAAAAEpRdXhWcsPPnIsXu0i4ovr-R15w"  # noqa
 
