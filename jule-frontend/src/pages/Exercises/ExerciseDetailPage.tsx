@@ -46,7 +46,7 @@ const ExerciseDetailPage = () => {
                     setSimExercisesIds(resp.ids)
                     setSimExercisesTitles(resp.titles)
                 })
-                .catch(err => {
+                .catch((err: any) => {
                     if (err.status === 405) {
                         alert('No exercise found with matching id!')
                     } else if (err.status === 401) {
@@ -71,7 +71,7 @@ const ExerciseDetailPage = () => {
                     setNerTags(resp.nerTags)
                     setLoading(false)
                 })
-                .catch(err => {
+                .catch((err: any) => {
                     if (err.status === 405) {
                         // TODO: report error in a standard way
                         alert('No exercise found with matching id!')
@@ -94,7 +94,7 @@ const ExerciseDetailPage = () => {
             let submission = {text: solution}
             SubmissionService.createSubmission(id, submission).then(() => {
                 navigate(`/exercises/${id}/results`)
-            }).catch(err => {
+            }).catch((err: any) => {
                 if (err.status === 405) {
                     alert('Something went wrong, we could not save your submission!')
                 } else if (err.status === 401) {

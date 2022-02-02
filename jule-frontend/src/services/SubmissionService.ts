@@ -23,6 +23,15 @@ const SubmissionService = {
         })
     },
 
+    // get submissions from user
+    getAllSubmissions: () => {
+        return new Promise<Submission[]>((resolve, reject) => {
+            HttpService(true).get(`${baseRoute}/all`)
+                .then(resp => resolve(resp.data))
+                .catch(err => reject(err.response))
+        })
+    },
+
 };
 
 export default SubmissionService;
