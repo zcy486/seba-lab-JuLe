@@ -3,7 +3,7 @@ import math
 from typing import Any
 from flask import Blueprint, request, jsonify, abort
 from ..extensions import db
-from ..models import Exercise, Account, Tag, Difficulty, Scope, tags_helper, NerTag, Submission
+from ..models import Exercise, Account, Tag, Difficulty, Scope, tags_helper, NerTag, Submission, Grade
 from ..schemas import ExerciseSchema
 from ..blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
 from ..jwt_signature_verification import require_authorization
@@ -295,14 +295,15 @@ def similar_exercises(exercise_id):
     sim_exercises_dict = dict()
 
     # check whether the exercise is part of the vector space
-    if exercise_id in current_module.exercise_matrix.id.values:
+    if int(exercise_id) in current_module.exercise_matrix.id.values:
 
         # determine how many exercises to return
         k = min(max(len(current_module.exercise_matrix), 4), 4)
 
         # determine the index of the exercise in the exercise feature matrix
-        exercise_index = current_module.exercise_matrix.loc[current_module.exercise_matrix.id == int(exercise_id)].iloc[0][
-            'index']
+        exercise_index = \
+            current_module.exercise_matrix.loc[current_module.exercise_matrix.id == int(exercise_id)].iloc[0][
+                'index']
 
         # determine the most similar exercises according to the cosine distance of the TF-IDF vectors
         distances, indices = current_module.similar_exercises_engine.kneighbors(
@@ -310,18 +311,27 @@ def similar_exercises(exercise_id):
             n_neighbors=k)
 
         # retrieving the exercises
-        sim_exercises = current_module.exercise_matrix[current_module.exercise_matrix['index'].isin(indices[0][1:])].copy()
+        sim_exercises = current_module.exercise_matrix[
+            current_module.exercise_matrix['index'].isin(indices[0][1:])].copy()
 
         sim_exercises_dict['ids'] = list(sim_exercises['id'])
 
         sim_exercises_dict['titles'] = list(sim_exercises['title'])
-
     else:
         sim_exercises_dict['ids'] = []
 
         sim_exercises_dict['titles'] = []
 
     return sim_exercises_dict
+
+
+# determines the k most similar exercises
+@exercises_routes.route('/recommendations/<account_id>', methods=['GET'])
+# @require_authorization
+def recommended_exercises(account_id):
+    build_recommendation_engine()
+
+    return {"data": "success"}
 
 
 # helper function not exposed to REST API
@@ -393,6 +403,19 @@ def build_similar_exercises_engine():
     current_module.exercise_matrix = exercises_info_df
     current_module.features = features
     current_module.similar_exercises_engine = model_knn
+
+
+# function to build the recommendation engine based on a user's submission history
+# uses the students' inverse grading as 'rating'
+def build_recommendation_engine():
+    grade_info = db.session.query(Grade.score, Grade.student_id, Grade.exercise_id).join(Exercise).filter(
+        Exercise.scope == 'public').all()
+
+    grade_info_df = pd.DataFrame(grade_info, columns=['score', 'user_id', 'exercise_id'])
+
+    matrix = grade_info_df.pivot_table(index='user_id', columns='exercise_id', values='score')
+
+    matrix = matrix.fillna(0)
 
 
 def get_ner_tags(text):
