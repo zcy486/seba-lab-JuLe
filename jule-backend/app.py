@@ -55,7 +55,8 @@ def create_app(test_config=None):
         scheduler = BackgroundScheduler()
         scheduler.add_job(delete_unverified_accounts_task, args=[
                           app], trigger='interval', minutes=5, timezone="UTC")
-        scheduler.add_job(send_recommendation_emails_task, args=[app], trigger='interval', days=7, timezone="UTC")
+        scheduler.add_job(send_recommendation_emails_task, args=[
+                          app], trigger='interval', minutes=15, timezone="UTC")
         scheduler.start()
 
     # if in development mode, inserts mock data into DB
@@ -146,14 +147,15 @@ def insert_mock_data(app):
                 mock_accounts = json.load(mock_accounts)
 
                 for mock_account in mock_accounts:
-                    loaded_mock_account = Account(id=mock_account["id"],
-                                                email=mock_account["email"],
-                                                password=generate_password_hash(
-                                                    mock_account["password"], method='pbkdf2:sha1', salt_length=8),
-                                                name=mock_account["name"],
-                                                role=mock_account["role"],
-                                                university_id=mock_account["universityId"],
-                                                is_verified=mock_account["isVerified"])
+                    loaded_mock_account = Account(
+                        # id=mock_account["id"],
+                        email=mock_account["email"],
+                        password=generate_password_hash(
+                            mock_account["password"], method='pbkdf2:sha1', salt_length=8),
+                        name=mock_account["name"],
+                        role=mock_account["role"],
+                        university_id=mock_account["universityId"],
+                        is_verified=mock_account["isVerified"])
                     db.session.add(loaded_mock_account)
 
                     try:
@@ -181,7 +183,8 @@ def insert_mock_data(app):
                     # increments use_count from tag and save in db
                     def increment_tag_use(tag_id: int):
                         try:
-                            tag = Tag.query.get(tag_id)  # get first tag from sb with matching id (should be unique)
+                            # get first tag from sb with matching id (should be unique)
+                            tag = Tag.query.get(tag_id)
                             if tag is None:  # if there is no tag with matching name
                                 raise Exception("No tag with matching name")
                             else:
@@ -218,7 +221,8 @@ def insert_mock_data(app):
                                 increment_tag_use(tag.id)
                             exercise.tags.append(tag)
 
-                    add_tags_by_name(loaded_mock_exercise, mock_exercise['tags'])
+                    add_tags_by_name(loaded_mock_exercise,
+                                     mock_exercise['tags'])
 
                     db.session.add(loaded_mock_exercise)
 
@@ -245,7 +249,6 @@ def insert_mock_data(app):
                     except Exception as E:
                         db.session.rollback()
                         print(E)
-                
 
         else:
             print("did not load mock data as database already holds data")

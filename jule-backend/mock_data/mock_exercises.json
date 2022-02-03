@@ -8,7 +8,7 @@
         "scope": 3,
         "sampleSolution": "Die Zeugin gibt an, am Freitag, dem 13.03.20xx, habe sie sich den ganzen Tag in der Wohnung ihrer Eltern in der Icksstraße 1 in Frankfurt aufgehalten. Sie habe ihrer Mutter helfen wollen, der es wegen Herzbeschwerden nicht gut gegangen sei. Ihre 4-jährige Tochter habe sie mitgebracht.",
         "tags": ["indirekte Rede"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 2,
@@ -19,7 +19,7 @@
         "scope": 3,
         "sampleSolution": "In der Beschäftigungsfiliale der Klägerin bestand die folgende Arbeitsanweisung: Wenn Mitarbeiter Leergut von zu Hause mitbringen, um es in der Filiale einzulösen, müssen sie es beim Betreten der Filiale dem Filialverantwortlichen vorzeigen. Sobald sie ihren Pfandbon erhalten haben, müssen sie diesen abzeichnen lassen.",
         "tags": ["Schachtelsatz"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 3,
@@ -30,7 +30,7 @@
         "scope": 3,
         "sampleSolution": "Die Klägerin behauptet, ihr sei bereits deshalb ein Schaden entstanden, weil sie entgegen einer Zusage, 40 Stunden pro Woche beschäftigt zu werden, nur einen Arbeitsvertrag über 30 Stunden erhalten habe.",
         "tags": ["Interpunktion"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 4,
@@ -41,7 +41,7 @@
         "scope": 3,
         "sampleSolution": "So musste sich das Arbeitsgericht Düsseldorf vor Kurzem [oder: vor kurzem] mit dem Fall der dreibeinigen Hündin Kaya beschäftigen, die mit ihrem Knurren und Zähnefletschen die Mitarbeiter einer Düsseldorfer Werbeagentur das Fürchten lehrte.",
         "tags": ["Groß-/Kleinschreibung"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 5,
@@ -52,7 +52,7 @@
         "scope": 3,
         "sampleSolution": "Ein großes Thema für Studierende – und nicht nur für die jüngeren Semester – ist der Umgang mit Literatur: Einerseits soll sie lebhaft mit einbezogen werden; andererseits soll eine Arbeit nicht nur aus fremden Meinungen bestehen.",
         "tags": ["Kohäsion"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 6,
@@ -63,7 +63,7 @@
         "scope": 3,
         "sampleSolution": "Cybermobbing ist ein zunehmendes Problem. Insbesondere Schulen haben damit zu kämpfen.",
         "tags": ["Verständlichkeit"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 7,
@@ -74,7 +74,7 @@
         "scope": 3,
         "sampleSolution": "Der Mitarbeiter Deling war von Mai 20xx bis August 20xx im Kindergarten- und Hortbereich eingesetzt. Dort betreute er Kinder der Lebensalterstufen von drei bis acht Jahren. Anfang September 20xx übernahm er auf Wunsch der Geschäftsleitung Erziehungsaufgaben im Kinderkrippenbereich. Dort waren außer ihm die nur befristet eingestellte Mitarbeiterin Eling sowie der Praktikant Effling tätig.",
         "tags": ["Verständlichkeit"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 8,
@@ -85,7 +85,7 @@
         "scope": 3,
         "sampleSolution": "Celing hat vor, einen zweiten Job anzunehmen, weil er dringend Geld braucht. Er will seine Freundin besuchen, die ein Auslandssemester in Madrid verbringt, und mit ihr zusammen durch Spanien reisen. Danach wird er vier Wochen lang nichts anderes tun als lernen.",
         "tags": ["Interpunktion"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 9,
@@ -96,7 +96,7 @@
         "scope": 3,
         "sampleSolution": "Aling, Beling und Celing diskutieren arbeitsrechtliche Fragen, insbesondere den Kündigungsschutz. Aling stellt das damit verbundene Dilemma dar: Einerseits brauchen Arbeitnehmende ein Gefühl der Sicherheit, um gute Arbeit zu leisten; andererseits kann gerade das Gefühl der Sicherheit sie dazu verführen, ihren Einsatz zu reduzieren.",
         "tags": ["Interpunktion", "Kohäsion"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 10,
@@ -107,7 +107,7 @@
         "scope": 3,
         "sampleSolution": "Aling kann sehr gut reden. Ihm wird es ein Leichtes sein, Plädoyers zu halten. Was er noch üben muss, ist das Schweigen. Er fühlt sich berufen, zu allem etwas zu sagen. Das ist leider nicht immer etwas Passendes.",
         "tags": ["Groß-/Kleinschreibung"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 11,
@@ -118,7 +118,7 @@
         "scope": 3,
         "sampleSolution": "Der Arbeitnehmer hat an der wöchentlichen Besprechung teilzunehmen.",
         "tags": ["Substantivierung"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 12,
@@ -129,7 +129,7 @@
         "scope": 3,
         "sampleSolution": "Bildungsurlaub zur Schulung für die Wahrnehmung eines Ehrenamtes soll Beschäftigte in die Lage versetzen, ein solches Amt auszuüben.",
         "tags": ["Verständlichkeit"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 13,
@@ -140,7 +140,7 @@
         "scope": 3,
         "sampleSolution": "T hat O körperlich misshandelt.",
         "tags": ["Passiv"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 14,
@@ -151,7 +151,7 @@
         "scope": 3,
         "sampleSolution": "In Betracht kommt eine Strafbarkeit des T wegen Totschalges gem. §212 I StGB.",
         "tags": ["Grammatik", "Gutachtenstil"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 15,
@@ -162,7 +162,7 @@
         "scope": 3,
         "sampleSolution": "Gem. §25 I StGB ist Täter, wer die Straftat selbst oder durch einen anderen begeht.",
         "tags": ["Definition", "Gutachtenstil"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 16,
@@ -173,7 +173,7 @@
         "scope": 3,
         "sampleSolution": "Ist Polizist ein Beruf? \n Fraglich ist, ob Polizist ein Beruf im Sinne des Art. 12 I GG ist. \n Der Beruf wird als eine auf gewisse Dauer angelegte, der Schaffung und Erhaltung einer Lebensgrundalge dienende Tätigkeit definiert. \n Die Tätigkeit als Polizist ist eine auf gewisse Dauer angelegte und dient der Schaffung und Erhaltung einer Lebensgrundlage. Folglich ist Polizist ein Beruf i. S. d. Art. 12 I GG.",
         "tags": ["Definition", "Gutachtenstil"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 17,
@@ -184,7 +184,7 @@
         "scope": 3,
         "sampleSolution": "T hat durch den Schuss das linke Auge des O getroffen. Der Schuss stellt eine üble, unangemessene Behandlung dar, durch die die körperliche Unversehrheit des O mehr als nur unerheblich beeinträchtigt wurde.",
         "tags": ["Subsumtion", "Gutachtenstil"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 18,
@@ -195,7 +195,7 @@
         "scope": 3,
         "sampleSolution": "Subsumtion: Einerseits hat F sich eigenverantwortlich in die Flammen begeben und sich damit selbst gefährdet, was gegen eine objektive Zurechnung seines Todes an F spricht. \n Andererseits war F beruflich verpflichtet, den Brand zu löschen. Außerdem hat T ein mehrstöckiges Haus angezündet, was das Löschen gefährlicher macht, weil es unübersichtlicher als ein einstöckiges ist. Dass ein Feuerwehrmann bei einem solchen Löscheinsatz ums Leben kommt, hält sich im Rahmen der allgemeinen Lebenserfahrung. \n Ergebnis: Somit ist der Tod des Feuerwehrmanns dem T objektiv zurechenbar.",
         "tags": ["Subsumtion", "Ergebnis", "Gutachtenstil"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 19,
@@ -206,7 +206,7 @@
         "scope": 3,
         "sampleSolution": "Somit handelt er heimtückisch.",
         "tags": ["Ergebnis", "Gutachtenstil"],
-        "ownerId": 4
+        "ownerId": 5
     },
     {
         "id": 20,
@@ -217,6 +217,6 @@
         "scope": 3,
         "sampleSolution": "T hat sich, indem er O mit einem Pistolenschuss in die Brust erschoss, wegen Totschalges gem. §212 I StGB strafbar gemacht.",
         "tags": ["Ergebnis", "Gutachtenstil"],
-        "ownerId": 4
+        "ownerId": 5
     }
 ]
