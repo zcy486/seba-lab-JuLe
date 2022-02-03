@@ -292,22 +292,34 @@ def similar_exercises(exercise_id):
     if current_module.similar_exercises_engine is None:
         build_similar_exercises_engine()
 
-    # determine how many exercises to return
-    k = min(max(len(current_module.exercise_matrix), 4), 4)
-
-    # determine the most similar exercises according to the cosine distance of the TF-IDF vectors
-    distances, indices = current_module.similar_exercises_engine.kneighbors(
-        current_module.features[int(exercise_id) - 1],
-        n_neighbors=k)
-
-    # retrieving the exercises
-    sim_exercises = current_module.exercise_matrix[current_module.exercise_matrix.index.isin(indices[0][1:])].copy()
-
     sim_exercises_dict = dict()
 
-    sim_exercises_dict['ids'] = list(sim_exercises['id'])
+    # check whether the exercise is part of the vector space
+    if exercise_id in current_module.exercise_matrix.id.values:
 
-    sim_exercises_dict['titles'] = list(sim_exercises['title'])
+        # determine how many exercises to return
+        k = min(max(len(current_module.exercise_matrix), 4), 4)
+
+        # determine the index of the exercise in the exercise feature matrix
+        exercise_index = current_module.exercise_matrix.loc[current_module.exercise_matrix.id == int(exercise_id)].iloc[0][
+            'index']
+
+        # determine the most similar exercises according to the cosine distance of the TF-IDF vectors
+        distances, indices = current_module.similar_exercises_engine.kneighbors(
+            current_module.features[exercise_index],
+            n_neighbors=k)
+
+        # retrieving the exercises
+        sim_exercises = current_module.exercise_matrix[current_module.exercise_matrix['index'].isin(indices[0][1:])].copy()
+
+        sim_exercises_dict['ids'] = list(sim_exercises['id'])
+
+        sim_exercises_dict['titles'] = list(sim_exercises['title'])
+
+    else:
+        sim_exercises_dict['ids'] = []
+
+        sim_exercises_dict['titles'] = []
 
     return sim_exercises_dict
 
@@ -362,6 +374,7 @@ def build_similar_exercises_engine():
             tags[id] = tag
     exercise_tags_df = pd.DataFrame(list(tags.items()), columns=['id', 'tags'])
     exercises_info_df = exercises_info_df.merge(exercise_tags_df, left_on='id', right_on='id')
+    exercises_info_df.reset_index(inplace=True)
 
     # concatenate all available strings for exercises
     feature_matrix = exercises_info_df['id'].copy()

@@ -155,7 +155,9 @@ const ExerciseDetailPage = () => {
                         <CogOption onClickEdit={onClickEdit} onClickDelete={onClickDelete} exerciseTitle={title}/>
                         }
 
-                        <SimilarExercises ids={simExercisesIds} titles={simExercisesTitles}/>
+                        {simExercisesIds.length > 0 ?
+                            <SimilarExercises ids={simExercisesIds} titles={simExercisesTitles}/> : <></>
+                        }
 
                         <DiscussionBoard exerciseId={id!} currentUser={user!}/>
                     </div>
