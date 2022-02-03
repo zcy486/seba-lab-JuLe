@@ -28,7 +28,7 @@ current_module.similar_exercises_engine = None  # global variable for exercise r
 current_module.features = None
 current_module.exercise_matrix = None
 
-nlp = spacy.load("de_core_news_sm")
+nlp = spacy.load("de_core_news_lg")
 
 
 # index route, not in use
