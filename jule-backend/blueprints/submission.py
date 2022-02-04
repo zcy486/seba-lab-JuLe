@@ -7,6 +7,7 @@ from ..models import Statistic, Submission, Exercise, Score, Grade, Account
 from ..schemas import SubmissionSchema
 from ..blueprints.statistics import calculate_statistics
 from ..jwt_signature_verification import require_authorization
+from .exercises import build_recommendation_engine
 import json
 
 textstat.set_lang('de')
@@ -111,6 +112,8 @@ def add_submission(current_account: Account, exercise_id):
                                                       student_id=account_id).first()
                         grade.score = score
                         db.session.commit()
+
+                    build_recommendation_engine()
 
                     return jsonify(student_stats)
 

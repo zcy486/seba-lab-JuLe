@@ -1,5 +1,8 @@
 import json
 import math
+import spacy
+import pandas as pd
+import sys
 from typing import Any
 from flask import Blueprint, request, jsonify, abort
 from ..extensions import db
@@ -7,11 +10,8 @@ from ..models import Exercise, Account, Tag, Difficulty, Scope, tags_helper, Ner
 from ..schemas import ExerciseSchema
 from ..blueprints.tags import create_tag, increment_tag_use, decrement_tag_use
 from ..jwt_signature_verification import require_authorization
-import spacy
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
-import pandas as pd
-import sys
 
 current_module = sys.modules[__name__]
 
@@ -24,10 +24,17 @@ exercises_schema = ExerciseSchema(many=True)  # For list of exercises
 
 per_page = 5  # number of exercises displayed per page´
 
-current_module.similar_exercises_engine = None  # global variable for exercise recommendation engine
+# global variable for finding similar exercise
+current_module.similar_exercises_engine = None
 current_module.features = None
 current_module.exercise_matrix = None
 
+# global variables for personalized exercise recommendations
+current_module.recommendation_engine = None
+current_module.sim_user = None
+current_module.enough_users = False
+
+# pretrained spacy model
 nlp = spacy.load("de_core_news_sm")
 
 
@@ -298,7 +305,10 @@ def similar_exercises(exercise_id):
     if int(exercise_id) in current_module.exercise_matrix.id.values:
 
         # determine how many exercises to return
-        k = min(max(len(current_module.exercise_matrix), 4), 4)
+        if len(current_module.exercise_matrix) >= 4:
+            k = 4
+        else:
+            k = len(current_module.exercise_matrix)
 
         # determine the index of the exercise in the exercise feature matrix
         exercise_index = \
@@ -325,13 +335,61 @@ def similar_exercises(exercise_id):
     return sim_exercises_dict
 
 
-# determines the k most similar exercises
-@exercises_routes.route('/recommendations/<account_id>', methods=['GET'])
-# @require_authorization
-def recommended_exercises(account_id):
+# determines the k recommended exercises
+# partly inspired by this article:
+# https://towardsdatascience.com/build-a-user-based-collaborative-filtering-recommendation-engine-for-anime-92d35921f304
+@exercises_routes.route('/recommendations', methods=['GET'])
+@require_authorization
+def recommended_exercises(current_account: Account):
     build_recommendation_engine()
 
-    return {"data": "success"}
+    account_id = current_account.id
+
+    #  check if enough users to build model are present
+    if current_module.enough_users:
+
+        # either use the 3 most similar or all users as reference
+        if current_module.recommendation_engine.shape[0] >= 4:
+            num_user = 4
+        else:
+            num_user = current_module.recommendation_engine.shape[0]
+
+        # get the grades for the particular user
+        user_grades = current_module.recommendation_engine[current_module.recommendation_engine.index == int(account_id)]
+
+        # determine the users with the most similar skill set
+        distances, indices = current_module.sim_user.kneighbors(
+            user_grades.values.tolist(),
+            n_neighbors=num_user)
+
+        # average the grades for those users for all exercises
+        sim_users_mean_grades = pd.DataFrame(current_module.recommendation_engine.iloc[indices[0][1:]].mean(axis=0))
+        sim_users_mean_grades.columns = ['mean_grade']
+
+        # retrieve all exercises the user has not completed yet
+        user_grades_filtered = user_grades.transpose()
+        user_grades_filtered.columns = ['grades']
+        exercises_not_done = user_grades_filtered[user_grades_filtered['grades'] == 0].index.tolist()
+
+        # retrieve all the average grades of similar users for not completed exercises
+        sim_users_mean_grades_filtered = sim_users_mean_grades[sim_users_mean_grades.index.isin(exercises_not_done)]
+
+        # either return the 3 most relevant or all exercises that have not been completed yet
+        if len(exercises_not_done) >= 3:
+            num_exercises = 3
+        else:
+            num_exercises = len(exercises_not_done)
+
+        # get the exercise ids with the worst average grade of similar users
+        rec_exercises_ids = sim_users_mean_grades_filtered.sort_values(by=['mean_grade'], ascending=False).head(
+            n=num_exercises).index.tolist()
+
+    else:
+        rec_exercises_ids = []
+    # query recommended exercises
+    rec_exercises = Exercise.query.filter(Exercise.id.in_(rec_exercises_ids)).all()
+
+    return jsonify(exercises_schema.dump(rec_exercises))
 
 
 # helper function not exposed to REST API
@@ -413,9 +471,16 @@ def build_recommendation_engine():
 
     grade_info_df = pd.DataFrame(grade_info, columns=['score', 'user_id', 'exercise_id'])
 
-    matrix = grade_info_df.pivot_table(index='user_id', columns='exercise_id', values='score')
+    if grade_info_df.shape[0] > 2 and grade_info_df.shape[1] > 5:
+        matrix = grade_info_df.pivot_table(index='user_id', columns='exercise_id', values='score')
 
-    matrix = matrix.fillna(0)
+        matrix = matrix.fillna(0)
+
+        model_knn = NearestNeighbors(metric='cosine', algorithm='brute').fit(matrix)
+
+        current_module.enough_users = True
+        current_module.recommendation_engine = matrix
+        current_module.sim_user = model_knn
 
 
 def get_ner_tags(text):
