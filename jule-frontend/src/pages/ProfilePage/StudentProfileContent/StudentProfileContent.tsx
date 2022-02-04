@@ -37,6 +37,7 @@ const StudentProfileContent = () => {
     })
     const [recentSubmissionGrades, setRecentSubmissionGrades] = useState<{ exercise: Exercise, score: number }[]>([])
     const [recentExercises, setRecentExercises] = useState<Exercise[] | undefined>(undefined)
+    const [recommendedExercises, setRecommendedExercises] = useState<Exercise[] | undefined>(undefined)
 
     // Getters
     const getExerciseDateData = () => {
@@ -83,13 +84,26 @@ const StudentProfileContent = () => {
         )
     }
 
+    const getRecommendedExercises = async () => {
+
+        await ExerciseService.getRecommendedExercises().then(async exercises => {
+            return exercises
+        }).then(val => {
+            setRecommendedExercises(val)
+        }).catch((err: any) => {
+                alert('Unknown error.')
+        });
+    }
+
     // Set states when loading the component
     useEffect(() => {
+        getRecommendedExercises()
         getExerciseDateData()
         getHotStreak()
         getRecentExercises()
         getRecentSubmissionGrades()
     }, [])
+
 
     /* Conditional components */
     // Shows StreakDisplay if the criteria is met as defined by config.json
@@ -109,6 +123,7 @@ const StudentProfileContent = () => {
             </div>
             <div className={"verticalSpacer"} />
             <HotStreak />
+
             {
                 recentExercises ?
                     recentExercises.length === 0 ?
@@ -132,19 +147,44 @@ const StudentProfileContent = () => {
                             <div className={"centerDiv"}>
                                 <ScoreGraph data={recentSubmissionGrades} />
                             </div>
+                            
                             <h2>Latest Exercises</h2>
                             {recentExercises?.map((data, i) => {
                                 return (
                                     <ExerciseCard key={i}
-                                        id={data.id!}
-                                        title={data.title!}
-                                        exerciseTags={data.tags.map(tag => tag.name)!}
+                                                  id={data.id!}
+                                                  title={data.title!}
+                                                  exerciseTags={data.tags.map(tag => tag.name)!}
                                     />
                                 );
                             })}
                         </>
                     :
                     <Loading />
+            }
+
+            {
+                recommendedExercises ?
+                    recommendedExercises.length === 0 ?
+                        <>
+                        </>
+                        :
+                        <>
+                            <h2>Recommended Exercises</h2>
+                            {recommendedExercises?.map((data, i) => {
+                                return (
+                                    <ExerciseCard key={i}
+                                                  id={data.id!}
+                                                  title={data.title!}
+                                                  exerciseTags={data.tags.map(tag => tag.name)!}
+                                    />
+                                );
+                            })}
+
+                        </>
+                    :
+                    <>
+                    </>
             }
 
         </div>

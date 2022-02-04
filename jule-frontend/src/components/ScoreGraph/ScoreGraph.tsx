@@ -19,7 +19,7 @@ const ScoreGraph = (props: ScoreGraphProps) => {
      */
 
     const getColor = (score: Score) => {
-        const colors = ["#eb4034", "#ebd334", "#34eb4c", "#34ebe8"]
+        const colors = ["#34ebe8", "#34eb4c", "#ebd334", "#eb4034"]
         return colors[score - 1]
     }
 

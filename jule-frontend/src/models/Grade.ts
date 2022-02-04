@@ -2,10 +2,10 @@ import Statistics from "./Statistics";
 import Submission from "./Submission";
 
 export enum Score {
-    Unsatisfactory = 1,
-    Satisfactory,
+    Excellent = 1,
     Good,
-    Excellent
+    satisfactory,
+    unsatisfactory
 }
 
 type Grade = {

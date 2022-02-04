@@ -337,13 +337,13 @@ def similar_exercises(exercise_id):
 
 # determines the k recommended exercises
 # partly inspired by this article:
-# https://towardsdatascience.com/build-a-user-based-collaborative-filtering-recommendation-engine-for-anime-92d35921f304
-@exercises_routes.route('/recommendations', methods=['GET'])
+@exercises_routes.route('/recommendations', methods=['GET'], strict_slashes=False)
 @require_authorization
-def recommended_exercises(current_account: Account):
-    build_recommendation_engine()
+def recommended_exercises(current_Account: Account):
+    if current_module.recommendation_engine is None:
+        build_recommendation_engine()
 
-    account_id = current_account.id
+    account_id = current_Account.id
 
     #  check if enough users to build model are present
     if current_module.enough_users:
@@ -355,7 +355,8 @@ def recommended_exercises(current_account: Account):
             num_user = current_module.recommendation_engine.shape[0]
 
         # get the grades for the particular user
-        user_grades = current_module.recommendation_engine[current_module.recommendation_engine.index == int(account_id)]
+        user_grades = current_module.recommendation_engine[
+            current_module.recommendation_engine.index == int(account_id)]
 
         # determine the users with the most similar skill set
         distances, indices = current_module.sim_user.kneighbors(
@@ -386,6 +387,7 @@ def recommended_exercises(current_account: Account):
 
     else:
         rec_exercises_ids = []
+
     # query recommended exercises
     rec_exercises = Exercise.query.filter(Exercise.id.in_(rec_exercises_ids)).all()
 
@@ -471,7 +473,7 @@ def build_recommendation_engine():
 
     grade_info_df = pd.DataFrame(grade_info, columns=['score', 'user_id', 'exercise_id'])
 
-    if grade_info_df.shape[0] > 2 and grade_info_df.shape[1] > 5:
+    if grade_info_df.shape[0] >= 2 and grade_info_df.shape[1] >= 3:
         matrix = grade_info_df.pivot_table(index='user_id', columns='exercise_id', values='score')
 
         matrix = matrix.fillna(0)
