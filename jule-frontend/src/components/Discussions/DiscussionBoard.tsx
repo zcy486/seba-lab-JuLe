@@ -52,6 +52,7 @@ const DiscussionBoard = (props: Props) => {
         }
         DiscussionService.createDiscussion(new_discussion)
             .then(res => {
+                setEditorState(EditorState.createWithContent(ContentState.createFromText('')))
                 reloadDiscussions()
             })
     }

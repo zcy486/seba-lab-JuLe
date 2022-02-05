@@ -7,8 +7,8 @@ from ..models import Statistic, Submission, Exercise, Score, Grade, Account
 from ..schemas import SubmissionSchema
 from ..blueprints.statistics import calculate_statistics
 from ..jwt_signature_verification import require_authorization
+from .exercises import build_recommendation_engine
 import json
-
 
 textstat.set_lang('de')
 
@@ -20,22 +20,20 @@ def calculate_score(exercise_id, student_stats):
     exercise = Exercise.query.get(exercise_id)
     solution_stats = calculate_statistics(exercise.sample_solution)
 
-    stat_diffs = [abs(student_stat[0] - sample_stat[0])
+    stat_diffs = [(abs(student_stat[0] - sample_stat[0]) + 1) / (sample_stat[0] + 1)
                   for student_stat, sample_stat in zip(student_stats.values(), solution_stats.values())]
 
-    print(stat_diffs)
-
-    if all(x <= 0.1 for x in stat_diffs):
+    if all(x <= 0.25 for x in stat_diffs):
         return Score.excellent
-    elif all(x <= 0.3 for x in stat_diffs):
-        return Score.good
     elif all(x <= 0.4 for x in stat_diffs):
+        return Score.good
+    elif all(x <= 0.6 for x in stat_diffs):
         return Score.satisfactory
     else:
         return Score.unsatisfactory
 
 
-# Tag blueprint used to register blueprint in app.py
+# Submission blueprint used to register blueprint in app.py
 submission_routes = Blueprint('submission', __name__, url_prefix="/submission")
 
 # Schema used to return submission
@@ -115,6 +113,8 @@ def add_submission(current_account: Account, exercise_id):
                         grade.score = score
                         db.session.commit()
 
+                    build_recommendation_engine()
+
                     return jsonify(student_stats)
 
                 else:
@@ -152,17 +152,17 @@ def get_submission(current_account: Account, exercise_id):
 @submission_routes.route('/hotstreak', methods=['GET'])
 @require_authorization
 def get_hotstreak(current_account: Account):
-
     # print("getting hotstreak")
 
     account_id = current_account.id
 
     days_to_show = 180
 
-    date_3_months_ago = datetime.today() - timedelta(days= days_to_show)
+    date_3_months_ago = datetime.today() - timedelta(days=days_to_show)
 
     try:
-        recent_submissions = Submission.query.filter(and_(Submission.submission_time >= date_3_months_ago, Submission.account_id == account_id)).all()
+        recent_submissions = Submission.query.filter(
+            and_(Submission.submission_time >= date_3_months_ago, Submission.account_id == account_id)).all()
 
         # print("recent submissions: " + json.dumps(submissions_schema.dump(recent_submissions)))
 
@@ -185,10 +185,9 @@ def get_hotstreak(current_account: Account):
         counted_date_list = []
 
         for date in empty_date_list:
-
             # print("date: " + date.strftime("%Y-%m-%d"))
 
-            counted_date_list.append({"date": date,"count": date_list.count(date)})
+            counted_date_list.append({"date": date, "count": date_list.count(date)})
 
         # print("counted_date_list: " + str(counted_date_list))
 
@@ -205,11 +204,11 @@ def get_hotstreak(current_account: Account):
 @submission_routes.route('/all', methods=['GET'])
 @require_authorization
 def get_submissions(current_account: Account):
-
     account_id = current_account.id
 
     try:
-        submissions = Submission.query.filter(Submission.account_id == account_id).order_by(Submission.submission_time.desc()).all()
+        submissions = Submission.query.filter(Submission.account_id == account_id).order_by(
+            Submission.submission_time.desc()).all()
 
         return jsonify(submissions_schema.dump(submissions))
 
@@ -217,4 +216,3 @@ def get_submissions(current_account: Account):
         print(N)
         # TODO: make except less general
         return abort(405)
-
