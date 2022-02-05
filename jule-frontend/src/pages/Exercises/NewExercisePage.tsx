@@ -93,16 +93,16 @@ const NewExercisePage = () => {
         }
 
         // if above fields are not empty
-        let new_exercise = new FormData()
-        new_exercise.append('title', title)
-        new_exercise.append('explanation', explanation)
-        new_exercise.append('question', question)
-        new_exercise.append('sample_solution', solution)
-        new_exercise.append('difficulty', difficulty)
-        new_exercise.append('scope', scope)
-        new_exercise.append('tags', JSON.stringify(tags))
+        let new_exercise: any = {}
+        new_exercise.title = title
+        new_exercise.explanation = explanation
+        new_exercise.question = question
+        new_exercise.sampleSolution = solution
+        new_exercise.difficulty = difficulty
+        new_exercise.scope = scope
+        new_exercise.tags = tags
 
-        ExerciseService.createExercise(new_exercise)
+        ExerciseService.createExercise(JSON.stringify(new_exercise))
             .then((res) => {
                 console.log('Successfully created')
                 console.log(res);

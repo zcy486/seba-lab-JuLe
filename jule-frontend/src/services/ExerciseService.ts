@@ -30,7 +30,7 @@ const ExerciseService = {
     },
 
     // create exercise with form data
-    createExercise: (exercise: FormData) => {
+    createExercise: (exercise: string) => {
         return new Promise<Exercise>((resolve, reject) => {
             HttpService(true).post(`${baseRoute}/create`, exercise)
                 .then(resp => resolve(resp.data))

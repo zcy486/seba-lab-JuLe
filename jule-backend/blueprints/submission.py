@@ -43,7 +43,7 @@ submission_schema = SubmissionSchema()
 
 
 # create or return all available statistics for one student and one exercise
-@submission_routes.route('/<exercise_id>', methods=['POST'])
+@submission_routes.route('/<exercise_id>', methods=['POST'], strict_slashes=False)
 @require_authorization
 def add_submission(current_account: Account, exercise_id):
     account_id = current_account.id
