@@ -227,6 +227,5 @@ def send_recommendation_emails_task(app):
                 # Sending email (in separate thread)
                 thr = Thread(target=send_async_email, args=[app, account, exercises_to_recommend])
                 thr.start()
-                return
             else:
                 print('no exercises found for user ' + account['name'], flush=True)
