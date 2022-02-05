@@ -147,7 +147,7 @@ const StudentProfileContent = () => {
                             <div className={"centerDiv"}>
                                 <ScoreGraph data={recentSubmissionGrades} />
                             </div>
-                            
+
                             <h2>Latest Exercises</h2>
                             {recentExercises?.map((data, i) => {
                                 return (

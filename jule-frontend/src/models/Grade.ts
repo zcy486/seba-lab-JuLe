@@ -4,8 +4,8 @@ import Submission from "./Submission";
 export enum Score {
     Excellent = 1,
     Good,
-    satisfactory,
-    unsatisfactory
+    Satisfactory,
+    Unsatisfactory
 }
 
 type Grade = {
