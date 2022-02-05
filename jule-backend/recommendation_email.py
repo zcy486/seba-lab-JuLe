@@ -38,7 +38,7 @@ def render_html(account, exercises_to_recommend):
            "<tr>\n" \
            "<td valign=\"top\" align=\"center\">\n" \
            "<a href=\"" + CLIENT_URL + "\" style=\"display:inline-block; cursor:pointer; text-align:center;\">\n" \
-           "<img src=\"{{ client_url }}images/jule.png\" height=\"36\" width=\"117\" border=\"0\" alt=\"JuLe\"/>\n" \
+           "<img src=\"" + CLIENT_URL + "images/jule.png\" height=\"36\" width=\"117\" border=\"0\" alt=\"JuLe\"/>\n" \
            "</a>\n" \
            "</td>\n" \
            "</tr>\n" \
