@@ -1,13 +1,14 @@
 .score-list-legend{
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 2rem;
     margin: 2rem;
-    width: 75%;
 }
 
 .legend-item{
     display: flex;
-    justify-content: space-between;
+    flex-grow: 1;
+    justify-content: center;
 }
 
 .legend-item-title{

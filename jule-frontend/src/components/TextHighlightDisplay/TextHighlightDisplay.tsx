@@ -35,7 +35,7 @@ const TextHighlightDisplay = (props: TextHighlightDisplayProps) => {
 
             // add highlighted text
             const highlightedText = text.slice(highlight.start, highlight.end)
-            combinedText.push(<span style={{ backgroundColor: TagColorMapping[highlight.label], padding: "0px 5px 0px" }}>{highlightedText}</span>)
+            combinedText.push(<span style={{ backgroundColor: TagColorMapping[highlight.label], padding: "0px 5px 0px" , borderRadius: "3px"}}>{highlightedText}</span>)
 
             currentCharIndex = highlight.end
         }
@@ -73,7 +73,7 @@ const TextHighlightDisplay = (props: TextHighlightDisplayProps) => {
                                 <span style={{ backgroundColor: TagColorMapping['PER']}} className={styles.highlightKey}>People</span>
                                 <span style={{ backgroundColor: TagColorMapping['ORG']}} className={styles.highlightKey}>Organization</span>
                                 <span style={{ backgroundColor: TagColorMapping['LOC']}} className={styles.highlightKey}>Location</span>
-                                <span style={{ backgroundColor: TagColorMapping['MISC']}} className={styles.highlightKey}>Misc.</span>
+                                <span style={{ backgroundColor: TagColorMapping['MISC']}} className={styles.highlightKey}>Other</span>
                             </div>
                             : <></>
                         }

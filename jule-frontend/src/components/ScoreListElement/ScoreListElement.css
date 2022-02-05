@@ -1,33 +1,41 @@
 .score-title{
-    margin:3rem;
+    margin:2rem;
+    width: 15rem;
 }
 
 
 .score-box{
     width:100%;
     margin: 1rem;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 3rem;
+    padding: 0rem 2rem;
     display:flex;
 }
 
 .user-score{
     margin: 2rem;
-    font-size: xxx-large;
+    font-size: xx-large;
+    text-align: center;
     font-weight: bold;
     color: #F35917;
+    flex-grow: 1;
 }
 
 .peer-score{
     margin: 2rem;
-    font-size: xxx-large;
+    font-size: xx-large;
     text-align: center;
     font-weight: bold;
     color: #07D6D6;
+    flex-grow: 1;
 }
 
 .solution-score{
     margin: 2rem;
-    font-size: xxx-large;
+    font-size: xx-large;
+    text-align: center;
     font-weight: bold;
     color: #7C01A7;
+    flex-grow: 1;
 }

@@ -141,10 +141,9 @@ const ExerciseDetailPage = () => {
                         </Box>
 
                         <Typography variant={'h6'} sx={{mt: 3}}>Your Task</Typography>
-                        <Typography variant={'body1'}>{explanation}</Typography>
+                        <p>{explanation}</p>
 
                         <Typography variant={'h6'} sx={{mt: 3}}>Question</Typography>
-
                         <TextHighlightDisplay text={question} highlights={nerTags}/>
 
                         <Typography variant={'h6'} sx={{mt: 3}}>Your Solution</Typography>

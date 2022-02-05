@@ -1,0 +1,13 @@
+.textEditorButtonPanel{
+    margin: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.textEditorButton{
+    margin: 1rem;
+}
+
+.horizontalSpacer{
+    width: 2rem;
+}

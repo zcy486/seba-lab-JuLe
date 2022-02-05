@@ -19,12 +19,12 @@ const ScoreGraph = (props: ScoreGraphProps) => {
      */
 
     const getColor = (score: Score) => {
-        const colors = ["#34ebe8", "#34eb4c", "#ebd334", "#eb4034"]
+        const colors = ["#eb4034", "#ebd334", "#34eb4c", "#34ebe8"]
         return colors[score - 1]
     }
 
     const transform_data = (input: { score: Score, exercise: Exercise }): { name: string, score: number } => {
-        return { name: input.exercise.title, score: input.score }
+        return { name: input.exercise.title, score: 5 - input.score }
     }
 
     const new_data = () => props.data.map(transform_data).slice(0, 7).reverse()
@@ -69,7 +69,7 @@ const ScoreGraph = (props: ScoreGraphProps) => {
                             {label}
                         </Typography>
                         <Typography color="text.secondary">
-                            {Score[payload[0].payload.score]}
+                            {Score[(payload[0].payload.score - 5) * -1]}
                         </Typography>
                     </CardContent>
                 </Card>
