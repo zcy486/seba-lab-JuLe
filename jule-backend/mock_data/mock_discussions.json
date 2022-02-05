@@ -2,16 +2,16 @@
   {
     "id": 1,
     "text": "Are we supposed to use the present perfect tense in our solution?",
-    "poster_id": 1,
-    "exercise_id": 1,
+    "posterId": 1,
+    "exerciseId": 1,
     "votes": 10,
     "anonymous": false
   },
   {
     "id": 2,
     "text": "I think there is a typo in ..., right?",
-    "poster_id": 2,
-    "exercise_id": 1,
+    "posterId": 2,
+    "exerciseId": 1,
     "votes": 5,
     "anonymous": false
   }

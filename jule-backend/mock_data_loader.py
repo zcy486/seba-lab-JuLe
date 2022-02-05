@@ -6,7 +6,7 @@ import json
 from flask import request, jsonify
 
 from .extensions import db
-from .models import Account, Exercise, Tag, StatisticType, Submission
+from .models import Account, Exercise, Tag, StatisticType, Submission, Discussion, Comment
 from .schemas import UniversitySchema
 
 from .blueprints import submission, exercises
@@ -125,6 +125,42 @@ def insert_mock_data(app):
 
                         except Exception as E:
                             print(E)
+
+            # load discussions
+            with open("./mock_data/mock_discussions.json", "r") as mock_discussions:
+                mock_discussions = json.load(mock_discussions)
+
+                for mock_discussion in mock_discussions:
+                    loaded_mock_discussion = Discussion(
+                        id=mock_discussion['id'],
+                        text=mock_discussion['text'],
+                        poster_id=mock_discussion['posterId'],
+                        exercise_id=mock_discussion['exerciseId'],
+                        votes=mock_discussion['votes'],
+                        anonymous=mock_discussion['anonymous']
+                    )
+
+                    db.session.add(loaded_mock_discussion)
+
+                    try:
+                        db.session.commit()
+                    except Exception as E:
+                        db.session.rollback()
+                        print(E)
+
+                # append a comment in the second discussion
+                mock_comment = Comment(
+                    text="Yes, that's a typo.",
+                    poster_id=1,
+                    discussion_id=2,
+                    anonymous=True
+                )
+                db.session.add(mock_comment)
+                try:
+                    db.session.commit()
+                except Exception as E:
+                    db.session.rollback()
+                    print(E)
 
         else:
             print("did not load mock data as database already holds data", flush=True)
