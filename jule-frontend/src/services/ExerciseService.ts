@@ -72,6 +72,14 @@ const ExerciseService = {
                 .then(resp => resolve(resp.data))
                 .catch(err => reject(err.response))
         })
+    },
+
+    getRecommendedExercises: () => {
+        return new Promise< Exercise[] >((resolve, reject) => {
+            HttpService(true).get(`${baseRoute}/recommendations/`)
+                .then(resp => resolve(resp.data))
+                .catch(err => reject(err.response))
+        })
     }
 };
 

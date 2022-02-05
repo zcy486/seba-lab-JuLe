@@ -8,7 +8,6 @@ from sqlalchemy import asc
 from ..schemas import StatisticTypeSchema, StatisticSchema
 from ..jwt_signature_verification import require_authorization
 
-
 textstat.set_lang('de')
 
 
@@ -54,13 +53,12 @@ def get_statistics_types():
     else:
         return abort(405)
 
+
 # return information for peer, student, and sample solution statistics for an exercise/student pair
 @statistics_routes.route('/statistics/<exercise_id>', methods=['GET'])
 @require_authorization
 def get_statistics(current_account: Account, exercise_id):
     student_id = current_account.id
-
-    print(student_id)
 
     if request.method == 'GET':
         try:
@@ -69,7 +67,8 @@ def get_statistics(current_account: Account, exercise_id):
             student_stats = Statistic.query.filter_by(exercise_id=exercise_id, student_id=student_id).order_by(
                 asc(Statistic.statistic_type_id)).all()
             peer_stats = db.session.query(func.avg(Statistic.submission_value), Statistic.statistic_type_id).group_by(
-                Statistic.statistic_type_id).order_by(asc(Statistic.statistic_type_id)).all()
+                Statistic.statistic_type_id).filter(Statistic.exercise_id == exercise_id).order_by(
+                asc(Statistic.statistic_type_id)).all()
             solution_stats = calculate_statistics(exercise.sample_solution)
 
             # reformat statistics to fit frontend type: title, student value,  peer value, sample solution value
