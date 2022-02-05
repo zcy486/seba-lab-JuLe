@@ -1,7 +1,7 @@
 import React from "react";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import Button from "@mui/material/Button";
-import "./TextEditorButtonPanel.css"
+import styles from "./TextEditorButtonPanel.module.css"
 
 
 type TextEditorButtonPanelProps = {
@@ -13,9 +13,10 @@ type TextEditorButtonPanelProps = {
 let TextEditorButtonPanel = (props: TextEditorButtonPanelProps) => {
 
     return (
-        <div className="text-editor-button-panel">
-            <Button className="text-editor-button" variant="outlined" onClick={props.onCancel} >Cancel</Button>
-            <Button className="text-editor-button" variant="contained" onClick={props.saveText} >Save</Button>
+        <div className={styles.textEditorButtonPanel}>
+            <Button className={styles.textEditorButton} variant="outlined" onClick={props.onCancel} >Cancel</Button>
+            <div className={styles.horizontalSpacer}/>
+            <Button className={styles.textEditorButton} variant="contained" onClick={props.saveText} >Save</Button>
         </div>
     )
 }

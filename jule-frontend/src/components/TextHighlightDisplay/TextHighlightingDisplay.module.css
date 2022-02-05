@@ -1,6 +1,7 @@
 .highlightKey {
     padding: 0rem 1rem 0rem;
     margin: 0rem 1rem 0rem; 
+    border-radius: 3px;
 }
 
 .highlightLegend {

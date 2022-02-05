@@ -74,7 +74,7 @@ def get_statistics(current_account: Account, exercise_id):
             # reformat statistics to fit frontend type: title, student value,  peer value, sample solution value
             stats = []
             for student, peer, stat_title in zip(student_stats, peer_stats, solution_stats):
-                stats.append((stat_title, student.submission_value, float(peer[0]), solution_stats[stat_title]))
+                stats.append((stat_title, student.submission_value, float(peer[0]), solution_stats[stat_title])[0])
 
             return_data = {'scores': stats}
             return jsonify(return_data)
