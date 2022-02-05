@@ -35,7 +35,7 @@ current_module.sim_user = None
 current_module.enough_users = False
 
 # pretrained spacy model
-nlp = spacy.load("de_core_news_sm")
+nlp = spacy.load("de_core_news_lg")
 
 
 # index route, not in use
@@ -247,13 +247,13 @@ def rud_exercise(current_account: Account, exercise_id):
 @require_authorization
 def create_exercise(current_account: Account):
     owner = current_account
-    title = request.form['title']
-    explanation = request.form['explanation']
-    question = request.form['question']
-    difficulty = request.form['difficulty']
-    scope = request.form['scope']
-    sample_solution = request.form['sample_solution']
-    tag_names = request.form['tags']
+    title = request.json['title']
+    explanation = request.json['explanation']
+    question = request.json['question']
+    difficulty = request.json['difficulty']
+    scope = request.json['scope']
+    sample_solution = request.json['sampleSolution']
+    tag_names = request.json['tags']
 
     if title is None or explanation is None or question is None or difficulty is None or scope is None \
             or sample_solution is None:
@@ -276,7 +276,7 @@ def create_exercise(current_account: Account):
     )
 
     # append tags to the exercise
-    add_tags_by_name(new_exercise, json.loads(tag_names))
+    add_tags_by_name(new_exercise, tag_names)
 
     db.session.add(new_exercise)
     db.session.commit()

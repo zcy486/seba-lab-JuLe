@@ -48,7 +48,7 @@ const RegisterPage = () => {
     function registerButtonClick(e:React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
         if (captchaSucceeded) {
-            let registrationData: Auth = { name: name, email: email, password: password, role: role, universityId: universityId }
+            let registrationData: Auth = { name: name, email: email, password: password, role: role, universityId: universityId + 1 }
             AuthService.register(registrationData).then((res) => {
                 if (res.status === 201)
                     setNavigate(true)
