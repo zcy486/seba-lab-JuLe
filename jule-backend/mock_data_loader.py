@@ -1,15 +1,13 @@
-import pprint
 from datetime import timedelta
 
 from werkzeug.security import generate_password_hash
 import json
-from flask import request, jsonify
 
 from .extensions import db
-from .models import Account, Exercise, Tag, StatisticType, Submission, Discussion, Comment
+from .models import Account, Exercise, StatisticType, Submission, Discussion, Comment
 from .schemas import UniversitySchema
 
-from .blueprints import submission, exercises
+from .blueprints import exercises
 
 
 # Inserts mock data into database for development purposes
@@ -149,18 +147,18 @@ def insert_mock_data(app):
                         print(E)
 
                 # append a comment in the second discussion
-                mock_comment = Comment(
-                    text="Yes, that's a typo.",
-                    poster_id=1,
-                    discussion_id=2,
-                    anonymous=True
-                )
-                db.session.add(mock_comment)
-                try:
-                    db.session.commit()
-                except Exception as E:
-                    db.session.rollback()
-                    print(E)
+                # mock_comment = Comment(
+                #     text="Yes, that's a typo.",
+                #     poster_id=1,
+                #     discussion_id=2,
+                #     anonymous=True
+                # )
+                # db.session.add(mock_comment)
+                # try:
+                #     db.session.commit()
+                # except Exception as E:
+                #     db.session.rollback()
+                #     print(E)
 
         else:
             print("did not load mock data as database already holds data", flush=True)
@@ -184,7 +182,7 @@ def get_mock_account_jwt(app, account_id: int) -> str:
             ):
                 try:
                     jwt_token = login.index().json['jwtToken']
-                    print("successfully obtained jwt_token from mock account", flush=True)
+                    # print("successfully obtained jwt_token from mock account", flush=True)
                     return jwt_token
                 except Exception as E:
                     print(E)

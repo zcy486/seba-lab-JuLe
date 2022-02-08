@@ -11,6 +11,7 @@ import ScoreList from "../../components/ScoreList/ScoreList";
 import ScoreListLegend from "../../components/ScoreListLegend/ScoreListLegend";
 import Grade, { Score } from "../../models/Grade";
 import GradeService from "../../services/GradeService";
+import SimilarExercises from "../../components/SimilarExercises/SimilarExercises";
 
 const ExerciseResultPage = () => {
 
@@ -23,6 +24,8 @@ const ExerciseResultPage = () => {
     const [submission, setSubmission] = useState<string>();
     const [results, setResults] = useState<Statistics>();
     const [grade, setGrade] = useState<Grade>();
+    const [simExercisesIds, setSimExercisesIds] = useState<number[]>([]);
+    const [simExercisesTitles, setSimExercisesTitles] = useState<string[]>([]);
 
     //indicator of loading state
     const [loading, setLoading] = useState(true);
@@ -84,19 +87,14 @@ const ExerciseResultPage = () => {
                     alert('Unknown error.')
                 }
             });
-        }
-        if (id) {
-            // fetch exercise details
-            ExerciseService.getExercise(id)
+            // get similar exercises
+            ExerciseService.getSimilarExercises(id)
                 .then(resp => {
-                    setTitle(resp.title)
-                    setTags(resp.tags.map((tag) => tag.name))
-                    setSolution(resp.sampleSolution)
-                    setLoading(false)
+                    setSimExercisesIds(resp.ids)
+                    setSimExercisesTitles(resp.titles)
                 })
-                .catch(err => {
+                .catch((err: any) => {
                     if (err.status === 405) {
-                        // TODO: report error in a standard way
                         alert('No exercise found with matching id!')
                     } else if (err.status === 401) {
                         alert('You are not authorized to view this exercise!')
@@ -150,6 +148,10 @@ const ExerciseResultPage = () => {
 
                         <div className="verticalSpacer" />
                         <div className="verticalSpacer"/>
+
+                        {simExercisesIds.length > 0 ?
+                            <SimilarExercises ids={simExercisesIds} titles={simExercisesTitles}/> : <></>
+                        }
 
                     </div>
                 )

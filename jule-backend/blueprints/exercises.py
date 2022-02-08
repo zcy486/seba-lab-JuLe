@@ -204,7 +204,6 @@ def rud_exercise(current_account: Account, exercise_id):
         if 'sample_solution' in request.form:
             exercise.sample_solution = request.form['sample_solution']
         if 'tags' in request.form:
-            # TODO: might have some bugs, review at some point (exercise not being committed yet tags being incremented)
             new_tag_names = request.form['tags']
             # clear old tags in the exercise
             remove_tags_from_exercise(exercise)
@@ -489,28 +488,30 @@ def get_ner_tags(text):
     # process exercise using spacy module
     doc = nlp(text)
 
-    # get lists of start, end, explanation of ner tag
+    # get lists of NER label, start char, end char, and explanation of ner tag
     ents = [{"label": e.label_, "start": e.start_char, "end": e.end_char, "explanation": spacy.explain(e.label_)} for e
             in doc.ents]
 
     return ents
 
 
+# removes all preexisting NER tags and recalculates new NER tags
 def update_ner_tags(exercise: Exercise, ner_tags: list[dict[str, Any]]):
     delete_ner_tags(exercise)
     for ner_tag in ner_tags:
         create_ner_tag(exercise, ner_tag)
 
 
+# remove all NER tags related to an exercise in the database
 def delete_ner_tags(exercise: Exercise):
     try:
         db.session.query(NerTag).filter_by(exercise_id=exercise.id).delete()
 
     except Exception as N:
         print(N)
-        # TODO: make except less general
 
 
+# Store new NER tags in the database
 def create_ner_tag(exercise: Exercise, ner_tag: dict[str, Any]) -> NerTag:
     try:
         new_ner_tag = NerTag(
@@ -527,7 +528,6 @@ def create_ner_tag(exercise: Exercise, ner_tag: dict[str, Any]) -> NerTag:
 
     except Exception as N:
         print(N)
-        # TODO: make except less general
 
     else:
         return ner_tag

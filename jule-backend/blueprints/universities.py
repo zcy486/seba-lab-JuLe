@@ -28,7 +28,6 @@ def read_universities():
 
     except Exception as N:
         print(N)
-        # TODO: make except less general
         return abort(405)
 
     else:
@@ -46,7 +45,6 @@ def read_university(university_id: int):
 
     except Exception as N:
         print(N)
-        # TODO: make except less general
         return abort(405)
 
     else:
@@ -59,7 +57,6 @@ def read_university(university_id: int):
 # created in db throws error if university already exists
 def create_university(university_name: str) -> University:
     try:
-        # TODO: make new university in db exception if university already exists
         new_university = University(name=university_name, use_count=1)
         db.session.add(new_university)
         db.session.commit()
@@ -68,7 +65,6 @@ def create_university(university_name: str) -> University:
 
     except Exception as N:
         print(N)
-        # TODO: make except less general
 
     else:
         return university
