@@ -11,7 +11,6 @@ type TextHighlightDisplayProps = {
     highlights?: NerTag[]
 }
 
-// TODO: find neater way of defining color mapping
 const TagColorMapping: { [key: string]: string } = TypelessTagColorMapping
 
 const TextHighlightDisplay = (props: TextHighlightDisplayProps) => {

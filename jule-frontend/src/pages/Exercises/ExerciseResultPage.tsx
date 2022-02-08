@@ -36,7 +36,6 @@ const ExerciseResultPage = () => {
                 val => setSubmission(val.text)
             ).catch(err => {
                 if (err.status === 405) {
-                    // TODO: report error in a standard way
                     alert('We have trouble retrieving your submission')
                 } else if (err.status === 401) {
                     alert('You are not authorized to view this exercise!')
@@ -54,7 +53,6 @@ const ExerciseResultPage = () => {
                 })
                 .catch(err => {
                     if (err.status === 405) {
-                        // TODO: report error in a standard way
                         alert('No exercise found with matching id!')
                     } else if (err.status === 401) {
                         alert('You are not authorized to view this exercise!')
@@ -66,7 +64,6 @@ const ExerciseResultPage = () => {
                 val => setResults(val)
             ).catch(err => {
                 if (err.status === 405) {
-                    // TODO: report error in a standard way
                     alert('We have trouble retrieving your statistics')
                 } else if (err.status === 401) {
                     alert('You are not authorized to view this exercise!')
@@ -79,7 +76,6 @@ const ExerciseResultPage = () => {
                 val => setGrade(val)
             ).catch(err => {
                 if (err.status === 405) {
-                    // TODO: report error in a standard way
                     alert('We have trouble retrieving your statistics')
                 } else if (err.status === 401) {
                     alert('You are not authorized to view this exercise!')

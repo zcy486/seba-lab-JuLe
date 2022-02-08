@@ -122,7 +122,6 @@ def add_submission(current_account: Account, exercise_id):
 
         except Exception as N:
             print(N)
-            # TODO: make except less general
             return abort(405)
     else:
         return abort(405)
@@ -142,7 +141,6 @@ def get_submission(current_account: Account, exercise_id):
 
         except Exception as N:
             print(N)
-            # TODO: make except less general
             return abort(405)
     else:
         return abort(405)
@@ -164,39 +162,27 @@ def get_hotstreak(current_account: Account):
         recent_submissions = Submission.query.filter(
             and_(Submission.submission_time >= date_3_months_ago, Submission.account_id == account_id)).all()
 
-        # print("recent submissions: " + json.dumps(submissions_schema.dump(recent_submissions)))
-
-        # TODO optimize code and delete print statements
-
         def to_date(submission: Submission):
             return submission.submission_time.date()
 
         date_list = list(map(to_date, recent_submissions))
-
-        # print("date list: " + str(date_list))
 
         empty_date_list = []
 
         for i in range(1, days_to_show + 1):
             empty_date_list.append((date_3_months_ago + timedelta(i)).date())
 
-        # print("empty date list: " + str(empty_date_list))
-
         counted_date_list = []
 
         for date in empty_date_list:
-            # print("date: " + date.strftime("%Y-%m-%d"))
 
             counted_date_list.append({"date": date, "count": date_list.count(date)})
-
-        # print("counted_date_list: " + str(counted_date_list))
 
         return jsonify(counted_date_list)
 
 
     except Exception as N:
         print(N)
-        # TODO: make except less general
         return abort(405)
 
 
@@ -214,5 +200,4 @@ def get_submissions(current_account: Account):
 
     except Exception as N:
         print(N)
-        # TODO: make except less general
         return abort(405)
