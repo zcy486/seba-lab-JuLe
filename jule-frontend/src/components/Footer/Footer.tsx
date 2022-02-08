@@ -3,7 +3,6 @@ import {Box, Typography} from "@mui/material"
 import styles from "./Footer.module.css"
 import {Link} from "react-router-dom";
 
-// TODO: make it properly stick to the bottom of the page
 const Footer = () => {
     return (
         <footer className={styles.footer}>

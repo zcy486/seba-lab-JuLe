@@ -24,7 +24,6 @@ def read_tags(current_account: Account):
 
     except Exception as N:
         print(N)
-        # TODO: make except less general
         return abort(405)
 
     else:
@@ -36,16 +35,13 @@ def read_tags(current_account: Account):
 @require_authorization
 def read_tag(current_account: Account, tag_id: int):
     try:
-        # TODO: get specific tag from db and replace mock tag
         query_tag = Tag.query.filter_by(id=tag_id).first()
         if query_tag is None:
             raise Exception("No Tag with matching id")
-        mock_tag: Tag = Tag(id=1, name="one", use_count=1)
         tag: Tag = query_tag
 
     except Exception as N:
         print(N)
-        # TODO: make except less general
         return abort(405)
 
     else:
@@ -56,7 +52,6 @@ def read_tag(current_account: Account, tag_id: int):
 # creates a new tag and stores it in db returns tag that was created in db throws error if tag already exists
 def create_tag(tag_name: str) -> Tag:
     try:
-        # TODO: create new tag in db fail if tag already exists
         new_tag = Tag(name=tag_name, use_count=1)
         db.session.add(new_tag)
         db.session.commit()
@@ -65,7 +60,6 @@ def create_tag(tag_name: str) -> Tag:
 
     except Exception as N:
         print(N)
-        # TODO: make except less general
 
     else:
         return tag
@@ -90,7 +84,6 @@ def increment_tag_use(tag_id: int):
             tag.use_count += 1  # increment use_count
             db.session.commit()
     except:
-        # TODO: make except less general
         raise Exception("IncrementFailed")
 
 
@@ -107,5 +100,4 @@ def decrement_tag_use(tag_id: int):
             db.session.commit()  # commit changes to tag to db
     except Exception as N:
         print(N)
-        # TODO: make except less general
         raise Exception("DecrementFailed")

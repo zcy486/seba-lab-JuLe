@@ -16,7 +16,6 @@ const ActivityChart = (props: ActivityChartProps) => {
         }
     }
 
-    // TODO: check potential bug related to timezones https://stackoverflow.com/a/29774197
     const setLevel = (rawDates: { date: Date, count: number }[]): CalendarData => rawDates.map(rawElem => {
         return {
             level: levelFromCount(rawElem.count),

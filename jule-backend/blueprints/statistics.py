@@ -12,7 +12,6 @@ textstat.set_lang('de')
 
 
 # calculate all statistics for one solution
-# TODO: add statistics
 def calculate_statistics(text):
     statistics = dict()
 
@@ -48,7 +47,6 @@ def get_statistics_types():
             return jsonify(statistic_type_schema.dump(statistics_types))
         except Exception as N:
             print(N)
-            # TODO: make except less general
             return abort(405)
     else:
         return abort(405)
@@ -81,7 +79,6 @@ def get_statistics(current_account: Account, exercise_id):
 
         except Exception as N:
             print(N)
-            # TODO: make except less general
             return abort(405)
     else:
         return abort(405)

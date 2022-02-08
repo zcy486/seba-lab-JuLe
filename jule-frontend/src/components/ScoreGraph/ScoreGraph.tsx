@@ -27,7 +27,7 @@ const ScoreGraph = (props: ScoreGraphProps) => {
         return { name: input.exercise.title, score: 5 - input.score }
     }
 
-    const new_data = () => props.data.map(transform_data).slice(0, 7).reverse()
+    const new_data = () => props.data.map(transform_data).slice(0, 5).reverse()
 
     // const data = [
     //     {

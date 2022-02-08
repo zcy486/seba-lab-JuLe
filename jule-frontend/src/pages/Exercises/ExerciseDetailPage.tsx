@@ -73,7 +73,6 @@ const ExerciseDetailPage = () => {
                 })
                 .catch((err: any) => {
                     if (err.status === 405) {
-                        // TODO: report error in a standard way
                         alert('No exercise found with matching id!')
                     } else if (err.status === 401) {
                         alert('You are not authorized to view this exercise!')

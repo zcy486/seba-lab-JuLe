@@ -2,7 +2,7 @@
         "id": 1,
         "email": "adam@jule.tk",
         "password": "adamspassword",
-        "name": "Adam Lehrling",
+        "name": "Felix Elfering",
         "role": 1,
         "lastLogin": 0,
         "registerTime": 0,
@@ -18,7 +18,7 @@
         "lastLogin": 0,
         "registerTime": 0,
         "isVerified": true,
-        "universityId": 1
+        "universityId": 2
     },
     {
         "id": 3,

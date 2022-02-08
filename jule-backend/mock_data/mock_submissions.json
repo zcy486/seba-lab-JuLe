@@ -1,26 +1,58 @@
 [{
-    "text": "Sample text",
-    "submission_time_delta": 1,
-    "exerciseId": 1,
-    "accountId": 1
-}, {
-    "text": "Sample text",
-    "submission_time_delta": 1,
-    "exerciseId": 2,
-    "accountId": 1
-}, {
-    "text": "Sample text",
-    "submission_time_delta": 2,
-    "exerciseId": 3,
-    "accountId": 1
-}, {
-    "text": "Sample text",
-    "submission_time_delta": 3,
-    "exerciseId": 4,
-    "accountId": 1
-}, {
-    "text": "Sample text",
-    "submission_time_delta": 4,
-    "exerciseId": 5,
-    "accountId": 1
-}]
+        "text": "Sample text",
+        "submission_time_delta": 1,
+        "exerciseId": 6,
+        "accountId": 1
+    }, {
+        "text": "Sample text",
+        "submission_time_delta": 1,
+        "exerciseId": 2,
+        "accountId": 1
+    }, {
+        "text": "Die Klägerin behauptet, ihr sei bereits deshalb ein Schaden entstanden, weil sie entgegen einer Zusage, 40 Stunden pro Woche beschäftigt zu werden, nur einen Arbeitsvertrag über 30 Stunden erhalten habe. beschäftigt zu werden nur einen Arbeitsvertrag über 30 Stunden erhalten habe.",
+        "submission_time_delta": 2,
+        "exerciseId": 3,
+        "accountId": 1
+    }, {
+        "text": "So musste sich das Arbeitsgericht Düsseldorf vor Kurzem [oder: vor kurzem] mit dem Fall der dreibeinigen Hündin Kaya beschäftigen, die mit ihrem Knurren und Zähnefletschen die Mitarbeiter einer Düsseldorfer Werbeagentur das Fürchten lehrte. kurzem mit dem fall der dreibeinigen hündin kaya beschäftigen ",
+        "submission_time_delta": 3,
+        "exerciseId": 4,
+        "accountId": 1
+    }, {
+        "text": "Sample text",
+        "submission_time_delta": 4,
+        "exerciseId": 5,
+        "accountId": 1
+    }, {
+        "text": "Cybermobbing ist ein zunehmendes Problem. Insbesondere Schulen haben damit zu kämpfen. zu kämpfen. ",
+        "submission_time_delta": 6,
+        "exerciseId": 6,
+        "accountId": 1
+    }, 
+    {   
+        "text": "Sample text",
+        "submission_time_delta": 8,
+        "exerciseId": 7,
+        "accountId": 1
+    },{
+        "text": "In der Beschäftigungsfiliale der Klägerin bestand die folgende Arbeitsanweisung: Wenn Mitarbeiter Leergut von zu Hause mitbringen, um es in der Filiale einzulösen, müssen sie es beim Betreten der Filiale dem Filialverantwortlichen vorzeigen. Sobald sie ihren Pfandbon erhalten haben, müssen sie diesen abzeichnen lassen. Sobald sie ihren Pfandbon erhalten haben, müssen sie diesen abzeichnen lassen.",
+        "submission_time_delta": 4,
+        "exerciseId": 1,
+        "accountId": 2
+    }, {
+        "text": "Sample text",
+        "submission_time_delta": 4,
+        "exerciseId": 5,
+        "accountId": 2
+    }, {
+        "text": "Sample text",
+        "submission_time_delta": 4,
+        "exerciseId": 15,
+        "accountId": 2
+    }, {
+        "text": "Sample text",
+        "submission_time_delta": 4,
+        "exerciseId": 13,
+        "accountId": 2
+    }
+]

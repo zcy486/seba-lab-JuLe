@@ -154,6 +154,7 @@ const StudentProfileContent = () => {
                                     <ExerciseCard key={i}
                                                   id={data.id!}
                                                   title={data.title!}
+                                                  uniLogo={data.owner.university.logoSrc}
                                                   exerciseTags={data.tags.map(tag => tag.name)!}
                                     />
                                 );
@@ -176,6 +177,7 @@ const StudentProfileContent = () => {
                                     <ExerciseCard key={i}
                                                   id={data.id!}
                                                   title={data.title!}
+                                                  uniLogo={data.owner.university.logoSrc}
                                                   exerciseTags={data.tags.map(tag => tag.name)!}
                                     />
                                 );
